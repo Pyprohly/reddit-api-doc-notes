@@ -1,0 +1,73 @@
+POST /api/v1/collections/create_collection
+modposts
+
+<div class="info">
+ <div class="md">
+  <p>
+   Create a collection
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    description
+   </th>
+   <td>
+    <p>
+     a string no longer than 500 characters
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    display_layout
+   </th>
+   <td>
+    <p>
+     one of (
+     <code>
+      TIMELINE
+     </code>
+     ,
+     <code>
+      GALLERY
+     </code>
+     )
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    sr_fullname
+   </th>
+   <td>
+    <p>
+     a fullname of a subreddit
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    title
+   </th>
+   <td>
+    <p>
+     title of the submission. up to 300 characters long
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    uh / X-Modhash header
+   </th>
+   <td>
+    <p>
+     a
+     <a href="#modhashes">
+      modhash
+     </a>
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

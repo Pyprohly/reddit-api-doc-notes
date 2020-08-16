@@ -1,0 +1,70 @@
+POST /api/live/thread/delete_update
+edit
+
+<div class="info">
+ <div class="md">
+  <p>
+   Delete an update from the thread.
+  </p>
+  <p>
+   Requires that specified update must have been authored by the user or
+that you have the
+   <code>
+    edit
+   </code>
+   permission for this thread.
+  </p>
+  <p>
+   See also:
+   <a href="#POST_api_live_%7Bthread%7D_update">
+    /api/live/
+    <em>
+     thread
+    </em>
+    /update
+   </a>
+   .
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    api_type
+   </th>
+   <td>
+    <p>
+     the string
+     <code>
+      json
+     </code>
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    id
+   </th>
+   <td>
+    <p>
+     the ID of a single update. e.g.
+     <code>
+      LiveUpdate_ff87068e-a126-11e3-9f93-12313b0b3603
+     </code>
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    uh / X-Modhash header
+   </th>
+   <td>
+    <p>
+     a
+     <a href="#modhashes">
+      modhash
+     </a>
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

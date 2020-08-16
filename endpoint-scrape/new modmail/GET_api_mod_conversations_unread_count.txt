@@ -1,0 +1,11 @@
+GET /api/mod/conversations/unread/count
+modmail
+
+<div class="info">
+ <div class="md">
+  <p>
+   Endpoint to retrieve the unread conversation count by
+conversation state.
+  </p>
+ </div>
+</div>

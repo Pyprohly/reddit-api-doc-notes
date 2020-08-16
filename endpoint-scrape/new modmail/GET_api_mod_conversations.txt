@@ -1,0 +1,114 @@
+GET /api/mod/conversations
+modmail
+
+<div class="info">
+ <div class="md">
+  <p>
+   Get conversations for a logged in user or subreddits
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    after
+   </th>
+   <td>
+    <p>
+     base36 modmail conversation id
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    entity
+   </th>
+   <td>
+    <p>
+     comma-delimited list of subreddit names
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    limit
+   </th>
+   <td>
+    <p>
+     an integer (default: 25)
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    sort
+   </th>
+   <td>
+    <p>
+     one of (
+     <code>
+      recent
+     </code>
+     ,
+     <code>
+      mod
+     </code>
+     ,
+     <code>
+      user
+     </code>
+     ,
+     <code>
+      unread
+     </code>
+     )
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    state
+   </th>
+   <td>
+    <p>
+     one of (
+     <code>
+      highlighted
+     </code>
+     ,
+     <code>
+      notifications
+     </code>
+     ,
+     <code>
+      archived
+     </code>
+     ,
+     <code>
+      appeals
+     </code>
+     ,
+     <code>
+      default
+     </code>
+     ,
+     <code>
+      new
+     </code>
+     ,
+     <code>
+      inprogress
+     </code>
+     ,
+     <code>
+      all
+     </code>
+     ,
+     <code>
+      mod
+     </code>
+     )
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

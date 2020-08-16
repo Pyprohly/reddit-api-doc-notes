@@ -1,0 +1,168 @@
+POST /api/report
+report
+
+<div class="info">
+ <div class="md">
+  <p>
+   Report a link, comment or message.
+Reporting a thing brings it to the attention of the subreddit's
+moderators. Reporting a message sends it to a system for admin review.
+For links and comments, the thing is implicitly hidden as well (see
+   <a href="#POST_api_hide">
+    /api/hide
+   </a>
+   for details).
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    additional_info
+   </th>
+   <td>
+    <p>
+     a string no longer than 2000 characters
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    api_type
+   </th>
+   <td>
+    <p>
+     the string
+     <code>
+      json
+     </code>
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    custom_text
+   </th>
+   <td>
+    <p>
+     a string no longer than 2000 characters
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    from_help_desk
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    from_modmail
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    modmail_conv_id
+   </th>
+   <td>
+    <p>
+     base36 modmail conversation id
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    other_reason
+   </th>
+   <td>
+    <p>
+     a string no longer than 100 characters
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    reason
+   </th>
+   <td>
+    <p>
+     a string no longer than 100 characters
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    rule_reason
+   </th>
+   <td>
+    <p>
+     a string no longer than 100 characters
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    site_reason
+   </th>
+   <td>
+    <p>
+     a string no longer than 100 characters
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    sr_name
+   </th>
+   <td>
+    <p>
+     a string no longer than 1000 characters
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    thing_id
+   </th>
+   <td>
+    <p>
+     <a href="#fullnames">
+      fullname
+     </a>
+     of a thing
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    uh / X-Modhash header
+   </th>
+   <td>
+    <p>
+     a
+     <a href="#modhashes">
+      modhash
+     </a>
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    usernames
+   </th>
+   <td>
+    <p>
+     A comma-separated list of items
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

@@ -1,0 +1,32 @@
+GET /api/v1/collections/collection
+read
+
+<div class="info">
+ <div class="md">
+  <p>
+   Fetch a collection including all the links
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    collection_id
+   </th>
+   <td>
+    <p>
+     the UUID of a collection
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    include_links
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

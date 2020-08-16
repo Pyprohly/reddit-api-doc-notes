@@ -1,0 +1,16 @@
+GET /api/v1/subreddit/emojis/all
+read
+
+<div class="info">
+ <div class="md">
+  <p>
+   Get all emojis for a SR. The response inclueds reddit emojis
+as well as emojis for the SR specified in the request.
+  </p>
+  <p>
+   The response has 2 keys:
+ - Reddit emojis (snoomoji)
+ - SR emojis
+  </p>
+ </div>
+</div>

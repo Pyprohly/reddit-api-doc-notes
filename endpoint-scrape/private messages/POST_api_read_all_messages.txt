@@ -1,0 +1,39 @@
+POST /api/read_all_messages
+privatemessages
+
+<div class="info">
+ <div class="md">
+  <p>
+   Queue up marking all messages for a user as read.
+  </p>
+  <p>
+   This may take some time, and returns 202 to acknowledge acceptance of
+the request.
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    filter_types
+   </th>
+   <td>
+    <p>
+     A comma-separated list of items
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    uh / X-Modhash header
+   </th>
+   <td>
+    <p>
+     a
+     <a href="#modhashes">
+      modhash
+     </a>
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

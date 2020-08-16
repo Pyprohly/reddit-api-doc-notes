@@ -1,0 +1,110 @@
+GET /users/where
+read
+→ /users/popular
+→ /users/new
+
+<div class="info">
+ <div class="md">
+  <p>
+   Get all user subreddits.
+  </p>
+  <p>
+   The
+   <code>
+    where
+   </code>
+   parameter chooses the order in which the subreddits are
+displayed.
+   <code>
+    popular
+   </code>
+   sorts on the activity of the subreddit and the
+position of the subreddits can shift around.
+   <code>
+    new
+   </code>
+   sorts the user
+subreddits based on their creation date, newest first.
+  </p>
+  <p>
+   <em>
+    This endpoint is
+    <a href="#listings">
+     a listing
+    </a>
+    .
+   </em>
+  </p>
+ </div>
+ <table class="parameters">
+  <tr class="base-param">
+   <th scope="row">
+    after
+   </th>
+   <td>
+    <p>
+     <a href="#fullnames">
+      fullname
+     </a>
+     of a thing
+    </p>
+   </td>
+  </tr>
+  <tr class="base-param">
+   <th scope="row">
+    before
+   </th>
+   <td>
+    <p>
+     <a href="#fullnames">
+      fullname
+     </a>
+     of a thing
+    </p>
+   </td>
+  </tr>
+  <tr class="base-param">
+   <th scope="row">
+    count
+   </th>
+   <td>
+    <p>
+     a positive integer (default: 0)
+    </p>
+   </td>
+  </tr>
+  <tr class="base-param">
+   <th scope="row">
+    limit
+   </th>
+   <td>
+    <p>
+     the maximum number of items desired (default: 25, maximum: 100)
+    </p>
+   </td>
+  </tr>
+  <tr class="base-param">
+   <th scope="row">
+    show
+   </th>
+   <td>
+    <p>
+     (optional) the string
+     <code>
+      all
+     </code>
+    </p>
+   </td>
+  </tr>
+  <tr class="base-param">
+   <th scope="row">
+    sr_detail
+   </th>
+   <td>
+    <p>
+     (optional) expand subreddits
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

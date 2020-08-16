@@ -1,0 +1,62 @@
+POST /api/set_contest_mode
+modposts
+
+<div class="info">
+ <div class="md">
+  <p>
+   Set or unset "contest mode" for a link's comments.
+  </p>
+  <p>
+   <code>
+    state
+   </code>
+   is a boolean that indicates whether you are enabling or
+disabling contest mode - true to enable, false to disable.
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    api_type
+   </th>
+   <td>
+    <p>
+     the string
+     <code>
+      json
+     </code>
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    id
+   </th>
+   <td>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    state
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    uh / X-Modhash header
+   </th>
+   <td>
+    <p>
+     a
+     <a href="#modhashes">
+      modhash
+     </a>
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

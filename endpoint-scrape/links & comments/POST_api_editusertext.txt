@@ -1,0 +1,81 @@
+POST /api/editusertext
+edit
+
+<div class="info">
+ <div class="md">
+  <p>
+   Edit the body text of a comment or self-post.
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    api_type
+   </th>
+   <td>
+    <p>
+     the string
+     <code>
+      json
+     </code>
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    return_rtjson
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    richtext_json
+   </th>
+   <td>
+    <p>
+     JSON data
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    text
+   </th>
+   <td>
+    <p>
+     raw markdown text
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    thing_id
+   </th>
+   <td>
+    <p>
+     <a href="#fullnames">
+      fullname
+     </a>
+     of a thing
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    uh / X-Modhash header
+   </th>
+   <td>
+    <p>
+     a
+     <a href="#modhashes">
+      modhash
+     </a>
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

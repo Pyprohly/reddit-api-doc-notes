@@ -1,0 +1,43 @@
+POST /api/report_user
+report
+
+<div class="info">
+ <div class="md">
+  <p>
+   Report a user.
+Reporting a user brings it to the attention of a Reddit admin.
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    details
+   </th>
+   <td>
+    <p>
+     JSON data
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    reason
+   </th>
+   <td>
+    <p>
+     a string no longer than 100 characters
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    ('user',)
+   </th>
+   <td>
+    <p>
+     A valid, existing reddit username
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

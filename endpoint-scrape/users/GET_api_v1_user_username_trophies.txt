@@ -1,0 +1,22 @@
+GET /api/v1/user/username/trophies
+read
+
+<div class="info">
+ <div class="md">
+  <p>
+   Return a list of trophies for the a given user.
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    id
+   </th>
+   <td>
+    <p>
+     A valid, existing reddit username
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

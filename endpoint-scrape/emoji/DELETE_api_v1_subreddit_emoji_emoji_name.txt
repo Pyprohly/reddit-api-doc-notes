@@ -1,0 +1,12 @@
+DELETE /api/v1/subreddit/emoji/emoji_name
+structuredstyles
+
+<div class="info">
+ <div class="md">
+  <p>
+   Delete a Subreddit emoji.
+Remove the emoji from Cassandra and purge the assets from S3
+and the image resizing provider.
+  </p>
+ </div>
+</div>

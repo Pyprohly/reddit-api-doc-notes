@@ -1,0 +1,69 @@
+POST /api/event_post_time
+modposts
+
+<div class="info">
+ <div class="md">
+  <p>
+   Add or modify post event times. To remove event info
+leave these fields empty.
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    event_end
+   </th>
+   <td>
+    <p>
+     a datetime string e.g. 2018-09-11T12:00:00
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    event_start
+   </th>
+   <td>
+    <p>
+     a datetime string e.g. 2018-09-11T12:00:00
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    event_tz
+   </th>
+   <td>
+    <p>
+     a pytz timezone e.g. America/Los_Angeles
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    id
+   </th>
+   <td>
+    <p>
+     <a href="#fullnames">
+      fullname
+     </a>
+     of a link
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    uh / X-Modhash header
+   </th>
+   <td>
+    <p>
+     a
+     <a href="#modhashes">
+      modhash
+     </a>
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

@@ -1,0 +1,22 @@
+GET /api/live/by_id/names
+read
+
+<div class="info">
+ <div class="md">
+  <p>
+   Get a listing of live events by id.
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    names
+   </th>
+   <td>
+    <p>
+     a comma-delimited list of live thread fullnames or IDs
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

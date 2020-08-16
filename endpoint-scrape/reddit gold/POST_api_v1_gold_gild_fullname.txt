@@ -1,0 +1,20 @@
+POST /api/v1/gold/gild/fullname
+creddits
+
+<div class="info">
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    fullname
+   </th>
+   <td>
+    <p>
+     <a href="#fullnames">
+      fullname
+     </a>
+     of a thing
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

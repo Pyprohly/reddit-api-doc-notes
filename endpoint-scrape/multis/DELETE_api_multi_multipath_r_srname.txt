@@ -1,0 +1,49 @@
+DELETE /api/multi/multipath/r/srname
+subscribe
+→ /api/filter/
+filterpath
+/r/
+srname
+
+<div class="info">
+ <div class="md">
+  <p>
+   Remove a subreddit from a multi.
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    multipath
+   </th>
+   <td>
+    <p>
+     multireddit url path
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    srname
+   </th>
+   <td>
+    <p>
+     subreddit name
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    uh / X-Modhash header
+   </th>
+   <td>
+    <p>
+     a
+     <a href="#modhashes">
+      modhash
+     </a>
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

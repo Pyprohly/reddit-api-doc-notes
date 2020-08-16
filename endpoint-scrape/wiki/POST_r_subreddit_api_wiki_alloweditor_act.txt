@@ -1,0 +1,76 @@
+POST [/r/subreddit]/api/wiki/alloweditor/act
+modwiki
+→ [/r/
+subreddit
+]/api/wiki/alloweditor/del
+→ [/r/
+subreddit
+]/api/wiki/alloweditor/add
+
+<div class="info">
+ <div class="md">
+  <p>
+   Allow/deny
+   <code>
+    username
+   </code>
+   to edit this wiki
+   <code>
+    page
+   </code>
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    act
+   </th>
+   <td>
+    <p>
+     one of (
+     <code>
+      del
+     </code>
+     ,
+     <code>
+      add
+     </code>
+     )
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    page
+   </th>
+   <td>
+    <p>
+     the name of an existing wiki page
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    uh / X-Modhash header
+   </th>
+   <td>
+    <p>
+     a
+     <a href="#modhashes">
+      modhash
+     </a>
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    username
+   </th>
+   <td>
+    <p>
+     the name of an existing user
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

@@ -1,0 +1,71 @@
+POST [/r/subreddit]/api/flaircsv
+modflair
+
+<div class="info">
+ <div class="md">
+  <p>
+   Change the flair of multiple users in the same subreddit with a
+single API call.
+  </p>
+  <p>
+   Requires a string 'flair_csv' which has up to 100 lines of the form
+'
+   <code>
+    user
+   </code>
+   ,
+   <code>
+    flairtext
+   </code>
+   ,
+   <code>
+    cssclass
+   </code>
+   ' (Lines beyond the 100th are ignored).
+  </p>
+  <p>
+   If both
+   <code>
+    cssclass
+   </code>
+   and
+   <code>
+    flairtext
+   </code>
+   are the empty string for a given
+   <code>
+    user
+   </code>
+   , instead clears that user's flair.
+  </p>
+  <p>
+   Returns an array of objects indicating if each flair setting was
+applied, or a reason for the failure.
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    flair_csv
+   </th>
+   <td>
+    <p>
+     comma-seperated flair information
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    uh / X-Modhash header
+   </th>
+   <td>
+    <p>
+     a
+     <a href="#modhashes">
+      modhash
+     </a>
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

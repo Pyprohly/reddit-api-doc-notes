@@ -1,0 +1,54 @@
+GET /api/recommend/sr/srnames
+read
+
+<div class="info">
+ <div class="md">
+  <p>
+   DEPRECATED: Return subreddits recommended for the given subreddit(s).
+  </p>
+  <p>
+   Gets a list of subreddits recommended for
+   <code>
+    srnames
+   </code>
+   , filtering out any
+that appear in the optional
+   <code>
+    omit
+   </code>
+   param.
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    omit
+   </th>
+   <td>
+    <p>
+     comma-delimited list of subreddit names
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    over_18
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    srnames
+   </th>
+   <td>
+    <p>
+     comma-delimited list of subreddit names
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

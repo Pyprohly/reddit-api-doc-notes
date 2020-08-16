@@ -1,0 +1,31 @@
+GET /by_id/names
+read
+
+<div class="info">
+ <div class="md">
+  <p>
+   Get a listing of links by fullname.
+  </p>
+  <p>
+   <code>
+    names
+   </code>
+   is a list of fullnames for links separated by commas or spaces.
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    names
+   </th>
+   <td>
+    <p>
+     A comma-separated list of link
+     <a href="#fullnames">
+      fullnames
+     </a>
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

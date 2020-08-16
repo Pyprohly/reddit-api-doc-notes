@@ -1,0 +1,96 @@
+POST /api/vote
+vote
+
+<div class="info">
+ <div class="md">
+  <p>
+   Cast a vote on a thing.
+  </p>
+  <p>
+   <code>
+    id
+   </code>
+   should be the fullname of the Link or Comment to vote on.
+  </p>
+  <p>
+   <code>
+    dir
+   </code>
+   indicates the direction of the vote. Voting
+   <code>
+    1
+   </code>
+   is an upvote,
+   <code>
+    -1
+   </code>
+   is a downvote, and
+   <code>
+    0
+   </code>
+   is equivalent to "un-voting" by clicking
+again on a highlighted arrow.
+  </p>
+  <p>
+   <strong>
+    Note: votes must be cast by humans.
+   </strong>
+   That is, API clients proxying a
+human's action one-for-one are OK, but bots deciding how to vote on
+content or amplifying a human's vote are not. See
+   <a href="/rules">
+    the reddit
+rules
+   </a>
+   for more details on what constitutes vote cheating.
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    dir
+   </th>
+   <td>
+    <p>
+     vote direction. one of (1, 0, -1)
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    id
+   </th>
+   <td>
+    <p>
+     <a href="#fullnames">
+      fullname
+     </a>
+     of a thing
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    rank
+   </th>
+   <td>
+    <p>
+     an integer greater than 1
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    uh / X-Modhash header
+   </th>
+   <td>
+    <p>
+     a
+     <a href="#modhashes">
+      modhash
+     </a>
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

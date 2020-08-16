@@ -1,0 +1,11 @@
+GET /api/mod/conversations/subreddits
+modmail
+
+<div class="info">
+ <div class="md">
+  <p>
+   Returns a list of srs that the user moderates that are also
+enrolled in the new modmail
+  </p>
+ </div>
+</div>

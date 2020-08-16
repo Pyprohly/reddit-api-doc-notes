@@ -1,0 +1,33 @@
+GET /api/mod/conversations/:conversation_id
+modmail
+
+<div class="info">
+ <div class="md">
+  <p>
+   Returns all messages, mod actions and conversation metadata
+for a given conversation id
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    conversation_id
+   </th>
+   <td>
+    <p>
+     base36 modmail conversation id
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    markRead
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

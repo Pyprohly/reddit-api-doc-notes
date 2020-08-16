@@ -1,0 +1,45 @@
+POST /api/v1/collections/add_post_to_collection
+modposts
+
+<div class="info">
+ <div class="md">
+  <p>
+   Add a post to a collection
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    collection_id
+   </th>
+   <td>
+    <p>
+     the UUID of a collection
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    link_fullname
+   </th>
+   <td>
+    <p>
+     a fullname of a link
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    uh / X-Modhash header
+   </th>
+   <td>
+    <p>
+     a
+     <a href="#modhashes">
+      modhash
+     </a>
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

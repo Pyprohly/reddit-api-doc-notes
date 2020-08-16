@@ -1,0 +1,10 @@
+GET [/r/subreddit]/random
+read
+
+<div class="info">
+ <div class="md">
+  <p>
+   The Serendipity button
+  </p>
+ </div>
+</div>

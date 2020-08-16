@@ -1,0 +1,22 @@
+GET /api/v1/collections/subreddit_collections
+read
+
+<div class="info">
+ <div class="md">
+  <p>
+   Fetch collections for the subreddit
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    sr_fullname
+   </th>
+   <td>
+    <p>
+     a fullname of a subreddit
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

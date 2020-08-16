@@ -1,0 +1,98 @@
+GET /live/thread
+read
+
+<div class="info">
+ <div class="md">
+  <p>
+   Get a list of updates posted in this thread.
+  </p>
+  <p>
+   See also:
+   <a href="#POST_api_live_%7Bthread%7D_update">
+    /api/live/
+    <em>
+     thread
+    </em>
+    /update
+   </a>
+   .
+  </p>
+  <p>
+   <em>
+    This endpoint is
+    <a href="#listings">
+     a listing
+    </a>
+    .
+   </em>
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    after
+   </th>
+   <td>
+    <p>
+     the ID of a single update. e.g.
+     <code>
+      LiveUpdate_ff87068e-a126-11e3-9f93-12313b0b3603
+     </code>
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    before
+   </th>
+   <td>
+    <p>
+     the ID of a single update. e.g.
+     <code>
+      LiveUpdate_ff87068e-a126-11e3-9f93-12313b0b3603
+     </code>
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    count
+   </th>
+   <td>
+    <p>
+     a positive integer (default: 0)
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    is_embed
+   </th>
+   <td>
+    <p>
+     (internal use only)
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    limit
+   </th>
+   <td>
+    <p>
+     the maximum number of items desired (default: 25, maximum: 100)
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    stylesr
+   </th>
+   <td>
+    <p>
+     subreddit name
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

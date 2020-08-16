@@ -1,0 +1,20 @@
+GET /api/user_data_by_account_ids
+privatemessages
+
+<div class="info">
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    ids
+   </th>
+   <td>
+    <p>
+     A comma-separated list of account
+     <a href="#fullnames">
+      fullnames
+     </a>
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

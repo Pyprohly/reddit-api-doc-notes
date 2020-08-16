@@ -1,0 +1,43 @@
+POST [/r/subreddit]/api/deleteflair
+modflair
+
+<div class="info">
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    api_type
+   </th>
+   <td>
+    <p>
+     the string
+     <code>
+      json
+     </code>
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    name
+   </th>
+   <td>
+    <p>
+     a user by name
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    uh / X-Modhash header
+   </th>
+   <td>
+    <p>
+     a
+     <a href="#modhashes">
+      modhash
+     </a>
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

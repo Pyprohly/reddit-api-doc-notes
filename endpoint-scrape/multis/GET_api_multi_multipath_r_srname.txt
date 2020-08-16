@@ -1,0 +1,36 @@
+GET /api/multi/multipath/r/srname
+read
+→ /api/filter/
+filterpath
+/r/
+srname
+
+<div class="info">
+ <div class="md">
+  <p>
+   Get data about a subreddit in a multi.
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    multipath
+   </th>
+   <td>
+    <p>
+     multireddit url path
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    srname
+   </th>
+   <td>
+    <p>
+     subreddit name
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

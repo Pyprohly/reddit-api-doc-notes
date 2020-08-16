@@ -1,0 +1,26 @@
+GET [/r/subreddit]/api/saved_media_text
+submit
+
+<div class="info">
+ <div class="md">
+  <p>
+   Retrieve the advisory text about saving media for relevant media links.
+  </p>
+  <p>
+   This endpoint returns a notice for display during the post submission
+process that is pertinent to media links.
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    url
+   </th>
+   <td>
+    <p>
+     a valid URL
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

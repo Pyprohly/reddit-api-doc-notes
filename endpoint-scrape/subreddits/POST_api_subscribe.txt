@@ -1,0 +1,105 @@
+POST /api/subscribe
+subscribe
+
+<div class="info">
+ <div class="md">
+  <p>
+   Subscribe to or unsubscribe from a subreddit.
+  </p>
+  <p>
+   To subscribe,
+   <code>
+    action
+   </code>
+   should be
+   <code>
+    sub
+   </code>
+   . To unsubscribe,
+   <code>
+    action
+   </code>
+   should
+be
+   <code>
+    unsub
+   </code>
+   . The user must have access to the subreddit to be able to
+subscribe to it.
+  </p>
+  <p>
+   The
+   <code>
+    skip_initial_defaults
+   </code>
+   param can be set to True to prevent
+automatically subscribing the user to the current set of defaults
+when they take their first subscription action. Attempting to set it
+for an unsubscribe action will result in an error.
+  </p>
+  <p>
+   See also:
+   <a href="#GET_subreddits_mine_%7Bwhere%7D">
+    /subreddits/mine/
+   </a>
+   .
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    action
+   </th>
+   <td>
+    <p>
+     one of (
+     <code>
+      sub
+     </code>
+     ,
+     <code>
+      unsub
+     </code>
+     )
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    skip_initial_defaults
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    sr / sr_name
+   </th>
+   <td>
+    <p>
+     A comma-separated list of subreddit
+     <a href="#fullname">
+      fullnames
+     </a>
+     (when using the "sr" parameter), or of subreddit names (when using the "sr_name" parameter).
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    uh / X-Modhash header
+   </th>
+   <td>
+    <p>
+     a
+     <a href="#modhashes">
+      modhash
+     </a>
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

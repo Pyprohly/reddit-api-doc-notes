@@ -1,0 +1,10 @@
+GET /api/v1/me
+identity
+
+<div class="info">
+ <div class="md">
+  <p>
+   Returns the identity of the user.
+  </p>
+ </div>
+</div>

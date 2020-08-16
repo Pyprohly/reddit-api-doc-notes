@@ -1,0 +1,10 @@
+GET /api/v1/me/karma
+mysubreddits
+
+<div class="info">
+ <div class="md">
+  <p>
+   Return a breakdown of subreddit karma.
+  </p>
+ </div>
+</div>

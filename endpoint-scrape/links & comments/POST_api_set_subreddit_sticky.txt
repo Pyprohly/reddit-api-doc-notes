@@ -1,0 +1,97 @@
+POST /api/set_subreddit_sticky
+modposts
+
+<div class="info">
+ <div class="md">
+  <p>
+   Set or unset a Link as the sticky in its subreddit.
+  </p>
+  <p>
+   <code>
+    state
+   </code>
+   is a boolean that indicates whether to sticky or unsticky
+this post - true to sticky, false to unsticky.
+  </p>
+  <p>
+   The
+   <code>
+    num
+   </code>
+   argument is optional, and only used when stickying a post.
+It allows specifying a particular "slot" to sticky the post into, and
+if there is already a post stickied in that slot it will be replaced.
+If there is no post in the specified slot to replace, or
+   <code>
+    num
+   </code>
+   is None,
+the bottom-most slot will be used.
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    api_type
+   </th>
+   <td>
+    <p>
+     the string
+     <code>
+      json
+     </code>
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    id
+   </th>
+   <td>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    num
+   </th>
+   <td>
+    <p>
+     an integer between 1 and 4
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    state
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    to_profile
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    uh / X-Modhash header
+   </th>
+   <td>
+    <p>
+     a
+     <a href="#modhashes">
+      modhash
+     </a>
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

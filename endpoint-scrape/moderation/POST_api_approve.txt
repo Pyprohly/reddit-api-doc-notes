@@ -1,0 +1,49 @@
+POST /api/approve
+modposts
+
+<div class="info">
+ <div class="md">
+  <p>
+   Approve a link or comment.
+  </p>
+  <p>
+   If the thing was removed, it will be re-inserted into appropriate
+listings. Any reports on the approved thing will be discarded.
+  </p>
+  <p>
+   See also:
+   <a href="#POST_api_remove">
+    /api/remove
+   </a>
+   .
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    id
+   </th>
+   <td>
+    <p>
+     <a href="#fullnames">
+      fullname
+     </a>
+     of a thing
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    uh / X-Modhash header
+   </th>
+   <td>
+    <p>
+     a
+     <a href="#modhashes">
+      modhash
+     </a>
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

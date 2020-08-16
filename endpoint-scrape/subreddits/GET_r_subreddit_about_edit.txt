@@ -1,0 +1,46 @@
+GET /r/subreddit/about/edit
+modconfig
+
+<div class="info">
+ <div class="md">
+  <p>
+   Get the current settings of a subreddit.
+  </p>
+  <p>
+   In the API, this returns the current settings of the subreddit as used
+by
+   <a href="#POST_api_site_admin">
+    /api/site_admin
+   </a>
+   .  On the HTML site, it will
+display a form for editing the subreddit.
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    created
+   </th>
+   <td>
+    <p>
+     one of (
+     <code>
+      true
+     </code>
+     ,
+     <code>
+      false
+     </code>
+     )
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    location
+   </th>
+   <td>
+   </td>
+  </tr>
+ </table>
+</div>

@@ -1,0 +1,45 @@
+POST /api/v1/collections/update_collection_title
+modposts
+
+<div class="info">
+ <div class="md">
+  <p>
+   Update a collection's title
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    collection_id
+   </th>
+   <td>
+    <p>
+     the UUID of a collection
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    title
+   </th>
+   <td>
+    <p>
+     title of the submission. up to 300 characters long
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    uh / X-Modhash header
+   </th>
+   <td>
+    <p>
+     a
+     <a href="#modhashes">
+      modhash
+     </a>
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

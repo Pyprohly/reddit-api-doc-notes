@@ -1,0 +1,58 @@
+POST [/r/subreddit]/wiki/settings/page
+modwiki
+
+<div class="info">
+ <div class="md">
+  <p>
+   Update the permissions and visibility of wiki
+   <code>
+    page
+   </code>
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    listed
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    page
+   </th>
+   <td>
+    <p>
+     the name of an existing wiki page
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    permlevel
+   </th>
+   <td>
+    <p>
+     an integer
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    uh / X-Modhash header
+   </th>
+   <td>
+    <p>
+     a
+     <a href="#modhashes">
+      modhash
+     </a>
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

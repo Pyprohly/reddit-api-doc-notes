@@ -1,0 +1,96 @@
+POST /api/live/thread/edit
+livemanage
+
+<div class="info">
+ <div class="md">
+  <p>
+   Configure the thread.
+  </p>
+  <p>
+   Requires the
+   <code>
+    settings
+   </code>
+   permission for this thread.
+  </p>
+  <p>
+   See also:
+   <a href="#GET_live_%7Bthread%7D_about.json">
+    /live/
+    <em>
+     thread
+    </em>
+    /about.json
+   </a>
+   .
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    api_type
+   </th>
+   <td>
+    <p>
+     the string
+     <code>
+      json
+     </code>
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    description
+   </th>
+   <td>
+    <p>
+     raw markdown text
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    nsfw
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    resources
+   </th>
+   <td>
+    <p>
+     raw markdown text
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    title
+   </th>
+   <td>
+    <p>
+     a string no longer than 120 characters
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    uh / X-Modhash header
+   </th>
+   <td>
+    <p>
+     a
+     <a href="#modhashes">
+      modhash
+     </a>
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

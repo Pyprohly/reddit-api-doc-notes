@@ -1,0 +1,27 @@
+POST /api/v1/gold/give/username
+creddits
+
+<div class="info">
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    months
+   </th>
+   <td>
+    <p>
+     an integer between 1 and 36
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    username
+   </th>
+   <td>
+    <p>
+     A valid, existing reddit username
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

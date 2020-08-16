@@ -1,0 +1,21 @@
+GET [/r/subreddit]/api/submit_text
+submit
+
+<div class="info">
+ <div class="md">
+  <p>
+   Get the submission text for the subreddit.
+  </p>
+  <p>
+   This text is set by the subreddit moderators and intended to be
+displayed on the submission form.
+  </p>
+  <p>
+   See also:
+   <a href="#POST_api_site_admin">
+    /api/site_admin
+   </a>
+   .
+  </p>
+ </div>
+</div>

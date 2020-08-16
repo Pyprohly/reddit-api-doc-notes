@@ -1,0 +1,38 @@
+GET [/r/subreddit]/api/info
+read
+
+<div class="info">
+ <div class="md">
+  <p>
+   Return a listing of things specified by their fullnames.
+  </p>
+  <p>
+   Only Links, Comments, and Subreddits are allowed.
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    id
+   </th>
+   <td>
+    <p>
+     A comma-separated list of thing
+     <a href="#fullnames">
+      fullnames
+     </a>
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    url
+   </th>
+   <td>
+    <p>
+     a valid URL
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

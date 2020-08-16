@@ -1,0 +1,330 @@
+POST /api/submit
+submit
+
+<div class="info">
+ <div class="md">
+  <p>
+   Submit a link to a subreddit.
+  </p>
+  <p>
+   Submit will create a link or self-post in the subreddit
+   <code>
+    sr
+   </code>
+   with the
+title
+   <code>
+    title
+   </code>
+   . If
+   <code>
+    kind
+   </code>
+   is
+   <code>
+    "link"
+   </code>
+   , then
+   <code>
+    url
+   </code>
+   is expected to be a
+valid URL to link to. Otherwise,
+   <code>
+    text
+   </code>
+   , if present, will be the
+body of the self-post unless
+   <code>
+    richtext_json
+   </code>
+   is present, in which case
+it will be converted into the body of the self-post. An error is thrown
+if both
+   <code>
+    text
+   </code>
+   and
+   <code>
+    richtext_json
+   </code>
+   are present.
+  </p>
+  <p>
+   If a link with the same URL has already been submitted to the specified
+subreddit an error will be returned unless
+   <code>
+    resubmit
+   </code>
+   is true.
+   <code>
+    extension
+   </code>
+   is used for determining which view-type (e.g.
+   <code>
+    json
+   </code>
+   ,
+   <code>
+    compact
+   </code>
+   etc.) to use for the redirect that is generated if the
+   <code>
+    resubmit
+   </code>
+   error occurs.
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    ad
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    api_type
+   </th>
+   <td>
+    <p>
+     the string
+     <code>
+      json
+     </code>
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    app
+   </th>
+   <td>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    collection_id
+   </th>
+   <td>
+    <p>
+     (beta) the UUID of a collection
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    event_end
+   </th>
+   <td>
+    <p>
+     (beta) a datetime string e.g. 2018-09-11T12:00:00
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    event_start
+   </th>
+   <td>
+    <p>
+     (beta) a datetime string e.g. 2018-09-11T12:00:00
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    event_tz
+   </th>
+   <td>
+    <p>
+     (beta) a pytz timezone e.g. America/Los_Angeles
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    extension
+   </th>
+   <td>
+    <p>
+     extension used for redirects
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    flair_id
+   </th>
+   <td>
+    <p>
+     a string no longer than 36 characters
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    flair_text
+   </th>
+   <td>
+    <p>
+     a string no longer than 64 characters
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    g-recaptcha-response
+   </th>
+   <td>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    kind
+   </th>
+   <td>
+    <p>
+     one of (
+     <code>
+      link
+     </code>
+     ,
+     <code>
+      self
+     </code>
+     ,
+     <code>
+      image
+     </code>
+     ,
+     <code>
+      video
+     </code>
+     ,
+     <code>
+      videogif
+     </code>
+     )
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    nsfw
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    resubmit
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    richtext_json
+   </th>
+   <td>
+    <p>
+     JSON data
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    sendreplies
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    spoiler
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    sr
+   </th>
+   <td>
+    <p>
+     subreddit name
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    text
+   </th>
+   <td>
+    <p>
+     raw markdown text
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    title
+   </th>
+   <td>
+    <p>
+     title of the submission. up to 300 characters long
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    uh / X-Modhash header
+   </th>
+   <td>
+    <p>
+     a
+     <a href="#modhashes">
+      modhash
+     </a>
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    url
+   </th>
+   <td>
+    <p>
+     a valid URL
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    video_poster_url
+   </th>
+   <td>
+    <p>
+     a valid URL
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

@@ -1,0 +1,71 @@
+POST /api/multi/multipath
+subscribe
+→ /api/filter/
+filterpath
+
+<div class="info">
+ <div class="md">
+  <p>
+   Create a multi. Responds with 409 Conflict if it already exists.
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    model
+   </th>
+   <td>
+    <p>
+     json data:
+    </p>
+    <pre><code>{
+  "description_md": raw markdown text,
+  "display_name": a string no longer than 50 characters,
+  "icon_img": one of (`png`, `jpg`, `jpeg`),
+  "key_color": a 6-digit rgb hex color, e.g. `#AABBCC`,
+  "subreddits": [
+    {
+      "name": subreddit name,
+    },
+    ...
+  ],
+  "visibility": one of (`private`, `public`, `hidden`),
+}
+</code></pre>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    multipath
+   </th>
+   <td>
+    <p>
+     multireddit url path
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    uh / X-Modhash header
+   </th>
+   <td>
+    <p>
+     a
+     <a href="#modhashes">
+      modhash
+     </a>
+    </p>
+   </td>
+  </tr>
+  <tr class="base-param">
+   <th scope="row">
+    expand_srs
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

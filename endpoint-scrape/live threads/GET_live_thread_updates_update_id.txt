@@ -1,0 +1,10 @@
+GET /live/thread/updates/update_id
+read
+
+<div class="info">
+ <div class="md">
+  <p>
+   Get details about a specific update in a live thread.
+  </p>
+ </div>
+</div>

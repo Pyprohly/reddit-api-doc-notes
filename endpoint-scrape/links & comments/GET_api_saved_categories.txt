@@ -1,0 +1,17 @@
+GET /api/saved_categories
+save
+
+<div class="info">
+ <div class="md">
+  <p>
+   Get a list of categories in which things are currently saved.
+  </p>
+  <p>
+   See also:
+   <a href="#POST_api_save">
+    /api/save
+   </a>
+   .
+  </p>
+ </div>
+</div>

@@ -1,0 +1,268 @@
+POST [/r/subreddit]/api/upload_sr_img
+modconfig
+
+<div class="info">
+ <div class="md">
+  <p>
+   Add or replace a subreddit image, custom header logo, custom mobile
+icon, or custom mobile banner.
+  </p>
+  <ul>
+   <li>
+    If the
+    <code>
+     upload_type
+    </code>
+    value is
+    <code>
+     img
+    </code>
+    , an image for use in the
+subreddit stylesheet is uploaded with the name specified in
+    <code>
+     name
+    </code>
+    .
+   </li>
+   <li>
+    If the
+    <code>
+     upload_type
+    </code>
+    value is
+    <code>
+     header
+    </code>
+    then the image uploaded will
+be the subreddit's new logo and
+    <code>
+     name
+    </code>
+    will be ignored.
+   </li>
+   <li>
+    If the
+    <code>
+     upload_type
+    </code>
+    value is
+    <code>
+     icon
+    </code>
+    then the image uploaded will be
+the subreddit's new mobile icon and
+    <code>
+     name
+    </code>
+    will be ignored.
+   </li>
+   <li>
+    If the
+    <code>
+     upload_type
+    </code>
+    value is
+    <code>
+     banner
+    </code>
+    then the image uploaded will
+be the subreddit's new mobile banner and
+    <code>
+     name
+    </code>
+    will be ignored.
+   </li>
+  </ul>
+  <p>
+   For backwards compatibility, if
+   <code>
+    upload_type
+   </code>
+   is not specified, the
+   <code>
+    header
+   </code>
+   field will be used instead:
+  </p>
+  <ul>
+   <li>
+    If the
+    <code>
+     header
+    </code>
+    field has value
+    <code>
+     0
+    </code>
+    , then
+    <code>
+     upload_type
+    </code>
+    is
+    <code>
+     img
+    </code>
+    .
+   </li>
+   <li>
+    If the
+    <code>
+     header
+    </code>
+    field has value
+    <code>
+     1
+    </code>
+    , then
+    <code>
+     upload_type
+    </code>
+    is
+    <code>
+     header
+    </code>
+    .
+   </li>
+  </ul>
+  <p>
+   The
+   <code>
+    img_type
+   </code>
+   field specifies whether to store the uploaded image as a
+PNG or JPEG.
+  </p>
+  <p>
+   Subreddits have a limited number of images that can be in use at any
+given time. If no image with the specified name already exists, one of
+the slots will be consumed.
+  </p>
+  <p>
+   If an image with the specified name already exists, it will be
+replaced.  This does not affect the stylesheet immediately, but will
+take effect the next time the stylesheet is saved.
+  </p>
+  <p>
+   See also:
+   <a href="#POST_api_delete_sr_img">
+    /api/delete_sr_img
+   </a>
+   ,
+   <a href="#POST_api_delete_sr_header">
+    /api/delete_sr_header
+   </a>
+   ,
+   <a href="#POST_api_delete_sr_icon">
+    /api/delete_sr_icon
+   </a>
+   , and
+   <a href="#POST_api_delete_sr_banner">
+    /api/delete_sr_banner
+   </a>
+   .
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    file
+   </th>
+   <td>
+    <p>
+     file upload with maximum size of 500 KiB
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    formid
+   </th>
+   <td>
+    <p>
+     (optional) can be ignored
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    header
+   </th>
+   <td>
+    <p>
+     an integer between 0 and 1
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    img_type
+   </th>
+   <td>
+    <p>
+     one of
+     <code>
+      png
+     </code>
+     or
+     <code>
+      jpg
+     </code>
+     (default:
+     <code>
+      png
+     </code>
+     )
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    name
+   </th>
+   <td>
+    <p>
+     a valid subreddit image name
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    uh / X-Modhash header
+   </th>
+   <td>
+    <p>
+     a
+     <a href="#modhashes">
+      modhash
+     </a>
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    upload_type
+   </th>
+   <td>
+    <p>
+     one of (
+     <code>
+      img
+     </code>
+     ,
+     <code>
+      header
+     </code>
+     ,
+     <code>
+      icon
+     </code>
+     ,
+     <code>
+      banner
+     </code>
+     )
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

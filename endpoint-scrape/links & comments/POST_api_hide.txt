@@ -1,0 +1,48 @@
+POST /api/hide
+report
+
+<div class="info">
+ <div class="md">
+  <p>
+   Hide a link.
+  </p>
+  <p>
+   This removes it from the user's default view of subreddit listings.
+  </p>
+  <p>
+   See also:
+   <a href="#POST_api_unhide">
+    /api/unhide
+   </a>
+   .
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    id
+   </th>
+   <td>
+    <p>
+     A comma-separated list of link
+     <a href="#fullnames">
+      fullnames
+     </a>
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    uh / X-Modhash header
+   </th>
+   <td>
+    <p>
+     a
+     <a href="#modhashes">
+      modhash
+     </a>
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

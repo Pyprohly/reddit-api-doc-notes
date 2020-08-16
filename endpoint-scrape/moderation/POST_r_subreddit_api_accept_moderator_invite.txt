@@ -1,0 +1,53 @@
+POST [/r/subreddit]/api/accept_moderator_invite
+modself
+
+<div class="info">
+ <div class="md">
+  <p>
+   Accept an invite to moderate the specified subreddit.
+  </p>
+  <p>
+   The authenticated user must have been invited to moderate the subreddit
+by one of its current moderators.
+  </p>
+  <p>
+   See also:
+   <a href="#POST_api_friend">
+    /api/friend
+   </a>
+   and
+   <a href="#GET_subreddits_mine_%7Bwhere%7D">
+    /subreddits/mine
+   </a>
+   .
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    api_type
+   </th>
+   <td>
+    <p>
+     the string
+     <code>
+      json
+     </code>
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    uh / X-Modhash header
+   </th>
+   <td>
+    <p>
+     a
+     <a href="#modhashes">
+      modhash
+     </a>
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

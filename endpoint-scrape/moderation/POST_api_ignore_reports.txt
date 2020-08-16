@@ -1,0 +1,50 @@
+POST /api/ignore_reports
+modposts
+
+<div class="info">
+ <div class="md">
+  <p>
+   Prevent future reports on a thing from causing notifications.
+  </p>
+  <p>
+   Any reports made about a thing after this flag is set on it will not
+cause notifications or make the thing show up in the various moderation
+listings.
+  </p>
+  <p>
+   See also:
+   <a href="#POST_api_unignore_reports">
+    /api/unignore_reports
+   </a>
+   .
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    id
+   </th>
+   <td>
+    <p>
+     <a href="#fullnames">
+      fullname
+     </a>
+     of a thing
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    uh / X-Modhash header
+   </th>
+   <td>
+    <p>
+     a
+     <a href="#modhashes">
+      modhash
+     </a>
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

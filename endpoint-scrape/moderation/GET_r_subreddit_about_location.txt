@@ -1,0 +1,151 @@
+GET [/r/subreddit]/about/location
+read
+→ [/r/
+subreddit
+]/about/reports
+→ [/r/
+subreddit
+]/about/spam
+→ [/r/
+subreddit
+]/about/modqueue
+→ [/r/
+subreddit
+]/about/unmoderated
+→ [/r/
+subreddit
+]/about/edited
+
+<div class="info">
+ <div class="md">
+  <p>
+   Return a listing of posts relevant to moderators.
+  </p>
+  <ul>
+   <li>
+    reports: Things that have been reported.
+   </li>
+   <li>
+    spam: Things that have been marked as spam or otherwise removed.
+   </li>
+   <li>
+    modqueue: Things requiring moderator review, such as reported things
+and items caught by the spam filter.
+   </li>
+   <li>
+    unmoderated: Things that have yet to be approved/removed by a mod.
+   </li>
+   <li>
+    edited: Things that have been edited recently.
+   </li>
+  </ul>
+  <p>
+   Requires the "posts" moderator permission for the subreddit.
+  </p>
+  <p>
+   <em>
+    This endpoint is
+    <a href="#listings">
+     a listing
+    </a>
+    .
+   </em>
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    after
+   </th>
+   <td>
+    <p>
+     <a href="#fullnames">
+      fullname
+     </a>
+     of a thing
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    before
+   </th>
+   <td>
+    <p>
+     <a href="#fullnames">
+      fullname
+     </a>
+     of a thing
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    count
+   </th>
+   <td>
+    <p>
+     a positive integer (default: 0)
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    limit
+   </th>
+   <td>
+    <p>
+     the maximum number of items desired (default: 25, maximum: 100)
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    location
+   </th>
+   <td>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    only
+   </th>
+   <td>
+    <p>
+     one of (
+     <code>
+      links
+     </code>
+     ,
+     <code>
+      comments
+     </code>
+     )
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    show
+   </th>
+   <td>
+    <p>
+     (optional) the string
+     <code>
+      all
+     </code>
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    sr_detail
+   </th>
+   <td>
+    <p>
+     (optional) expand subreddits
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

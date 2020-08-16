@@ -1,0 +1,45 @@
+POST [/r/subreddit]/api/delete_sr_icon
+modconfig
+
+<div class="info">
+ <div class="md">
+  <p>
+   Remove the subreddit's custom mobile icon.
+  </p>
+  <p>
+   See also:
+   <a href="#POST_api_upload_sr_img">
+    /api/upload_sr_img
+   </a>
+   .
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    api_type
+   </th>
+   <td>
+    <p>
+     the string
+     <code>
+      json
+     </code>
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    uh / X-Modhash header
+   </th>
+   <td>
+    <p>
+     a
+     <a href="#modhashes">
+      modhash
+     </a>
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

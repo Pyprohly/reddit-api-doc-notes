@@ -1,0 +1,13 @@
+GET /r/subreddit/about
+read
+
+<div class="info">
+ <div class="md">
+  <p>
+   Return information about the subreddit.
+  </p>
+  <p>
+   Data includes the subscriber count, description, and header image.
+  </p>
+ </div>
+</div>

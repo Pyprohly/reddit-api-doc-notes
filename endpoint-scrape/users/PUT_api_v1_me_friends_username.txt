@@ -1,0 +1,29 @@
+PUT /api/v1/me/friends/username
+subscribe
+
+<div class="info">
+ <div class="md">
+  <p>
+   Create or update a "friend" relationship.
+  </p>
+  <p>
+   This operation is idempotent. It can be used to add a new
+friend, or update an existing friend (e.g., add/change the
+note on that friend)
+  </p>
+ </div>
+ <table class="parameters">
+  <tr class="json-model">
+   <th>
+    This endpoint expects JSON data of this format
+   </th>
+   <td>
+    <pre><code>{
+  "name": A valid, existing reddit username,
+  "note": a string no longer than 300 characters,
+}
+</code></pre>
+   </td>
+  </tr>
+ </table>
+</div>

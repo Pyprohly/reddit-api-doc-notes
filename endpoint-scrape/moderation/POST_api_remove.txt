@@ -1,0 +1,60 @@
+POST /api/remove
+modposts
+
+<div class="info">
+ <div class="md">
+  <p>
+   Remove a link, comment, or modmail message.
+  </p>
+  <p>
+   If the thing is a link, it will be removed from all subreddit listings.
+If the thing is a comment, it will be redacted and removed from all
+subreddit comment listings.
+  </p>
+  <p>
+   See also:
+   <a href="#POST_api_approve">
+    /api/approve
+   </a>
+   .
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    id
+   </th>
+   <td>
+    <p>
+     <a href="#fullnames">
+      fullname
+     </a>
+     of a thing
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    spam
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    uh / X-Modhash header
+   </th>
+   <td>
+    <p>
+     a
+     <a href="#modhashes">
+      modhash
+     </a>
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

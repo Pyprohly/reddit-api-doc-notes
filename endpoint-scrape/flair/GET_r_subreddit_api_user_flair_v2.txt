@@ -1,0 +1,14 @@
+GET [/r/subreddit]/api/user_flair_v2
+flair
+
+<div class="info">
+ <div class="md">
+  <p>
+   Return list of available user flair for the current subreddit.
+  </p>
+  <p>
+   If user is not a mod of the subreddit, this endpoint filters
+out mod_only templates.
+  </p>
+ </div>
+</div>

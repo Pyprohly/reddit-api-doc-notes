@@ -1,0 +1,85 @@
+POST /api/compose
+privatemessages
+
+<div class="info">
+ <div class="md">
+  <p>
+   Handles message composition under /message/compose.
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    api_type
+   </th>
+   <td>
+    <p>
+     the string
+     <code>
+      json
+     </code>
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    from_sr
+   </th>
+   <td>
+    <p>
+     subreddit name
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    g-recaptcha-response
+   </th>
+   <td>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    subject
+   </th>
+   <td>
+    <p>
+     a string no longer than 100 characters
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    text
+   </th>
+   <td>
+    <p>
+     raw markdown text
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    to
+   </th>
+   <td>
+    <p>
+     the name of an existing user
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    uh / X-Modhash header
+   </th>
+   <td>
+    <p>
+     a
+     <a href="#modhashes">
+      modhash
+     </a>
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

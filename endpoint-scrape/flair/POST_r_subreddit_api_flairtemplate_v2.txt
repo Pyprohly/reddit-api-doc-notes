@@ -1,0 +1,176 @@
+POST [/r/subreddit]/api/flairtemplate_v2
+modflair
+
+<div class="info">
+ <div class="md">
+  <p>
+   Create or update a flair template.
+  </p>
+  <p>
+   This new endpoint is primarily used for the redesign.
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    allowable_content
+   </th>
+   <td>
+    <p>
+     one of (
+     <code>
+      all
+     </code>
+     ,
+     <code>
+      emoji
+     </code>
+     ,
+     <code>
+      text
+     </code>
+     )
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    api_type
+   </th>
+   <td>
+    <p>
+     the string
+     <code>
+      json
+     </code>
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    background_color
+   </th>
+   <td>
+    <p>
+     a 6-digit rgb hex color, e.g.
+     <code>
+      #AABBCC
+     </code>
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    css_class
+   </th>
+   <td>
+    <p>
+     a valid subreddit image name
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    flair_template_id
+   </th>
+   <td>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    flair_type
+   </th>
+   <td>
+    <p>
+     one of (
+     <code>
+      USER_FLAIR
+     </code>
+     ,
+     <code>
+      LINK_FLAIR
+     </code>
+     )
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    max_emojis
+   </th>
+   <td>
+    <p>
+     an integer between 1 and 10 (default: 10)
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    mod_only
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    override_css
+   </th>
+   <td>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    text
+   </th>
+   <td>
+    <p>
+     a string no longer than 64 characters
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    text_color
+   </th>
+   <td>
+    <p>
+     one of (
+     <code>
+      light
+     </code>
+     ,
+     <code>
+      dark
+     </code>
+     )
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    text_editable
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    uh / X-Modhash header
+   </th>
+   <td>
+    <p>
+     a
+     <a href="#modhashes">
+      modhash
+     </a>
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

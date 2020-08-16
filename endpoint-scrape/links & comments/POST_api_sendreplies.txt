@@ -1,0 +1,55 @@
+POST /api/sendreplies
+edit
+
+<div class="info">
+ <div class="md">
+  <p>
+   Enable or disable inbox replies for a link or comment.
+  </p>
+  <p>
+   <code>
+    state
+   </code>
+   is a boolean that indicates whether you are enabling or
+disabling inbox replies - true to enable, false to disable.
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    id
+   </th>
+   <td>
+    <p>
+     <a href="#fullnames">
+      fullname
+     </a>
+     of a thing created by the user
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    state
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    uh / X-Modhash header
+   </th>
+   <td>
+    <p>
+     a
+     <a href="#modhashes">
+      modhash
+     </a>
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

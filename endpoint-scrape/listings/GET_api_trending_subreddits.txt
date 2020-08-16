@@ -1,0 +1,14 @@
+GET /api/trending_subreddits
+
+
+<div class="info">
+ <div class="md">
+  <p>
+   Return a list of trending subreddits, link to the comment in
+   <a href="/r/trendingsubreddits">
+    r/trendingsubreddits
+   </a>
+   , and the comment count of that link.
+  </p>
+ </div>
+</div>

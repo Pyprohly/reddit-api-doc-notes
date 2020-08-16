@@ -1,0 +1,10 @@
+GET [/r/subreddit]/wiki/pages
+wikiread
+
+<div class="info">
+ <div class="md">
+  <p>
+   Retrieve a list of wiki pages in this subreddit
+  </p>
+ </div>
+</div>

@@ -1,0 +1,14 @@
+GET [/r/subreddit]/api/link_flair_v2
+flair
+
+<div class="info">
+ <div class="md">
+  <p>
+   Return list of available link flair for the current subreddit.
+  </p>
+  <p>
+   Will not return flair if the user cannot set their own link flair and
+they are not a moderator that can set flair.
+  </p>
+ </div>
+</div>

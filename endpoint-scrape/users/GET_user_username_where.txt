@@ -1,0 +1,210 @@
+GET /user/username/where
+history
+→ /user/
+username
+/overview
+→ /user/
+username
+/submitted
+→ /user/
+username
+/comments
+→ /user/
+username
+/upvoted
+→ /user/
+username
+/downvoted
+→ /user/
+username
+/hidden
+→ /user/
+username
+/saved
+→ /user/
+username
+/gilded
+
+<div class="info">
+ <div class="md">
+  <p>
+   <em>
+    This endpoint is
+    <a href="#listings">
+     a listing
+    </a>
+    .
+   </em>
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    context
+   </th>
+   <td>
+    <p>
+     an integer between 2 and 10
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    show
+   </th>
+   <td>
+    <p>
+     one of (
+     <code>
+      given
+     </code>
+     )
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    sort
+   </th>
+   <td>
+    <p>
+     one of (
+     <code>
+      hot
+     </code>
+     ,
+     <code>
+      new
+     </code>
+     ,
+     <code>
+      top
+     </code>
+     ,
+     <code>
+      controversial
+     </code>
+     )
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    t
+   </th>
+   <td>
+    <p>
+     one of (
+     <code>
+      hour
+     </code>
+     ,
+     <code>
+      day
+     </code>
+     ,
+     <code>
+      week
+     </code>
+     ,
+     <code>
+      month
+     </code>
+     ,
+     <code>
+      year
+     </code>
+     ,
+     <code>
+      all
+     </code>
+     )
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    type
+   </th>
+   <td>
+    <p>
+     one of (
+     <code>
+      links
+     </code>
+     ,
+     <code>
+      comments
+     </code>
+     )
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    username
+   </th>
+   <td>
+    <p>
+     the name of an existing user
+    </p>
+   </td>
+  </tr>
+  <tr class="base-param">
+   <th scope="row">
+    after
+   </th>
+   <td>
+    <p>
+     <a href="#fullnames">
+      fullname
+     </a>
+     of a thing
+    </p>
+   </td>
+  </tr>
+  <tr class="base-param">
+   <th scope="row">
+    before
+   </th>
+   <td>
+    <p>
+     <a href="#fullnames">
+      fullname
+     </a>
+     of a thing
+    </p>
+   </td>
+  </tr>
+  <tr class="base-param">
+   <th scope="row">
+    count
+   </th>
+   <td>
+    <p>
+     a positive integer (default: 0)
+    </p>
+   </td>
+  </tr>
+  <tr class="base-param">
+   <th scope="row">
+    limit
+   </th>
+   <td>
+    <p>
+     the maximum number of items desired (default: 25, maximum: 100)
+    </p>
+   </td>
+  </tr>
+  <tr class="base-param">
+   <th scope="row">
+    sr_detail
+   </th>
+   <td>
+    <p>
+     (optional) expand subreddits
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

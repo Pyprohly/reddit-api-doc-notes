@@ -1,0 +1,72 @@
+POST /api/v1/subreddit/emoji.json
+structuredstyles
+
+<div class="info">
+ <div class="md">
+  <p>
+   Add an emoji to the DB by posting a message on emoji_upload_q.
+A job processor that listens on a queue, uses the s3_key provided
+in the request to locate the image in S3 Temp Bucket and moves it
+to the PERM bucket. It also adds it to the DB using name as the column
+and sr_fullname as the key and sends the status on the websocket URL
+that is provided as part of this response.
+  </p>
+  <p>
+   This endpoint should also be used to update custom subreddit emojis
+with new images. If only the permissions on an emoji require updating
+the POST_emoji_permissions endpoint should be requested, instead.
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    mod_flair_only
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    name
+   </th>
+   <td>
+    <p>
+     Name of the emoji to be created. It can be  alphanumeric without any special characters except '-' &amp; '_' and cannot exceed 24 characters.
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    post_flair_allowed
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    s3_key
+   </th>
+   <td>
+    <p>
+     S3 key of the uploaded image which can be obtained from the S3 url. This is of the form subreddit/hash_value.
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    user_flair_allowed
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

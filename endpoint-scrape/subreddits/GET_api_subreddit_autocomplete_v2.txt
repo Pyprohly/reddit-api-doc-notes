@@ -1,0 +1,67 @@
+GET /api/subreddit_autocomplete_v2
+read
+
+<div class="info">
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    include_over_18
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    include_profiles
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    limit
+   </th>
+   <td>
+    <p>
+     an integer between 1 and 10 (default: 5)
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    query
+   </th>
+   <td>
+    <p>
+     a string up to 25 characters long, consisting of printable characters.
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    search_query_id
+   </th>
+   <td>
+    <p>
+     a uuid
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    typeahead_active
+   </th>
+   <td>
+    <p>
+     boolean value or None
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

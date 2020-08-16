@@ -1,0 +1,21 @@
+GET /live/thread/about
+read
+
+<div class="info">
+ <div class="md">
+  <p>
+   Get some basic information about the live thread.
+  </p>
+  <p>
+   See also:
+   <a href="#POST_api_live_%7Bthread%7D_edit">
+    /api/live/
+    <em>
+     thread
+    </em>
+    /edit
+   </a>
+   .
+  </p>
+ </div>
+</div>

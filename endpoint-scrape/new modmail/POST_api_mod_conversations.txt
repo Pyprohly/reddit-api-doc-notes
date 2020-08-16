@@ -1,0 +1,70 @@
+POST /api/mod/conversations
+modmail
+
+<div class="info">
+ <div class="md">
+  <p>
+   Creates a new conversation for a particular SR
+  </p>
+  <p>
+   This endpoint will create a ModmailConversation object as
+well as the first ModmailMessage within the ModmailConversation
+object.
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    body
+   </th>
+   <td>
+    <p>
+     raw markdown text
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    isAuthorHidden
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    srName
+   </th>
+   <td>
+    <p>
+     subreddit name
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    subject
+   </th>
+   <td>
+    <p>
+     a string no longer than 100 characters
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    to
+   </th>
+   <td>
+    <p>
+     Modmail conversation recipient
+     <a href="#fullname">
+      fullname
+     </a>
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

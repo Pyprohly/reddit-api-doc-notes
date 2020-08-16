@@ -1,0 +1,142 @@
+POST /api/distinguish
+modposts
+
+<div class="info">
+ <div class="md">
+  <p>
+   Distinguish a thing's author with a sigil.
+  </p>
+  <p>
+   This can be useful to draw attention to and confirm the identity of the
+user in the context of a link or comment of theirs. The options for
+distinguish are as follows:
+  </p>
+  <ul>
+   <li>
+    <code>
+     yes
+    </code>
+    - add a moderator distinguish (
+    <code>
+     [M]
+    </code>
+    ). only if the user is a
+      moderator of the subreddit the thing is in.
+   </li>
+   <li>
+    <code>
+     no
+    </code>
+    - remove any distinguishes.
+   </li>
+   <li>
+    <code>
+     admin
+    </code>
+    - add an admin distinguish (
+    <code>
+     [A]
+    </code>
+    ). admin accounts only.
+   </li>
+   <li>
+    <code>
+     special
+    </code>
+    - add a user-specific distinguish. depends on user.
+   </li>
+  </ul>
+  <p>
+   The first time a top-level comment is moderator distinguished, the
+author of the link the comment is in reply to will get a notification
+in their inbox.
+  </p>
+  <p>
+   <code>
+    sticky
+   </code>
+   is a boolean flag for comments, which will stick the
+distingushed comment to the top of all comments threads. If a comment
+is marked sticky, it will override any other stickied comment for that
+link (as only one comment may be stickied at a time.) Only top-level
+comments may be stickied.
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    api_type
+   </th>
+   <td>
+    <p>
+     the string
+     <code>
+      json
+     </code>
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    how
+   </th>
+   <td>
+    <p>
+     one of (
+     <code>
+      yes
+     </code>
+     ,
+     <code>
+      no
+     </code>
+     ,
+     <code>
+      admin
+     </code>
+     ,
+     <code>
+      special
+     </code>
+     )
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    id
+   </th>
+   <td>
+    <p>
+     <a href="#fullnames">
+      fullname
+     </a>
+     of a thing
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    sticky
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    uh / X-Modhash header
+   </th>
+   <td>
+    <p>
+     a
+     <a href="#modhashes">
+      modhash
+     </a>
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

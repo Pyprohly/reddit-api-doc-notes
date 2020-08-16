@@ -1,0 +1,10 @@
+GET /api/v1/me/trophies
+identity
+
+<div class="info">
+ <div class="md">
+  <p>
+   Return a list of trophies for the current user.
+  </p>
+ </div>
+</div>

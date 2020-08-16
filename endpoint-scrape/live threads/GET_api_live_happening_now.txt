@@ -1,0 +1,36 @@
+GET /api/live/happening_now
+read
+
+<div class="info">
+ <div class="md">
+  <p>
+   Get some basic information about the currently featured live thread.
+  </p>
+  <p>
+   Returns an empty 204 response for api requests if no thread is currently featured.
+  </p>
+  <p>
+   See also:
+   <a href="#GET_api_live_%7Bthread%7D_about">
+    /api/live/
+    <em>
+     thread
+    </em>
+    /about
+   </a>
+   .
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    show_announcements
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

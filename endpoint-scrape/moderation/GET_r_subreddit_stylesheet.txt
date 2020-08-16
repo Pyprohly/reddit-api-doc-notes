@@ -1,0 +1,17 @@
+GET [/r/subreddit]/stylesheet
+modconfig
+
+<div class="info">
+ <div class="md">
+  <p>
+   Redirect to the subreddit's stylesheet if one exists.
+  </p>
+  <p>
+   See also:
+   <a href="#POST_api_subreddit_stylesheet">
+    /api/subreddit_stylesheet
+   </a>
+   .
+  </p>
+ </div>
+</div>

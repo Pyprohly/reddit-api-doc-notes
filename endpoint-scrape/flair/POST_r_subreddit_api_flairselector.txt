@@ -1,0 +1,68 @@
+POST [/r/subreddit]/api/flairselector
+flair
+
+<div class="info">
+ <div class="md">
+  <p>
+   Return information about a users's flair options.
+  </p>
+  <p>
+   If
+   <code>
+    link
+   </code>
+   is given, return link flair options for an existing link.
+If
+   <code>
+    is_newlink
+   </code>
+   is True, return link flairs options for a new link submission.
+Otherwise, return user flair options for this subreddit.
+  </p>
+  <p>
+   The logged in user's flair is also returned.
+Subreddit moderators may give a user by
+   <code>
+    name
+   </code>
+   to instead
+retrieve that user's flair.
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    is_newlink
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    link
+   </th>
+   <td>
+    <p>
+     a
+     <a href="#fullname">
+      fullname
+     </a>
+     of a link
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    name
+   </th>
+   <td>
+    <p>
+     a user by name
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

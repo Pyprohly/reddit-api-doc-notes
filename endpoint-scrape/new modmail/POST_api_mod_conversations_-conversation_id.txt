@@ -1,0 +1,52 @@
+POST /api/mod/conversations/:conversation_id
+modmail
+
+<div class="info">
+ <div class="md">
+  <p>
+   Creates a new message for a particular conversation
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    body
+   </th>
+   <td>
+    <p>
+     raw markdown text
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    conversation_id
+   </th>
+   <td>
+    <p>
+     base36 modmail conversation id
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    isAuthorHidden
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    isInternal
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

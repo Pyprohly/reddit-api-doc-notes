@@ -1,0 +1,61 @@
+POST /api/follow_post
+subscribe
+
+<div class="info">
+ <div class="md">
+  <p>
+   Follow or unfollow a post.
+  </p>
+  <p>
+   To follow,
+   <code>
+    follow
+   </code>
+   should be True. To unfollow,
+   <code>
+    follow
+   </code>
+   should
+be False. The user must have access to the subreddit to be able to
+follow a post within it.
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    follow
+   </th>
+   <td>
+    <p>
+     boolean: True to follow or False to unfollow
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    fullname
+   </th>
+   <td>
+    <p>
+     <a href="#fullnames">
+      fullname
+     </a>
+     of a link
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    uh / X-Modhash header
+   </th>
+   <td>
+    <p>
+     a
+     <a href="#modhashes">
+      modhash
+     </a>
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

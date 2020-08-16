@@ -1,0 +1,175 @@
+GET /api/morechildren
+read
+
+<div class="info">
+ <div class="md">
+  <p>
+   Retrieve additional comments omitted from a base comment tree.
+  </p>
+  <p>
+   When a comment tree is rendered, the most relevant comments are
+selected for display first. Remaining comments are stubbed out with
+"MoreComments" links. This API call is used to retrieve the additional
+comments represented by those stubs, up to 100 at a time.
+  </p>
+  <p>
+   The two core parameters required are
+   <code>
+    link
+   </code>
+   and
+   <code>
+    children
+   </code>
+   .
+   <code>
+    link
+   </code>
+   is
+the fullname of the link whose comments are being fetched.
+   <code>
+    children
+   </code>
+   is a comma-delimited list of comment ID36s that need to be fetched.
+  </p>
+  <p>
+   If
+   <code>
+    id
+   </code>
+   is passed, it should be the ID of the MoreComments object this
+call is replacing. This is needed only for the HTML UI's purposes and
+is optional otherwise.
+  </p>
+  <p>
+   <strong>
+    NOTE:
+   </strong>
+   you may only make one request at a time to this API endpoint.
+Higher concurrency will result in an error being returned.
+  </p>
+  <p>
+   If
+   <code>
+    limit_children
+   </code>
+   is True, only return the children requested.
+  </p>
+  <p>
+   <code>
+    depth
+   </code>
+   is the maximum depth of subtrees in the thread.
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    api_type
+   </th>
+   <td>
+    <p>
+     the string
+     <code>
+      json
+     </code>
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    children
+   </th>
+   <td>
+    <p>
+     a comma-delimited list of comment ID36s
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    depth
+   </th>
+   <td>
+    <p>
+     (optional) an integer
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    id
+   </th>
+   <td>
+    <p>
+     (optional) id of the associated MoreChildren object
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    limit_children
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    link_id
+   </th>
+   <td>
+    <p>
+     <a href="#fullnames">
+      fullname
+     </a>
+     of a link
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    sort
+   </th>
+   <td>
+    <p>
+     one of (
+     <code>
+      confidence
+     </code>
+     ,
+     <code>
+      top
+     </code>
+     ,
+     <code>
+      new
+     </code>
+     ,
+     <code>
+      controversial
+     </code>
+     ,
+     <code>
+      old
+     </code>
+     ,
+     <code>
+      random
+     </code>
+     ,
+     <code>
+      qa
+     </code>
+     ,
+     <code>
+      live
+     </code>
+     )
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

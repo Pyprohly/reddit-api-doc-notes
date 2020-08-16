@@ -1,0 +1,33 @@
+POST /api/report_award
+report
+
+<div class="info">
+ <div class="md">
+  <p>
+   Report an award.
+Reporting an award brings it to the attention of a Reddit admin.
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    award_id
+   </th>
+   <td>
+    <p>
+     a string
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    reason
+   </th>
+   <td>
+    <p>
+     a string no longer than 100 characters
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

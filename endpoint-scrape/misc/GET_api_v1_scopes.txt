@@ -1,0 +1,29 @@
+GET /api/v1/scopes
+any
+
+<div class="info">
+ <div class="md">
+  <p>
+   Retrieve descriptions of reddit's OAuth2 scopes.
+  </p>
+  <p>
+   If no scopes are given, information on all scopes are returned.
+  </p>
+  <p>
+   Invalid scope(s) will result in a 400 error with body that indicates
+the invalid scope(s).
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    scopes
+   </th>
+   <td>
+    <p>
+     (optional) An OAuth2 scope string
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

@@ -1,0 +1,25 @@
+GET [/r/subreddit]/wiki/settings/page
+modwiki
+
+<div class="info">
+ <div class="md">
+  <p>
+   Retrieve the current permission settings for
+   <code>
+    page
+   </code>
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    page
+   </th>
+   <td>
+    <p>
+     the name of an existing wiki page
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

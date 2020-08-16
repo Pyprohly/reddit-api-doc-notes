@@ -1,0 +1,58 @@
+GET [/r/subreddit]/wiki/page
+wikiread
+
+<div class="info">
+ <div class="md">
+  <p>
+   Return the content of a wiki page
+  </p>
+  <p>
+   If
+   <code>
+    v
+   </code>
+   is given, show the wiki page as it was at that version
+If both
+   <code>
+    v
+   </code>
+   and
+   <code>
+    v2
+   </code>
+   are given, show a diff of the two
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    page
+   </th>
+   <td>
+    <p>
+     the name of an existing wiki page
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    v
+   </th>
+   <td>
+    <p>
+     a wiki revision ID
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    v2
+   </th>
+   <td>
+    <p>
+     a wiki revision ID
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

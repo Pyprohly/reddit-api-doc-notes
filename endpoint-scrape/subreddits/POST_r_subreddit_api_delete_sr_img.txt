@@ -1,0 +1,62 @@
+POST [/r/subreddit]/api/delete_sr_img
+modconfig
+
+<div class="info">
+ <div class="md">
+  <p>
+   Remove an image from the subreddit's custom image set.
+  </p>
+  <p>
+   The image will no longer count against the subreddit's image limit.
+However, the actual image data may still be accessible for an
+unspecified amount of time. If the image is currently referenced by the
+subreddit's stylesheet, that stylesheet will no longer validate and
+won't be editable until the image reference is removed.
+  </p>
+  <p>
+   See also:
+   <a href="#POST_api_upload_sr_img">
+    /api/upload_sr_img
+   </a>
+   .
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    api_type
+   </th>
+   <td>
+    <p>
+     the string
+     <code>
+      json
+     </code>
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    img_name
+   </th>
+   <td>
+    <p>
+     a valid subreddit image name
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    uh / X-Modhash header
+   </th>
+   <td>
+    <p>
+     a
+     <a href="#modhashes">
+      modhash
+     </a>
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

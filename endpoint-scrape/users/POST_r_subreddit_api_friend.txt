@@ -1,0 +1,228 @@
+POST [/r/subreddit]/api/friend
+any
+
+<div class="info">
+ <div class="md">
+  <p>
+   Create a relationship between a user and another user or subreddit
+  </p>
+  <p>
+   OAuth2 use requires appropriate scope based
+on the 'type' of the relationship:
+  </p>
+  <ul>
+   <li>
+    moderator: Use "moderator_invite"
+   </li>
+   <li>
+    moderator_invite:
+    <code>
+     modothers
+    </code>
+   </li>
+   <li>
+    contributor:
+    <code>
+     modcontributors
+    </code>
+   </li>
+   <li>
+    banned:
+    <code>
+     modcontributors
+    </code>
+   </li>
+   <li>
+    muted:
+    <code>
+     modcontributors
+    </code>
+   </li>
+   <li>
+    wikibanned:
+    <code>
+     modcontributors
+    </code>
+    and
+    <code>
+     modwiki
+    </code>
+   </li>
+   <li>
+    wikicontributor:
+    <code>
+     modcontributors
+    </code>
+    and
+    <code>
+     modwiki
+    </code>
+   </li>
+   <li>
+    friend: Use
+    <a href="#PUT_api_v1_me_friends_%7Busername%7D">
+     /api/v1/me/friends/{username}
+    </a>
+   </li>
+   <li>
+    enemy: Use
+    <a href="#POST_api_block">
+     /api/block
+    </a>
+   </li>
+  </ul>
+  <p>
+   Complement to
+   <a href="#POST_api_unfriend">
+    POST_unfriend
+   </a>
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    api_type
+   </th>
+   <td>
+    <p>
+     the string
+     <code>
+      json
+     </code>
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    ban_context
+   </th>
+   <td>
+    <p>
+     <a href="#fullnames">
+      fullname
+     </a>
+     of a thing
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    ban_message
+   </th>
+   <td>
+    <p>
+     raw markdown text
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    ban_reason
+   </th>
+   <td>
+    <p>
+     a string no longer than 100 characters
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    container
+   </th>
+   <td>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    duration
+   </th>
+   <td>
+    <p>
+     an integer between 1 and 999
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    name
+   </th>
+   <td>
+    <p>
+     the name of an existing user
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    note
+   </th>
+   <td>
+    <p>
+     a string no longer than 300 characters
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    permissions
+   </th>
+   <td>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    type
+   </th>
+   <td>
+    <p>
+     one of (
+     <code>
+      friend
+     </code>
+     ,
+     <code>
+      moderator
+     </code>
+     ,
+     <code>
+      moderator_invite
+     </code>
+     ,
+     <code>
+      contributor
+     </code>
+     ,
+     <code>
+      banned
+     </code>
+     ,
+     <code>
+      muted
+     </code>
+     ,
+     <code>
+      wikibanned
+     </code>
+     ,
+     <code>
+      wikicontributor
+     </code>
+     )
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    uh / X-Modhash header
+   </th>
+   <td>
+    <p>
+     a
+     <a href="#modhashes">
+      modhash
+     </a>
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

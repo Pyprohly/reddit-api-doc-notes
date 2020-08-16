@@ -1,0 +1,138 @@
+GET /duplicates/article
+read
+
+<div class="info">
+ <div class="md">
+  <p>
+   Return a list of other submissions of the same URL
+  </p>
+  <p>
+   <em>
+    This endpoint is
+    <a href="#listings">
+     a listing
+    </a>
+    .
+   </em>
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    after
+   </th>
+   <td>
+    <p>
+     <a href="#fullnames">
+      fullname
+     </a>
+     of a thing
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    article
+   </th>
+   <td>
+    <p>
+     The base 36 ID of a Link
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    before
+   </th>
+   <td>
+    <p>
+     <a href="#fullnames">
+      fullname
+     </a>
+     of a thing
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    count
+   </th>
+   <td>
+    <p>
+     a positive integer (default: 0)
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    crossposts_only
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    limit
+   </th>
+   <td>
+    <p>
+     the maximum number of items desired (default: 25, maximum: 100)
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    show
+   </th>
+   <td>
+    <p>
+     (optional) the string
+     <code>
+      all
+     </code>
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    sort
+   </th>
+   <td>
+    <p>
+     one of (
+     <code>
+      num_comments
+     </code>
+     ,
+     <code>
+      new
+     </code>
+     )
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    sr
+   </th>
+   <td>
+    <p>
+     subreddit name
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    sr_detail
+   </th>
+   <td>
+    <p>
+     (optional) expand subreddits
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

@@ -1,0 +1,86 @@
+POST [/r/subreddit]/api/subreddit_stylesheet
+modconfig
+
+<div class="info">
+ <div class="md">
+  <p>
+   Update a subreddit's stylesheet.
+  </p>
+  <p>
+   <code>
+    op
+   </code>
+   should be
+   <code>
+    save
+   </code>
+   to update the contents of the stylesheet.
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    api_type
+   </th>
+   <td>
+    <p>
+     the string
+     <code>
+      json
+     </code>
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    op
+   </th>
+   <td>
+    <p>
+     one of (
+     <code>
+      save
+     </code>
+     ,
+     <code>
+      preview
+     </code>
+     )
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    reason
+   </th>
+   <td>
+    <p>
+     a string up to 256 characters long, consisting of printable characters.
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    stylesheet_contents
+   </th>
+   <td>
+    <p>
+     the new stylesheet content
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    uh / X-Modhash header
+   </th>
+   <td>
+    <p>
+     a
+     <a href="#modhashes">
+      modhash
+     </a>
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

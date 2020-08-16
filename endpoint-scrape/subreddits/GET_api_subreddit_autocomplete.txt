@@ -1,0 +1,48 @@
+GET /api/subreddit_autocomplete
+read
+
+<div class="info">
+ <div class="md">
+  <p>
+   Return a list of subreddits and data for subreddits whose names start
+with 'query'.
+  </p>
+  <p>
+   Uses typeahead endpoint to recieve the list of subreddits names.
+Typeahead provides exact matches, typo correction, fuzzy matching and
+boosts subreddits to the top that the user is subscribed to.
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    include_over_18
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    include_profiles
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    query
+   </th>
+   <td>
+    <p>
+     a string up to 25 characters long, consisting of printable characters.
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

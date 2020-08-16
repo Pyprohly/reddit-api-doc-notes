@@ -1,0 +1,22 @@
+POST /api/mod/conversations/unread
+modmail
+
+<div class="info">
+ <div class="md">
+  <p>
+   Marks conversations as unread for the user.
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    conversationIds
+   </th>
+   <td>
+    <p>
+     A comma-separated list of items
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

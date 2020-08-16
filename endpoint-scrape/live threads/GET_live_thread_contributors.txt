@@ -1,0 +1,29 @@
+GET /live/thread/contributors
+read
+
+<div class="info">
+ <div class="md">
+  <p>
+   Get a list of users that contribute to this thread.
+  </p>
+  <p>
+   See also:
+   <a href="#POST_api_live_%7Bthread%7D_invite_contributor">
+    /api/live/
+    <em>
+     thread
+    </em>
+    /invite_contributor
+   </a>
+   , and
+   <a href="#POST_api_live_%7Bthread%7D_rm_contributor">
+    /api/live/
+    <em>
+     thread
+    </em>
+    /rm_contributor
+   </a>
+   .
+  </p>
+ </div>
+</div>

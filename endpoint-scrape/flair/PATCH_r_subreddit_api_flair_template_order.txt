@@ -1,0 +1,57 @@
+PATCH [/r/subreddit]/api/flair_template_order
+modflair
+
+<div class="info">
+ <div class="md">
+  <p>
+   Update the order of flair templates in the specified subreddit.
+  </p>
+  <p>
+   Order should contain every single flair id for that flair type; omitting
+any id will result in a loss of data.
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    flair_type
+   </th>
+   <td>
+    <p>
+     one of (
+     <code>
+      USER_FLAIR
+     </code>
+     ,
+     <code>
+      LINK_FLAIR
+     </code>
+     )
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    subreddit
+   </th>
+   <td>
+    <p>
+     subreddit name
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    uh / X-Modhash header
+   </th>
+   <td>
+    <p>
+     a
+     <a href="#modhashes">
+      modhash
+     </a>
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

@@ -1,0 +1,148 @@
+GET /subreddits/search
+read
+
+<div class="info">
+ <div class="md">
+  <p>
+   Search subreddits by title and description.
+  </p>
+  <p>
+   <em>
+    This endpoint is
+    <a href="#listings">
+     a listing
+    </a>
+    .
+   </em>
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    after
+   </th>
+   <td>
+    <p>
+     <a href="#fullnames">
+      fullname
+     </a>
+     of a thing
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    before
+   </th>
+   <td>
+    <p>
+     <a href="#fullnames">
+      fullname
+     </a>
+     of a thing
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    count
+   </th>
+   <td>
+    <p>
+     a positive integer (default: 0)
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    limit
+   </th>
+   <td>
+    <p>
+     the maximum number of items desired (default: 25, maximum: 100)
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    q
+   </th>
+   <td>
+    <p>
+     a search query
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    search_query_id
+   </th>
+   <td>
+    <p>
+     a uuid
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    show
+   </th>
+   <td>
+    <p>
+     (optional) the string
+     <code>
+      all
+     </code>
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    show_users
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    sort
+   </th>
+   <td>
+    <p>
+     one of (
+     <code>
+      relevance
+     </code>
+     ,
+     <code>
+      activity
+     </code>
+     )
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    sr_detail
+   </th>
+   <td>
+    <p>
+     (optional) expand subreddits
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    typeahead_active
+   </th>
+   <td>
+    <p>
+     boolean value or None
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

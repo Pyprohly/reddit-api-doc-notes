@@ -1,0 +1,66 @@
+POST /api/live/thread/hide_discussion
+livemanage
+
+<div class="info">
+ <div class="md">
+  <p>
+   Hide a linked comment thread from the discussions sidebar and listing.
+  </p>
+  <p>
+   Requires the
+   <code>
+    discussions
+   </code>
+   permission for this thread.
+  </p>
+  <p>
+   See also:
+   <a href="#POST_api_live_%7Bthread%7D_unhide_discussion">
+    /api/live/
+    <em>
+     thread
+    </em>
+    /unhide_discussion
+   </a>
+   .
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    api_type
+   </th>
+   <td>
+    <p>
+     the string
+     <code>
+      json
+     </code>
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    link
+   </th>
+   <td>
+    <p>
+     The base 36 ID of a Link
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    uh / X-Modhash header
+   </th>
+   <td>
+    <p>
+     a
+     <a href="#modhashes">
+      modhash
+     </a>
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

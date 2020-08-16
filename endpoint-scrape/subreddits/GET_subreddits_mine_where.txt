@@ -1,0 +1,142 @@
+GET /subreddits/mine/where
+mysubreddits
+→ /subreddits/mine/subscriber
+→ /subreddits/mine/contributor
+→ /subreddits/mine/moderator
+→ /subreddits/mine/streams
+
+<div class="info">
+ <div class="md">
+  <p>
+   Get subreddits the user has a relationship with.
+  </p>
+  <p>
+   The
+   <code>
+    where
+   </code>
+   parameter chooses which subreddits are returned as follows:
+  </p>
+  <ul>
+   <li>
+    <code>
+     subscriber
+    </code>
+    - subreddits the user is subscribed to
+   </li>
+   <li>
+    <code>
+     contributor
+    </code>
+    - subreddits the user is an approved user in
+   </li>
+   <li>
+    <code>
+     moderator
+    </code>
+    - subreddits the user is a moderator of
+   </li>
+   <li>
+    <code>
+     streams
+    </code>
+    - subscribed to subreddits that contain hosted video links
+   </li>
+  </ul>
+  <p>
+   See also:
+   <a href="#POST_api_subscribe">
+    /api/subscribe
+   </a>
+   ,
+   <a href="#POST_api_friend">
+    /api/friend
+   </a>
+   , and
+   <a href="#POST_api_accept_moderator_invite">
+    /api/accept_moderator_invite
+   </a>
+   .
+  </p>
+  <p>
+   <em>
+    This endpoint is
+    <a href="#listings">
+     a listing
+    </a>
+    .
+   </em>
+  </p>
+ </div>
+ <table class="parameters">
+  <tr class="base-param">
+   <th scope="row">
+    after
+   </th>
+   <td>
+    <p>
+     <a href="#fullnames">
+      fullname
+     </a>
+     of a thing
+    </p>
+   </td>
+  </tr>
+  <tr class="base-param">
+   <th scope="row">
+    before
+   </th>
+   <td>
+    <p>
+     <a href="#fullnames">
+      fullname
+     </a>
+     of a thing
+    </p>
+   </td>
+  </tr>
+  <tr class="base-param">
+   <th scope="row">
+    count
+   </th>
+   <td>
+    <p>
+     a positive integer (default: 0)
+    </p>
+   </td>
+  </tr>
+  <tr class="base-param">
+   <th scope="row">
+    limit
+   </th>
+   <td>
+    <p>
+     the maximum number of items desired (default: 25, maximum: 100)
+    </p>
+   </td>
+  </tr>
+  <tr class="base-param">
+   <th scope="row">
+    show
+   </th>
+   <td>
+    <p>
+     (optional) the string
+     <code>
+      all
+     </code>
+    </p>
+   </td>
+  </tr>
+  <tr class="base-param">
+   <th scope="row">
+    sr_detail
+   </th>
+   <td>
+    <p>
+     (optional) expand subreddits
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

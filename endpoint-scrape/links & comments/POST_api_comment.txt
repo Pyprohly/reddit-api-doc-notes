@@ -1,0 +1,124 @@
+POST /api/comment
+any
+
+<div class="info">
+ <div class="md">
+  <p>
+   Submit a new comment or reply to a message.
+  </p>
+  <p>
+   <code>
+    parent
+   </code>
+   is the fullname of the thing being replied to. Its value
+changes the kind of object created by this request:
+  </p>
+  <ul>
+   <li>
+    the fullname of a Link: a top-level comment in that Link's thread. (requires
+    <code>
+     submit
+    </code>
+    scope)
+   </li>
+   <li>
+    the fullname of a Comment: a comment reply to that comment. (requires
+    <code>
+     submit
+    </code>
+    scope)
+   </li>
+   <li>
+    the fullname of a Message: a message reply to that message. (requires
+    <code>
+     privatemessages
+    </code>
+    scope)
+   </li>
+  </ul>
+  <p>
+   <code>
+    text
+   </code>
+   should be the raw markdown body of the comment or message.
+  </p>
+  <p>
+   To start a new message thread, use
+   <a href="#POST_api_compose">
+    /api/compose
+   </a>
+   .
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    api_type
+   </th>
+   <td>
+    <p>
+     the string
+     <code>
+      json
+     </code>
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    return_rtjson
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    richtext_json
+   </th>
+   <td>
+    <p>
+     JSON data
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    text
+   </th>
+   <td>
+    <p>
+     raw markdown text
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    thing_id
+   </th>
+   <td>
+    <p>
+     <a href="#fullnames">
+      fullname
+     </a>
+     of parent thing
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    uh / X-Modhash header
+   </th>
+   <td>
+    <p>
+     a
+     <a href="#modhashes">
+      modhash
+     </a>
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

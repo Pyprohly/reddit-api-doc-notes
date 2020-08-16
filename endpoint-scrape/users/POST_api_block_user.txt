@@ -1,0 +1,61 @@
+POST /api/block_user
+account
+
+<div class="info">
+ <div class="md">
+  <p>
+   For blocking a user.
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    account_id
+   </th>
+   <td>
+    <p>
+     <a href="#fullnames">
+      fullname
+     </a>
+     of a account
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    api_type
+   </th>
+   <td>
+    <p>
+     the string
+     <code>
+      json
+     </code>
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    name
+   </th>
+   <td>
+    <p>
+     A valid, existing reddit username
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    uh / X-Modhash header
+   </th>
+   <td>
+    <p>
+     a
+     <a href="#modhashes">
+      modhash
+     </a>
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

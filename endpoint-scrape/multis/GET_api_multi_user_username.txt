@@ -1,0 +1,35 @@
+GET /api/multi/user/username
+read
+
+<div class="info">
+ <div class="md">
+  <p>
+   Fetch a list of public multis belonging to
+   <code>
+    username
+   </code>
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    expand_srs
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    username
+   </th>
+   <td>
+    <p>
+     A valid, existing reddit username
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

@@ -1,0 +1,89 @@
+GET /api/v1/subreddit/post_requirements
+submit
+
+<div class="info">
+ <div class="md">
+  <p>
+   Fetch moderator-designated requirements to post to the subreddit.
+  </p>
+  <p>
+   Moderators may enable certain restrictions, such as minimum title
+length, when making a submission to their subreddit.
+  </p>
+  <p>
+   Clients may use the values returned by this endpoint to pre-validate
+fields before making a request to POST /api/submit. This may allow
+the client to provide a better user experience to the user, for
+example by creating a text field in their app that does not allow
+the user to enter more characters than the max title length.
+  </p>
+  <p>
+   A non-exhaustive list of possible requirements a moderator may
+enable:
+  </p>
+  <ul>
+   <li>
+    <code>
+     body_blacklisted_strings
+    </code>
+    : List of strings. Users may not submit
+posts that contain these words.
+   </li>
+   <li>
+    <code>
+     body_restriction_policy
+    </code>
+    : String. One of "required", "notAllowed",
+or "none", meaning that a self-post body is required, not allowed, or
+optional, respectively.
+   </li>
+   <li>
+    <code>
+     domain_blacklist
+    </code>
+    : List of strings. Users may not submit links to
+these domains
+   </li>
+   <li>
+    <code>
+     domain_whitelist
+    </code>
+    : List of strings. Users submissions MUST be from
+one of these domains
+   </li>
+   <li>
+    <code>
+     is_flair_required
+    </code>
+    : Boolean. If True, flair must be set at
+submission time.
+   </li>
+   <li>
+    <code>
+     title_blacklisted_strings
+    </code>
+    : List of strings. Submission titles may
+NOT contain any of the listed strings.
+   </li>
+   <li>
+    <code>
+     title_required_strings
+    </code>
+    : List of strings. Submission title MUST
+contain at least ONE of the listed strings.
+   </li>
+   <li>
+    <code>
+     title_text_max_length
+    </code>
+    : Integer. Maximum length of the title field.
+   </li>
+   <li>
+    <code>
+     title_text_min_length
+    </code>
+    : Integer. Minimum length of the title field.
+   </li>
+  </ul>
+ </div>
+</div>

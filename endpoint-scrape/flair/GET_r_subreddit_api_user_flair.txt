@@ -1,0 +1,15 @@
+GET [/r/subreddit]/api/user_flair
+flair
+
+<div class="info">
+ <div class="md">
+  <p>
+   Return list of available user flair for the current subreddit.
+  </p>
+  <p>
+   Will not return flair if flair is disabled on the subreddit,
+the user cannot set their own flair, or they are not a moderator
+that can set flair.
+  </p>
+ </div>
+</div>

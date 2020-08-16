@@ -1,0 +1,45 @@
+POST /api/leavecontributor
+modself
+
+<div class="info">
+ <div class="md">
+  <p>
+   Abdicate approved user status in a subreddit.
+  </p>
+  <p>
+   See also:
+   <a href="#POST_api_friend">
+    /api/friend
+   </a>
+   .
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    id
+   </th>
+   <td>
+    <p>
+     <a href="#fullnames">
+      fullname
+     </a>
+     of a thing
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    uh / X-Modhash header
+   </th>
+   <td>
+    <p>
+     a
+     <a href="#modhashes">
+      modhash
+     </a>
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

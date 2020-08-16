@@ -1,0 +1,27 @@
+GET [/r/subreddit]/sticky
+read
+
+<div class="info">
+ <div class="md">
+  <p>
+   Redirect to one of the posts stickied in the current subreddit
+  </p>
+  <p>
+   The "num" argument can be used to select a specific sticky, and will
+default to 1 (the top sticky) if not specified.
+Will 404 if there is not currently a sticky post in this subreddit.
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    num
+   </th>
+   <td>
+    <p>
+     an integer between 1 and 2 (default: 1)
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

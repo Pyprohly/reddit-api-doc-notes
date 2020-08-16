@@ -1,0 +1,216 @@
+GET [/r/subreddit]/search
+read
+
+<div class="info">
+ <div class="md">
+  <p>
+   Search links page.
+  </p>
+  <p>
+   <em>
+    This endpoint is
+    <a href="#listings">
+     a listing
+    </a>
+    .
+   </em>
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    after
+   </th>
+   <td>
+    <p>
+     <a href="#fullnames">
+      fullname
+     </a>
+     of a thing
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    before
+   </th>
+   <td>
+    <p>
+     <a href="#fullnames">
+      fullname
+     </a>
+     of a thing
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    category
+   </th>
+   <td>
+    <p>
+     a string no longer than 5 characters
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    count
+   </th>
+   <td>
+    <p>
+     a positive integer (default: 0)
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    include_facets
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    limit
+   </th>
+   <td>
+    <p>
+     the maximum number of items desired (default: 25, maximum: 100)
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    q
+   </th>
+   <td>
+    <p>
+     a string no longer than 512 characters
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    restrict_sr
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    show
+   </th>
+   <td>
+    <p>
+     (optional) the string
+     <code>
+      all
+     </code>
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    sort
+   </th>
+   <td>
+    <p>
+     one of (
+     <code>
+      relevance
+     </code>
+     ,
+     <code>
+      hot
+     </code>
+     ,
+     <code>
+      top
+     </code>
+     ,
+     <code>
+      new
+     </code>
+     ,
+     <code>
+      comments
+     </code>
+     )
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    sr_detail
+   </th>
+   <td>
+    <p>
+     (optional) expand subreddits
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    t
+   </th>
+   <td>
+    <p>
+     one of (
+     <code>
+      hour
+     </code>
+     ,
+     <code>
+      day
+     </code>
+     ,
+     <code>
+      week
+     </code>
+     ,
+     <code>
+      month
+     </code>
+     ,
+     <code>
+      year
+     </code>
+     ,
+     <code>
+      all
+     </code>
+     )
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    type
+   </th>
+   <td>
+    <p>
+     (optional) comma-delimited list of result types (
+     <code>
+      sr
+     </code>
+     ,
+     <code>
+      link
+     </code>
+     ,
+     <code>
+      user
+     </code>
+     )
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

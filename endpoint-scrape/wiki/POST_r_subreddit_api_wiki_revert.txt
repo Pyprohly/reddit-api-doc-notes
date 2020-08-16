@@ -1,0 +1,52 @@
+POST [/r/subreddit]/api/wiki/revert
+modwiki
+
+<div class="info">
+ <div class="md">
+  <p>
+   Revert a wiki
+   <code>
+    page
+   </code>
+   to
+   <code>
+    revision
+   </code>
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    page
+   </th>
+   <td>
+    <p>
+     the name of an existing wiki page
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    revision
+   </th>
+   <td>
+    <p>
+     a wiki revision ID
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    uh / X-Modhash header
+   </th>
+   <td>
+    <p>
+     a
+     <a href="#modhashes">
+      modhash
+     </a>
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

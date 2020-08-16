@@ -1,0 +1,124 @@
+POST /api/search_subreddits
+read
+
+<div class="info">
+ <div class="md">
+  <p>
+   List subreddits that begin with a query string.
+  </p>
+  <p>
+   Subreddits whose names begin with
+   <code>
+    query
+   </code>
+   will be returned. If
+   <code>
+    include_over_18
+   </code>
+   is false, subreddits with over-18 content
+restrictions will be filtered from the results.
+  </p>
+  <p>
+   If
+   <code>
+    include_unadvertisable
+   </code>
+   is False, subreddits that have
+   <code>
+    hide_ads
+   </code>
+   set to True or are on the
+   <code>
+    anti_ads_subreddits
+   </code>
+   list will be filtered.
+  </p>
+  <p>
+   If
+   <code>
+    exact
+   </code>
+   is true, only an exact match will be returned. Exact matches
+are inclusive of
+   <code>
+    over_18
+   </code>
+   subreddits, but not
+   <code>
+    hide_ad
+   </code>
+   subreddits
+when
+   <code>
+    include_unadvertisable
+   </code>
+   is
+   <code>
+    False
+   </code>
+   .
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    exact
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    include_over_18
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    include_unadvertisable
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    query
+   </th>
+   <td>
+    <p>
+     a string up to 50 characters long, consisting of printable characters.
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    search_query_id
+   </th>
+   <td>
+    <p>
+     a uuid
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    typeahead_active
+   </th>
+   <td>
+    <p>
+     boolean value or None
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

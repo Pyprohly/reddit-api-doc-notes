@@ -1,0 +1,74 @@
+POST /api/live/thread/update
+submit
+
+<div class="info">
+ <div class="md">
+  <p>
+   Post an update to the thread.
+  </p>
+  <p>
+   Requires the
+   <code>
+    update
+   </code>
+   permission for this thread.
+  </p>
+  <p>
+   See also:
+   <a href="#POST_api_live_%7Bthread%7D_strike_update">
+    /api/live/
+    <em>
+     thread
+    </em>
+    /strike_update
+   </a>
+   , and
+   <a href="#POST_api_live_%7Bthread%7D_delete_update">
+    /api/live/
+    <em>
+     thread
+    </em>
+    /delete_update
+   </a>
+   .
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    api_type
+   </th>
+   <td>
+    <p>
+     the string
+     <code>
+      json
+     </code>
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    body
+   </th>
+   <td>
+    <p>
+     raw markdown text
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    uh / X-Modhash header
+   </th>
+   <td>
+    <p>
+     a
+     <a href="#modhashes">
+      modhash
+     </a>
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

@@ -1,0 +1,22 @@
+GET /api/multi/multipath/description
+read
+
+<div class="info">
+ <div class="md">
+  <p>
+   Get a multi's description.
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    multipath
+   </th>
+   <td>
+    <p>
+     multireddit url path
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

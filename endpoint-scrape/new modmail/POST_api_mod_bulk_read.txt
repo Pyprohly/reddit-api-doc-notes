@@ -1,0 +1,69 @@
+POST /api/mod/bulk_read
+modmail
+
+<div class="info">
+ <div class="md">
+  <p>
+   Marks all conversations read for a particular conversation state
+within the passed list of subreddits.
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    entity
+   </th>
+   <td>
+    <p>
+     comma-delimited list of subreddit names
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    state
+   </th>
+   <td>
+    <p>
+     one of (
+     <code>
+      highlighted
+     </code>
+     ,
+     <code>
+      notifications
+     </code>
+     ,
+     <code>
+      archived
+     </code>
+     ,
+     <code>
+      appeals
+     </code>
+     ,
+     <code>
+      default
+     </code>
+     ,
+     <code>
+      new
+     </code>
+     ,
+     <code>
+      inprogress
+     </code>
+     ,
+     <code>
+      all
+     </code>
+     ,
+     <code>
+      mod
+     </code>
+     )
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

@@ -1,0 +1,22 @@
+POST /api/mod/conversations/:conversation_id/unarchive
+modmail
+
+<div class="info">
+ <div class="md">
+  <p>
+   Marks conversation as unarchived.
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    conversation_id
+   </th>
+   <td>
+    <p>
+     base36 modmail conversation id
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

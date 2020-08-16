@@ -1,0 +1,68 @@
+POST /api/live/thread/report
+report
+
+<div class="info">
+ <div class="md">
+  <p>
+   Report the thread for violating the rules of reddit.
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    api_type
+   </th>
+   <td>
+    <p>
+     the string
+     <code>
+      json
+     </code>
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    type
+   </th>
+   <td>
+    <p>
+     one of (
+     <code>
+      spam
+     </code>
+     ,
+     <code>
+      vote-manipulation
+     </code>
+     ,
+     <code>
+      personal-information
+     </code>
+     ,
+     <code>
+      sexualizing-minors
+     </code>
+     ,
+     <code>
+      site-breaking
+     </code>
+     )
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    uh / X-Modhash header
+   </th>
+   <td>
+    <p>
+     a
+     <a href="#modhashes">
+      modhash
+     </a>
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

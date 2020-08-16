@@ -1,0 +1,10 @@
+GET [/r/subreddit]/sidebar
+read
+
+<div class="info">
+ <div class="md">
+  <p>
+   Get the sidebar for the current subreddit
+  </p>
+ </div>
+</div>

@@ -1,0 +1,22 @@
+GET /user/username/about
+read
+
+<div class="info">
+ <div class="md">
+  <p>
+   Return information about the user, including karma and gold status.
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    username
+   </th>
+   <td>
+    <p>
+     the name of an existing user
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

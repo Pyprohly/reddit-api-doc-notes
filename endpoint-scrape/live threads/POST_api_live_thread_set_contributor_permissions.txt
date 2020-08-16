@@ -1,0 +1,105 @@
+POST /api/live/thread/set_contributor_permissions
+livemanage
+
+<div class="info">
+ <div class="md">
+  <p>
+   Change a contributor or contributor invite's permissions.
+  </p>
+  <p>
+   Requires the
+   <code>
+    manage
+   </code>
+   permission for this thread.
+  </p>
+  <p>
+   See also:
+   <a href="#POST_api_live_%7Bthread%7D_invite_contributor">
+    /api/live/
+    <em>
+     thread
+    </em>
+    /invite_contributor
+   </a>
+   and
+   <a href="#POST_api_live_%7Bthread%7D_rm_contributor">
+    /api/live/
+    <em>
+     thread
+    </em>
+    /rm_contributor
+   </a>
+   .
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    api_type
+   </th>
+   <td>
+    <p>
+     the string
+     <code>
+      json
+     </code>
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    name
+   </th>
+   <td>
+    <p>
+     the name of an existing user
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    permissions
+   </th>
+   <td>
+    <p>
+     permission description e.g.
+     <code>
+      +update,+edit,-manage
+     </code>
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    type
+   </th>
+   <td>
+    <p>
+     one of (
+     <code>
+      liveupdate_contributor_invite
+     </code>
+     ,
+     <code>
+      liveupdate_contributor
+     </code>
+     )
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    uh / X-Modhash header
+   </th>
+   <td>
+    <p>
+     a
+     <a href="#modhashes">
+      modhash
+     </a>
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

@@ -1,0 +1,753 @@
+POST /api/site_admin
+modconfig
+
+<div class="info">
+ <div class="md">
+  <p>
+   Create or configure a subreddit.
+  </p>
+  <p>
+   If
+   <code>
+    sr
+   </code>
+   is specified, the request will attempt to modify the specified
+subreddit. If not, a subreddit with name
+   <code>
+    name
+   </code>
+   will be created.
+  </p>
+  <p>
+   This endpoint expects
+   <em>
+    all
+   </em>
+   values to be supplied on every request.  If
+modifying a subset of options, it may be useful to get the current
+settings from
+   <a href="#GET_r_%7Bsubreddit%7D_about_edit.json">
+    /about/edit.json
+   </a>
+   first.
+  </p>
+  <p>
+   For backwards compatibility,
+   <code>
+    description
+   </code>
+   is the sidebar text and
+   <code>
+    public_description
+   </code>
+   is the publicly visible subreddit description.
+  </p>
+  <p>
+   Most of the parameters for this endpoint are identical to options
+visible in the user interface and their meanings are best explained
+there.
+  </p>
+  <p>
+   See also:
+   <a href="#GET_r_%7Bsubreddit%7D_about_edit.json">
+    /about/edit.json
+   </a>
+   .
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    admin_override_spam_comments
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    admin_override_spam_links
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    admin_override_spam_selfposts
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    all_original_content
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    allow_chat_post_creation
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    allow_discovery
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    allow_galleries
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    allow_images
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    allow_polls
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    allow_post_crossposts
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    allow_top
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    allow_videos
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    api_type
+   </th>
+   <td>
+    <p>
+     the string
+     <code>
+      json
+     </code>
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    collapse_deleted_comments
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    comment_score_hide_mins
+   </th>
+   <td>
+    <p>
+     an integer between 0 and 1440 (default: 0)
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    crowd_control_chat_level
+   </th>
+   <td>
+    <p>
+     an integer between 0 and 3
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    crowd_control_level
+   </th>
+   <td>
+    <p>
+     an integer between 0 and 3
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    crowd_control_mode
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    description
+   </th>
+   <td>
+    <p>
+     raw markdown text
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    disable_contributor_requests
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    exclude_banned_modqueue
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    free_form_reports
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    g-recaptcha-response
+   </th>
+   <td>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    header-title
+   </th>
+   <td>
+    <p>
+     a string no longer than 500 characters
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    hide_ads
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    key_color
+   </th>
+   <td>
+    <p>
+     a 6-digit rgb hex color, e.g.
+     <code>
+      #AABBCC
+     </code>
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    lang
+   </th>
+   <td>
+    <p>
+     a valid IETF language tag (underscore separated)
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    link_type
+   </th>
+   <td>
+    <p>
+     one of (
+     <code>
+      any
+     </code>
+     ,
+     <code>
+      link
+     </code>
+     ,
+     <code>
+      self
+     </code>
+     )
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    name
+   </th>
+   <td>
+    <p>
+     subreddit name
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    new_pinned_post_pns_enabled
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    original_content_tag_enabled
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    over_18
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    public_description
+   </th>
+   <td>
+    <p>
+     raw markdown text
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    restrict_commenting
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    restrict_posting
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    show_media
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    show_media_preview
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    spam_comments
+   </th>
+   <td>
+    <p>
+     one of (
+     <code>
+      low
+     </code>
+     ,
+     <code>
+      high
+     </code>
+     ,
+     <code>
+      all
+     </code>
+     )
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    spam_links
+   </th>
+   <td>
+    <p>
+     one of (
+     <code>
+      low
+     </code>
+     ,
+     <code>
+      high
+     </code>
+     ,
+     <code>
+      all
+     </code>
+     )
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    spam_selfposts
+   </th>
+   <td>
+    <p>
+     one of (
+     <code>
+      low
+     </code>
+     ,
+     <code>
+      high
+     </code>
+     ,
+     <code>
+      all
+     </code>
+     )
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    spoilers_enabled
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    sr
+   </th>
+   <td>
+    <p>
+     <a href="#fullnames">
+      fullname
+     </a>
+     of a thing
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    submit_link_label
+   </th>
+   <td>
+    <p>
+     a string no longer than 60 characters
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    submit_text
+   </th>
+   <td>
+    <p>
+     raw markdown text
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    submit_text_label
+   </th>
+   <td>
+    <p>
+     a string no longer than 60 characters
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    suggested_comment_sort
+   </th>
+   <td>
+    <p>
+     one of (
+     <code>
+      confidence
+     </code>
+     ,
+     <code>
+      top
+     </code>
+     ,
+     <code>
+      new
+     </code>
+     ,
+     <code>
+      controversial
+     </code>
+     ,
+     <code>
+      old
+     </code>
+     ,
+     <code>
+      random
+     </code>
+     ,
+     <code>
+      qa
+     </code>
+     ,
+     <code>
+      live
+     </code>
+     )
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    title
+   </th>
+   <td>
+    <p>
+     a string no longer than 100 characters
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    toxicity_threshold_chat_level
+   </th>
+   <td>
+    <p>
+     an integer between 0 and 1
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    type
+   </th>
+   <td>
+    <p>
+     one of (
+     <code>
+      gold_restricted
+     </code>
+     ,
+     <code>
+      archived
+     </code>
+     ,
+     <code>
+      restricted
+     </code>
+     ,
+     <code>
+      private
+     </code>
+     ,
+     <code>
+      employees_only
+     </code>
+     ,
+     <code>
+      gold_only
+     </code>
+     ,
+     <code>
+      public
+     </code>
+     ,
+     <code>
+      user
+     </code>
+     )
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    uh / X-Modhash header
+   </th>
+   <td>
+    <p>
+     a
+     <a href="#modhashes">
+      modhash
+     </a>
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    user_flair_pns_enabled
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    welcome_message_enabled
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    welcome_message_text
+   </th>
+   <td>
+    <p>
+     raw markdown text
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    wiki_edit_age
+   </th>
+   <td>
+    <p>
+     an integer between 0 and 36600 (default: 0)
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    wiki_edit_karma
+   </th>
+   <td>
+    <p>
+     an integer between 0 and 1000000000 (default: 0)
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    wikimode
+   </th>
+   <td>
+    <p>
+     one of (
+     <code>
+      disabled
+     </code>
+     ,
+     <code>
+      modonly
+     </code>
+     ,
+     <code>
+      anyone
+     </code>
+     )
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

@@ -1,0 +1,10 @@
+GET /api/needs_captcha
+any
+
+<div class="info">
+ <div class="md">
+  <p>
+   Check whether ReCAPTCHAs are needed for API methods
+  </p>
+ </div>
+</div>

@@ -1,0 +1,44 @@
+POST /api/mod/conversations/:conversation_id/mute
+modmail
+
+<div class="info">
+ <div class="md">
+  <p>
+   Mutes the non mod user associated with a particular conversation.
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    conversation_id
+   </th>
+   <td>
+    <p>
+     base36 modmail conversation id
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    num_hours
+   </th>
+   <td>
+    <p>
+     one of (
+     <code>
+      72
+     </code>
+     ,
+     <code>
+      168
+     </code>
+     ,
+     <code>
+      672
+     </code>
+     )
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

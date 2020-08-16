@@ -1,0 +1,49 @@
+PUT /api/multi/multipath/description
+read
+
+<div class="info">
+ <div class="md">
+  <p>
+   Change a multi's markdown description.
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    model
+   </th>
+   <td>
+    <p>
+     json data:
+    </p>
+    <pre><code>{
+  "body_md": raw markdown text,
+}
+</code></pre>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    multipath
+   </th>
+   <td>
+    <p>
+     multireddit url path
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    uh / X-Modhash header
+   </th>
+   <td>
+    <p>
+     a
+     <a href="#modhashes">
+      modhash
+     </a>
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

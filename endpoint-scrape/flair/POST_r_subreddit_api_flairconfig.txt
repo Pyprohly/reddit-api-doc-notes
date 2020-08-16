@@ -1,0 +1,99 @@
+POST [/r/subreddit]/api/flairconfig
+modflair
+
+<div class="info">
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    api_type
+   </th>
+   <td>
+    <p>
+     the string
+     <code>
+      json
+     </code>
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    flair_enabled
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    flair_position
+   </th>
+   <td>
+    <p>
+     one of (
+     <code>
+      left
+     </code>
+     ,
+     <code>
+      right
+     </code>
+     )
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    flair_self_assign_enabled
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    link_flair_position
+   </th>
+   <td>
+    <p>
+     one of (`
+     <code>
+      ,
+     </code>
+     left
+     <code>
+      ,
+     </code>
+     right`)
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    link_flair_self_assign_enabled
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    uh / X-Modhash header
+   </th>
+   <td>
+    <p>
+     a
+     <a href="#modhashes">
+      modhash
+     </a>
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

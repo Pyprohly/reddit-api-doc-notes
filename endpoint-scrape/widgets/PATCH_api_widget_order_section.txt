@@ -1,0 +1,41 @@
+PATCH /api/widget_order/section
+structuredstyles
+
+<div class="info">
+ <div class="md">
+  <p>
+   Update the order of widget_ids in the specified subreddit
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    json
+   </th>
+   <td>
+    <p>
+     json data:
+    </p>
+    <pre><code>[
+  a string,
+  ...
+]
+</code></pre>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    section
+   </th>
+   <td>
+    <p>
+     one of (
+     <code>
+      sidebar
+     </code>
+     )
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

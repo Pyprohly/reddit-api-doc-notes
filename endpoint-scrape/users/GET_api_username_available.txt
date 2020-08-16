@@ -1,0 +1,22 @@
+GET /api/username_available
+any
+
+<div class="info">
+ <div class="md">
+  <p>
+   Check whether a username is available for registration.
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    user
+   </th>
+   <td>
+    <p>
+     a valid, unused, username
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

@@ -1,0 +1,22 @@
+GET /api/multi/mine
+read
+
+<div class="info">
+ <div class="md">
+  <p>
+   Fetch a list of multis belonging to the current user.
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    expand_srs
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

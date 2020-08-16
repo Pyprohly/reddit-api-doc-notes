@@ -1,0 +1,197 @@
+GET [/r/subreddit]/comments/article
+read
+
+<div class="info">
+ <div class="md">
+  <p>
+   Get the comment tree for a given Link
+   <code>
+    article
+   </code>
+   .
+  </p>
+  <p>
+   If supplied,
+   <code>
+    comment
+   </code>
+   is the ID36 of a comment in the comment tree for
+   <code>
+    article
+   </code>
+   . This comment will be the (highlighted) focal point of the
+returned view and
+   <code>
+    context
+   </code>
+   will be the number of parents shown.
+  </p>
+  <p>
+   <code>
+    depth
+   </code>
+   is the maximum depth of subtrees in the thread.
+  </p>
+  <p>
+   <code>
+    limit
+   </code>
+   is the maximum number of comments to return.
+  </p>
+  <p>
+   See also:
+   <a href="#GET_api_morechildren">
+    /api/morechildren
+   </a>
+   and
+   <a href="#POST_api_comment">
+    /api/comment
+   </a>
+   .
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    article
+   </th>
+   <td>
+    <p>
+     ID36 of a link
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    comment
+   </th>
+   <td>
+    <p>
+     (optional) ID36 of a comment
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    context
+   </th>
+   <td>
+    <p>
+     an integer between 0 and 8
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    depth
+   </th>
+   <td>
+    <p>
+     (optional) an integer
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    limit
+   </th>
+   <td>
+    <p>
+     (optional) an integer
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    showedits
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    showmore
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    sort
+   </th>
+   <td>
+    <p>
+     one of (
+     <code>
+      confidence
+     </code>
+     ,
+     <code>
+      top
+     </code>
+     ,
+     <code>
+      new
+     </code>
+     ,
+     <code>
+      controversial
+     </code>
+     ,
+     <code>
+      old
+     </code>
+     ,
+     <code>
+      random
+     </code>
+     ,
+     <code>
+      qa
+     </code>
+     ,
+     <code>
+      live
+     </code>
+     )
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    sr_detail
+   </th>
+   <td>
+    <p>
+     (optional) expand subreddits
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    threaded
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    truncate
+   </th>
+   <td>
+    <p>
+     an integer between 0 and 50
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

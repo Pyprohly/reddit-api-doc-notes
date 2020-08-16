@@ -1,0 +1,97 @@
+POST /api/set_suggested_sort
+modposts
+
+<div class="info">
+ <div class="md">
+  <p>
+   Set a suggested sort for a link.
+  </p>
+  <p>
+   Suggested sorts are useful to display comments in a certain preferred way
+for posts. For example, casual conversation may be better sorted by new
+by default, or AMAs may be sorted by Q&amp;A. A sort of an empty string
+clears the default sort.
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    api_type
+   </th>
+   <td>
+    <p>
+     the string
+     <code>
+      json
+     </code>
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    id
+   </th>
+   <td>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    sort
+   </th>
+   <td>
+    <p>
+     one of (
+     <code>
+      confidence
+     </code>
+     ,
+     <code>
+      top
+     </code>
+     ,
+     <code>
+      new
+     </code>
+     ,
+     <code>
+      controversial
+     </code>
+     ,
+     <code>
+      old
+     </code>
+     ,
+     <code>
+      random
+     </code>
+     ,
+     <code>
+      qa
+     </code>
+     ,
+     <code>
+      live
+     </code>
+     ,
+     <code>
+      blank
+     </code>
+     )
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    uh / X-Modhash header
+   </th>
+   <td>
+    <p>
+     a
+     <a href="#modhashes">
+      modhash
+     </a>
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

@@ -1,0 +1,65 @@
+POST [/r/subreddit]/api/wiki/edit
+wikiedit
+
+<div class="info">
+ <div class="md">
+  <p>
+   Edit a wiki
+   <code>
+    page
+   </code>
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    content
+   </th>
+   <td>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    page
+   </th>
+   <td>
+    <p>
+     the name of an existing page or a new page to create
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    previous
+   </th>
+   <td>
+    <p>
+     the starting point revision for this edit
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    reason
+   </th>
+   <td>
+    <p>
+     a string up to 256 characters long, consisting of printable characters.
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    uh / X-Modhash header
+   </th>
+   <td>
+    <p>
+     a
+     <a href="#modhashes">
+      modhash
+     </a>
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

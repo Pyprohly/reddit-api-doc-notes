@@ -1,0 +1,41 @@
+POST /api/show_comment
+modposts
+
+<div class="info">
+ <div class="md">
+  <p>
+   Mark a comment that it should not be collapsed because of crowd control.
+  </p>
+  <p>
+   The comment could still be collapsed for other reasons.
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    id
+   </th>
+   <td>
+    <p>
+     <a href="#fullnames">
+      fullname
+     </a>
+     of a thing
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    uh / X-Modhash header
+   </th>
+   <td>
+    <p>
+     a
+     <a href="#modhashes">
+      modhash
+     </a>
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

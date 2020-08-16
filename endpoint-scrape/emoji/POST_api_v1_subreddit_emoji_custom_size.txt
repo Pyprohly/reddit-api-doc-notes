@@ -1,0 +1,35 @@
+POST /api/v1/subreddit/emoji_custom_size
+structuredstyles
+
+<div class="info">
+ <div class="md">
+  <p>
+   Set custom emoji size.
+  </p>
+  <p>
+   Omitting width or height will disable custom emoji sizing.
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    height
+   </th>
+   <td>
+    <p>
+     an integer between 1 and 40 (default: 0)
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    width
+   </th>
+   <td>
+    <p>
+     an integer between 1 and 40 (default: 0)
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

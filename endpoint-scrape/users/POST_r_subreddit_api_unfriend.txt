@@ -1,0 +1,190 @@
+POST [/r/subreddit]/api/unfriend
+any
+
+<div class="info">
+ <div class="md">
+  <p>
+   Remove a relationship between a user and another user or subreddit
+  </p>
+  <p>
+   The user can either be passed in by name (nuser)
+or by
+   <a href="#fullnames">
+    fullname
+   </a>
+   (iuser).  If type is friend or enemy,
+'container' MUST be the current user's fullname;
+for other types, the subreddit must be set
+via URL (e.g.,
+   <a href="/r/funny/api/unfriend">
+    /r/funny/api/unfriend
+   </a>
+   )
+  </p>
+  <p>
+   OAuth2 use requires appropriate scope based
+on the 'type' of the relationship:
+  </p>
+  <ul>
+   <li>
+    moderator:
+    <code>
+     modothers
+    </code>
+   </li>
+   <li>
+    moderator_invite:
+    <code>
+     modothers
+    </code>
+   </li>
+   <li>
+    contributor:
+    <code>
+     modcontributors
+    </code>
+   </li>
+   <li>
+    banned:
+    <code>
+     modcontributors
+    </code>
+   </li>
+   <li>
+    muted:
+    <code>
+     modcontributors
+    </code>
+   </li>
+   <li>
+    wikibanned:
+    <code>
+     modcontributors
+    </code>
+    and
+    <code>
+     modwiki
+    </code>
+   </li>
+   <li>
+    wikicontributor:
+    <code>
+     modcontributors
+    </code>
+    and
+    <code>
+     modwiki
+    </code>
+   </li>
+   <li>
+    friend: Use
+    <a href="#DELETE_api_v1_me_friends_%7Busername%7D">
+     /api/v1/me/friends/{username}
+    </a>
+   </li>
+   <li>
+    enemy:
+    <code>
+     privatemessages
+    </code>
+   </li>
+  </ul>
+  <p>
+   Complement to
+   <a href="#POST_api_friend">
+    POST_friend
+   </a>
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    container
+   </th>
+   <td>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    id
+   </th>
+   <td>
+    <p>
+     <a href="#fullnames">
+      fullname
+     </a>
+     of a thing
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    name
+   </th>
+   <td>
+    <p>
+     the name of an existing user
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    type
+   </th>
+   <td>
+    <p>
+     one of (
+     <code>
+      friend
+     </code>
+     ,
+     <code>
+      enemy
+     </code>
+     ,
+     <code>
+      moderator
+     </code>
+     ,
+     <code>
+      moderator_invite
+     </code>
+     ,
+     <code>
+      contributor
+     </code>
+     ,
+     <code>
+      banned
+     </code>
+     ,
+     <code>
+      muted
+     </code>
+     ,
+     <code>
+      wikibanned
+     </code>
+     ,
+     <code>
+      wikicontributor
+     </code>
+     )
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    uh / X-Modhash header
+   </th>
+   <td>
+    <p>
+     a
+     <a href="#modhashes">
+      modhash
+     </a>
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>
