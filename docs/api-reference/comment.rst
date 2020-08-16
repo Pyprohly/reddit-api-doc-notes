@@ -1,6 +1,6 @@
 
-Submission
-==========
+Comment
+=======
 
 Overview
 --------
@@ -8,168 +8,106 @@ Overview
 Object
 ^^^^^^
 
-.. csv-table:: Submission Object
+.. csv-table:: Comment Object
    :header: "Field","Type (hint)","Description"
-   :widths: 8, 6, 30
    :escape: \
 
+   "all_awardings","unknown array",""
    "approved_at_utc","integer?","Unix time when the comment was approved. `null` if not approved."
-   "subreddit","string","The subreddit name. E.g., `IAmA`"
-   "selftext","string","The body text of the submission. Empty string if it is a link post."
+   "approved_by","string?","The name of the redditor who approved this post.[needs checking]"
+   "archived","boolean","Whether the post is archived. Archived posts cannot be commented on, but the author can still edit the OP."
+   "associated_award","unknown?",""
+   "author","string","The redditor name. Possibly `[removed]` if the post was removed by a mod,
+   or `[deleted]` if the post was removed by the author."
+   "author_flair_background_color","string?",""
+   "author_flair_css_class","string?",""
+   "author_flair_richtext?","unknown array","This attribute is not available if the post was removed or deleted."
+   "author_flair_template_id","unknown?",""
+   "author_flair_text","string?",""
+   "author_flair_text_color","string?",""
+   "author_flair_type?","string","This attribute is not available if the post was removed or deleted."
    "author_fullname?","string","The full ID of the author.
 
    This attribute is not available if the post was removed or deleted."
-   "saved","boolean","Whether the authenticated user has saved this post. For clients with no user context this will always be false."
-   "mod_reason_title","unknown?",""
-   "gilded","integer",""
-   "clicked","boolean",""
-   "title","string","The title of the post."
-   "link_flair_richtext","unknown array",""
-   "subreddit_name_prefixed","string","Same as the `subreddit` field but prefixed with `r/`. E.g., `r/IAmA`."
-   "hidden","boolean",""
-   "pwls","integer","Unknown. Often `6`. Possibly stands for \"parent white list status\"?"
-   "link_flair_css_class","unknown?",""
-   "downs","integer","Always `0`."
-   "thumbnail_height","integer","Thumbnail height."
-   "hide_score","boolean","Whether the upvote count is currently hidden."
-   "name","string","The post's full ID (with prefix `t3_`). Also see `id`."
-   "quarantine","boolean","Whether the post is in a quarantined subreddit."
-   "link_flair_text_color","string",""
-   "author_flair_background_color","string?",""
-   "subreddit_type","string","One of `public`, `private`, `restricted`, `archived`, `employees_only`,
-   `gold_only`, or `gold_restricted`."
-   "ups","integer","Same as `score`."
-   "total_awards_received","integer","Number of rewards on the post."
-   "media_embed","unknown object",""
-   "thumbnail_width","integer","Thumbnail width."
-   "author_flair_template_id","unknown?",""
-   "is_original_content","boolean","Whether the post is marked as OC."
-   "user_reports","unknown array",""
-   "secure_media","unknown?",""
-   "is_reddit_media_domain","boolean","Whether media was uploaded to a reddit media host, that is
-   either i.redd.it for images or v.redd.it for videos. This will always be false for a text post.[needs checking]"
-   "is_meta","boolean",""
-   "category","unknown?",""
-   "secure_media_embed","unknown object",""
-   "link_flair_text","string?","Post flair text."
-   "can_mod_post","boolean",""
-   "score","integer","The number of upvotes (minus downvotes)."
-   "approved_by","string?","The name of the redditor who approved this post.[needs checking]"
+   "author_patreon_flair?","boolean","This attribute is not available if the post was removed or deleted."
    "author_premium?","boolean","Whether or not the submitter has Reddit Premium.
 
    This attribute is not available if the post was removed or deleted."
-   "thumbnail","string","The URL of the post thumbnail. Other possible values include
-   `self` (if there is no thumbnail?), or `default` (if the post was removed/deleted?)."
-   "edited","boolean | float","`false` if the post wasn't edited, otherwise a Unix timestamp of when it was edited."
-   "author_flair_css_class","string?",""
-   "author_flair_richtext?","unknown array","This attribute is not available if the post was removed or deleted."
-   "gildings","unknown object",""
-   "post_hint?","string","`\"self\"` if a text post. `\"link\"` if a link post.
-
-   This attribute is not available if the post was removed or deleted."
-   "content_categories","unknown?",""
-   "is_self","boolean","`true` if it is a text post. `false` if link post."
-   "mod_note","unknown?",""
-   "created","float","Legacy. Same as `created_utc` but add 28800."
-   "link_flair_type","string","Possible values: `text`, `richtext`, ...?"
-   "wls","integer","Unknown. Often `6`. Possibly stands for \"white list status\"?"
-   "removed_by_category","unknown?",""
-   "banned_by","unknown?",""
-   "author_flair_type?","string","This attribute is not available if the post was removed or deleted."
-   "domain","string","If a link post, the domain of the link. If a text post, it is
-   the name of the subreddit prefixed with `self.`, e.g., `self.IAmA`."
-   "allow_live_comments","boolean",""
-   "selftext_html","string?","The HTML of the post. This will be null if it is a link post."
-   "likes","unknown?",""
-   "suggested_sort","unknown?",""
-   "banned_at_utc","unknown?",""
-   "view_count","unknown?",""
-   "archived","boolean","Whether the post is archived. Archived posts cannot be commented on, but the author can still edit the OP."
-   "no_follow","boolean",""
-   "is_crosspostable","boolean","Whether the post can be crossposted. Will be `false` if the post was removed or deleted."
-   "pinned","boolean","Possibly same as `stickied`?"
-   "over_18","boolean","Whether the submission has been marked as NSFW."
-   "preview?","unknown object","This attribute is not available if the post was removed or deleted."
-   "all_awardings","unknown object",""
    "awarders","unknown array",""
-   "media_only","boolean",""
-   "link_flair_template_id?","string","The link flair UUID.
-
-   This attribute is not available if the post was removed or deleted."
+   "banned_at_utc","unknown?",""
+   "banned_by","unknown?",""
+   "body","string","The body text of the comment."
+   "body_html","string","The HTML of the comment."
    "can_gild","boolean",""
-   "spoiler","boolean","Whether the post is marked as a spoiler."
-   "locked","boolean","Whether the post has been locked. https://www.reddit.com/r/modnews/comments/3qguqv/moderators_lock_a_post/"
-   "author_flair_text","string?",""
-   "visited","boolean",""
-   "removed_by","unknown?",""
-   "num_reports","unknown?",""
-   "distinguished","unknown?",""
-   "subreddit_id","string","The full ID of the subreddit that was posted to. E.g., `t5_2qzb6` for `r/IAmA`."
-   "mod_reason_by","unknown?",""
-   "removal_reason","unknown?",""
-   "link_flair_background_color","string",""
-   "id","string","The ID of the submission (without the `t3_` prefix). Also see `name`."
-   "is_robot_indexable","boolean","Possibly always `false` for archived posts?[needs checking]"
-   "report_reasons","unknown?",""
-   "author","string","The redditor name. Possibly `[removed]` if the post was removed by a mod,
-   or `[deleted]` if the post was removed by the author."
-   "discussion_type","unknown?",""
-   "num_comments","integer","The number of comments."
-   "send_replies","boolean",""
-   "whitelist_status","string",""
-   "contest_mode","boolean","Whether the post is in contest mode or not."
-   "mod_reports","unknown array",""
-   "author_patreon_flair?","boolean","This attribute is not available if the post was removed or deleted."
-   "author_flair_text_color","string?",""
-   "permalink","string","The uri of the post without the domain.
-   E.g., `/r/IAmA/comments/erd8si/i_was_born_with_two_y_chromosomes_ama/`"
-   "parent_whitelist_status","string",""
-   "stickied","boolean","Possibly same as `pinned`?[needs checking]"
-   "url","string","If a text post, it is the url of the submission. If a link post,
-   it is the url of the link. Also see `permalink`."
-   "subreddit_subscribers","integer","The number of subscribers in the subreddit."
+   "can_mod_post","boolean",""
+   "collapsed","boolean","Whether the comment is collapsed by default, i.e., when it has been downvoted significantly."
+   "collapsed_because_crowd_control","boolean?",""
+   "collapsed_reason","unknown?",""
+   "controversiality","integer",""
+   "created","float","Legacy. Same as `created_utc` but add 28800."
    "created_utc","float","Unix timestamp of when the post was made."
-   "num_crossposts","integer",""
-   "media","unknown?",""
-   "is_video","boolean",""
+   "distinguished","unknown?",""
+   "downs","integer","Always `0`."
+   "edited","boolean | float","`false` if the post wasn't edited, otherwise a Unix timestamp of when it was edited."
+   "gilded","integer",""
+   "gildings","unknown object",""
+   "id","string","The ID of the comment (without the `t1_` prefix). Also see `name`."
+   "is_submitter","boolean","`true` if the author is the submission author."
+   "likes","unknown?",""
+   "link_id","string","The full ID of the submission in which this comment belongs."
+   "locked","boolean","Whether the post has been locked. https://www.reddit.com/r/modnews/comments/3qguqv/moderators_lock_a_post/"
+   "mod_note","unknown?",""
+   "mod_reason_by","unknown?",""
+   "mod_reason_title","unknown?",""
+   "mod_reports","unknown array",""
+   "name","string","The comment's full ID (with prefix `t1_`). Also see `id`."
+   "no_follow","boolean",""
+   "num_reports","unknown?",""
+   "parent_id","string","The full ID of the comment or submission above this one."
+   "permalink","string","The uri of the comment without the domain.
+   E.g., `/r/ImaginaryLandscapes/comments/iaoshc/floating_eyes_in_the_silent_forest/g1qfxir/`"
+   "removal_reason","unknown?",""
+   "replies","object | string","A listing object if this object was drawn from a comment tree,
+   otherwise an empty string."
+   "report_reasons","unknown?",""
+   "saved","boolean","Whether the authenticated user has saved this post. For clients with no user context this will always be false."
+   "score","integer","The number of upvotes (minus downvotes)."
+   "score_hidden","boolean","Whether the score is hidden."
+   "send_replies","boolean",""
+   "stickied","boolean","Possibly same as `pinned`?[needs checking]"
+   "subreddit","string","The subreddit name. E.g., `IAmA`"
+   "subreddit_id","string","The full ID of the subreddit that was posted to. E.g., `t5_2qzb6` for `r/IAmA`."
+   "subreddit_name_prefixed","string","Same as the `subreddit` field but prefixed with `r/`. E.g., `r/IAmA`."
+   "subreddit_type","string","One of `public`, `private`, `restricted`, `archived`, `employees_only`,
+   "top_awarded_type","unknown?",""
+   "total_awards_received","integer","Number of rewards on the comment."
+   "treatment_tags","unknown array",""
+   "ups","integer","Same as `score`."
+   "user_reports","unknown array",""
 
 
 Actions
 -------
 
-.. _get_api_info:
-
 Get
 ^^^
 
-.. http:get:: /api/info
-
-*scope: read*
-
-Return Submission, Comment, and Subreddit resource info.
-
-`id` will process up to 100 IDs. Any ID not found will be ignored.
-Alphabetic characters in the ID must be lowercase.
-If more than 100 IDs are given, a blank listing structure is returned.
-
-.. csv-table:: URL Params
-   :header: "Field","Type (hint)","Description"
-   :escape: \
-
-   "id","string","a comma-separated list of full IDs"
-   "url","string","a valid URL"
-
-.. seealso:: https://www.reddit.com/dev/api/#GET_api_info
-
+:ref:`See here <get_api_info>`
 
 Create
 ^^^^^^
 
-.. http:post:: /api/submit
+.. http:post:: /api/comment
 
-*scope: submit*
+*scope: submit | privatemessages*
 
-Compose a new submission to a subreddit.
+Submit a new comment or reply to a message.
+
+
+
+******
+
+
 
 Specify the target subreddit with `sr` and title `title`.
 

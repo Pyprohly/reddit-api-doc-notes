@@ -7,6 +7,7 @@ Welcome to reddit-api-docs's documentation!
    :caption: API Reference:
 
    api-reference/submission
+   api-reference/comment
    api-reference/frontpage-listings
    topics/listings
 
