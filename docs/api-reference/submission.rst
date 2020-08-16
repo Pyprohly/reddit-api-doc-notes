@@ -236,6 +236,8 @@ If `kind` is `"link"`, a link post is created with `url` as the link.
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_submit
 
 
+.. _post_api_del:
+
 Delete
 ^^^^^^
 
@@ -265,6 +267,8 @@ This endpoint does not produce any kind of return value.
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_del
 
 
+.. _post_api_editusertext:
+
 Edit Body
 ^^^^^^^^^
 
@@ -275,7 +279,7 @@ Edit Body
 Edit the body text of a text post or comment.
 
 The target entity (with the new body text) is returned in a listing structure,
-but if `return_rtjson` is `true` (or any value not `false`) it is not wrapped in a listing.
+unless `return_rtjson` is truthy in which case it is not wrapped in a listing.
 
 If `text` and `richtext_json` are used together `richtext_json` will be used.
 
@@ -287,11 +291,11 @@ the criteria is.
    :header: "Field","Type (hint)","Description"
    :escape: \
 
-   "api_type","string","the string ``\"json\"``"
-   "return_rtjson","boolean","if not `false`, return the entity object as the top level JSON object"
-   "richtext_json","string","a string of RTJSON"
-   "text","string","markdown text"
-   "thing_id","string","full ID of comment or text post"
+   "return_rtjson","boolean","If truthy (a string that starts with `0` or `F` or `f` is treated as falsy),
+   return the entity object as the top level JSON object."
+   "richtext_json","string","A string of RTJSON"
+   "text","string","Markdown text"
+   "thing_id","string","Full ID of a comment or text post"
 
 |
 
@@ -304,6 +308,8 @@ the criteria is.
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_editusertext
 
+
+.. _post_api_lock:
 
 Lock
 ^^^^
@@ -346,6 +352,8 @@ moderators_you_may_now_lock_individual_comments/
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_lock
 
+
+.. _post_api_vote:
 
 Vote
 ^^^^
@@ -391,6 +399,8 @@ Cast a vote on a Submission or Comment.
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_vote
 
 
+.. _post_api_save:
+
 Save
 ^^^^
 
@@ -419,6 +429,8 @@ Save a Submission or Comment.
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_save
 
+
+.. _post_api_marknsfw:
 
 Mark NSFW
 ^^^^^^^^^
@@ -456,6 +468,8 @@ Save a Submission or Comment.
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_marknsfw
 
 
+.. _post_api_spoiler:
+
 Mark Spoiler
 ^^^^^^^^^^^^
 
@@ -491,6 +505,8 @@ Save a Submission or Comment.
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_spoiler
 
+
+.. _post_api_distinguish:
 
 Distinguish
 ^^^^^^^^^^^
@@ -693,6 +709,8 @@ If `sort` is `blank`, not given, or an unknown value, the suggested sort will be
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_set_suggested_sort
 
 
+.. _post_api_sendreplies:
+
 Set Inbox Replies
 ^^^^^^^^^^^^^^^^^
 
@@ -726,30 +744,6 @@ If `state` is not provided, `true` (enable) is assumed.
 Get More Comments
 ^^^^^^^^^^^^^^^^^
 
+.. http:post:: /api/morechildren
+
 TODO.
-
-
-
-
-Subreddit submission listings
------------------------------
-
-.. http:get:: /r/{subreddit}[/[{sort}]]
-.. http:get:: /r/{subreddit}/hot
-.. http:get:: /r/{subreddit}/best
-.. http:get:: /r/{subreddit}/rising
-.. http:get:: /r/{subreddit}/top
-.. http:get:: /r/{subreddit}/new
-.. http:get:: /r/{subreddit}/controversial
-.. http:get:: /r/{subreddit}/gilded
-
-*scope: read*
-
-If the sort component of the URL is omitted it is treated the same as `/hot`.
-
-The hot listing may include pinned posts at the start of the listing.
-
-`/best` is the same as `/hot`.
-
-The listings contain submission objects except for `/gilded` which can contain
-a mix of submission and comment objects.
