@@ -143,7 +143,7 @@ If the sort component of the URL is omitted it is treated the same as `/hot`.
 
 The hot listing may include pinned posts at the start of the listing.
 
-`/best` is the same as `/hot`.
+`/best` returns the same listing as `/hot`.
 
 The listings contain submission objects except for `/gilded` which can contain
 a mix of submission and comment objects.

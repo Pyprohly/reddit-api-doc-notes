@@ -5,8 +5,8 @@ Comment
 Overview
 --------
 
-Object
-^^^^^^
+Schema
+~~~~~~
 
 .. csv-table:: Comment Object
    :header: "Field","Type (hint)","Description"
@@ -44,7 +44,7 @@ Object
    "collapsed_because_crowd_control","boolean?",""
    "collapsed_reason","unknown?",""
    "controversiality","integer",""
-   "created","float","Legacy. Same as `created_utc` but add 28800."
+   "created","float","Legacy. Same as `created_utc` but subtract 28800. Will always be a whole number."
    "created_utc","float","Unix timestamp of when the post was made."
    "distinguished","unknown?",""
    "downs","integer","Always `0`."
@@ -90,22 +90,25 @@ Actions
 -------
 
 Get
-^^^
+~~~
 
 See :ref:`here <get_api_info>`.
 
 
 Create
-^^^^^^
+~~~~~~
 
 .. http:post:: /api/comment
 
 *scope: submit | privatemessages*
 
-Submit a new comment or reply to a message.
+Submit a new comment or message.
 
 The target entity (with the new body text) is returned in a listing structure,
 unless `return_rtjson` is truthy in which case it is not wrapped in a listing.
+
+Submitting a comment requires the 'submit' scope.
+Sending a message requires the 'privatemessages' scope.
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
@@ -130,54 +133,54 @@ unless `return_rtjson` is truthy in which case it is not wrapped in a listing.
 
 
 Delete
-^^^^^^
+~~~~~~
 
 See :ref:`here <post_api_del>`.
 
 
 Edit Body
-^^^^^^^^^
+~~~~~~~~~
 
 See :ref:`here <post_api_editusertext>`.
 
 
 Lock
-^^^^
+~~~~
 
 See :ref:`here <post_api_lock>`.
 
 
 Vote
-^^^^
+~~~~
 
 See :ref:`here <post_api_vote>`.
 
 
 Save
-^^^^
+~~~~
 
 See :ref:`here <post_api_save>`.
 
 
 Mark NSFW
-^^^^^^^^^
+~~~~~~~~~
 
 See :ref:`here <post_api_marknsfw>`.
 
 
 Mark Spoiler
-^^^^^^^^^^^^
+~~~~~~~~~~~~
 
 See :ref:`here <post_api_spoiler>`.
 
 
 Distinguish
-^^^^^^^^^^^
+~~~~~~~~~~~
 
 See :ref:`here <post_api_distinguish>`.
 
 
 Set Inbox Replies
-^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~
 
 See :ref:`here <post_api_sendreplies>`.

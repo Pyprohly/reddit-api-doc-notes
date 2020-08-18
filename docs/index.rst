@@ -8,6 +8,7 @@ Welcome to reddit-api-docs's documentation!
 
    api-reference/submission
    api-reference/comment
+   api-reference/user
    api-reference/listings
 
 

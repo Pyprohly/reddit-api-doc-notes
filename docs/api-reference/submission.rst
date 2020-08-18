@@ -5,8 +5,8 @@ Submission
 Overview
 --------
 
-Object
-^^^^^^
+Schema
+~~~~~~
 
 .. csv-table:: Submission Object
    :header: "Field","Type (hint)","Description"
@@ -19,7 +19,9 @@ Object
    "author_fullname?","string","The full ID of the author.
 
    This attribute is not available if the post was removed or deleted."
-   "saved","boolean","Whether the authenticated user has saved this post. For clients with no user context this will always be false."
+   "saved","boolean","Whether the authenticated user has saved this post.
+
+   For clients with no user context this will always be `false`."
    "mod_reason_title","unknown?",""
    "gilded","integer",""
    "clicked","boolean",""
@@ -70,7 +72,7 @@ Object
    "content_categories","unknown?",""
    "is_self","boolean","`true` if it is a text post. `false` if link post."
    "mod_note","unknown?",""
-   "created","float","Legacy. Same as `created_utc` but add 28800."
+   "created","float","Legacy. Same as `created_utc` but subtract 28800."
    "link_flair_type","string","Possible values: `text`, `richtext`, ...?"
    "wls","integer","Unknown. Often `6`. Possibly stands for \"white list status\"?"
    "removed_by_category","unknown?",""
@@ -128,7 +130,7 @@ Object
    "url","string","If a text post, it is the url of the submission. If a link post,
    it is the url of the link. Also see `permalink`."
    "subreddit_subscribers","integer","The number of subscribers in the subreddit."
-   "created_utc","float","Unix timestamp of when the post was made."
+   "created_utc","float","Unix timestamp of when the post was made. Will always be a whole number."
    "num_crossposts","integer",""
    "media","unknown?",""
    "is_video","boolean",""
@@ -140,7 +142,7 @@ Actions
 .. _get_api_info:
 
 Get
-^^^
+~~~
 
 .. http:get:: /api/info
 
@@ -148,8 +150,8 @@ Get
 
 Return Submission, Comment, and Subreddit resource info.
 
-`id` will process up to 100 IDs. Any ID not found will be ignored.
-Alphabetic characters in the ID must be lowercase.
+The `id` parameter will process up to 100 IDs. Any ID not found will be ignored.
+Alphabetic characters in the ID must be lowercase or they will be ignored.
 If more than 100 IDs are given, a blank listing structure is returned.
 
 .. csv-table:: URL Params
@@ -163,7 +165,7 @@ If more than 100 IDs are given, a blank listing structure is returned.
 
 
 Create
-^^^^^^
+~~~~~~
 
 .. http:post:: /api/submit
 
@@ -239,7 +241,7 @@ If `kind` is `"link"`, a link post is created with `url` as the link.
 .. _post_api_del:
 
 Delete
-^^^^^^
+~~~~~~
 
 .. http:post:: /api/del
 
@@ -270,7 +272,7 @@ This endpoint does not produce any kind of return value.
 .. _post_api_editusertext:
 
 Edit Body
-^^^^^^^^^
+~~~~~~~~~
 
 .. http:post:: /api/editusertext
 
@@ -312,7 +314,7 @@ the criteria is.
 .. _post_api_lock:
 
 Lock
-^^^^
+~~~~
 
 .. http:post:: /api/lock
 .. http:post:: /api/unlock
@@ -356,7 +358,7 @@ moderators_you_may_now_lock_individual_comments/
 .. _post_api_vote:
 
 Vote
-^^^^
+~~~~
 
 .. http:post:: /api/vote
 
@@ -402,7 +404,7 @@ Cast a vote on a Submission or Comment.
 .. _post_api_save:
 
 Save
-^^^^
+~~~~
 
 .. http:post:: /api/save
 .. http:post:: /api/unsave
@@ -433,7 +435,7 @@ Save a Submission or Comment.
 .. _post_api_marknsfw:
 
 Mark NSFW
-^^^^^^^^^
+~~~~~~~~~
 
 .. http:post:: /api/marknsfw
 .. http:post:: /api/unmarknsfw
@@ -471,7 +473,7 @@ Save a Submission or Comment.
 .. _post_api_spoiler:
 
 Mark Spoiler
-^^^^^^^^^^^^
+~~~~~~~~~~~~
 
 .. http:post:: /api/spoiler
 .. http:post:: /api/unspoiler
@@ -509,7 +511,7 @@ Save a Submission or Comment.
 .. _post_api_distinguish:
 
 Distinguish
-^^^^^^^^^^^
+~~~~~~~~~~~
 
 .. http:post:: /api/distinguish
 
@@ -570,7 +572,7 @@ The target entity is returned in a listing structure.
 
 
 Set Sticky
-^^^^^^^^^^
+~~~~~~~~~~
 
 .. http:post:: /api/set_subreddit_sticky
 
@@ -629,7 +631,7 @@ You cannot reorder sticky posts directly. You must unsticky them then re-sticky 
 
 
 Set Contest Mode
-^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~
 
 .. http:post:: /api/set_contest_mode
 
@@ -669,7 +671,7 @@ If `state` is not specified, `false` is assumed.
 
 
 Set Suggested Sort
-^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~
 
 .. http:post:: /api/set_suggested_sort
 
@@ -712,7 +714,7 @@ If `sort` is `blank`, not given, or an unknown value, the suggested sort will be
 .. _post_api_sendreplies:
 
 Set Inbox Replies
-^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~
 
 .. http:post:: /api/sendreplies
 
@@ -742,7 +744,7 @@ If `state` is not provided, `true` (enable) is assumed.
 
 
 Get More Comments
-^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~
 
 .. http:post:: /api/morechildren
 
