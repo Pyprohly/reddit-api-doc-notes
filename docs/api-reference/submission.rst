@@ -150,7 +150,7 @@ Get
 
 Return Submission, Comment, and Subreddit resource info.
 
-The `id` parameter will process up to 100 IDs. Any ID not found will be ignored.
+The `id` parameter will take up to 100 IDs. Any ID not found will be ignored.
 Alphabetic characters in the ID must be lowercase or they will be ignored.
 If more than 100 IDs are given, a blank listing structure is returned.
 
@@ -216,7 +216,7 @@ If `kind` is `"link"`, a link post is created with `url` as the link.
    :header: "Error","Description"
    :escape: \
 
-   "USER_REQUIRED","you must login to make a submission"
+   "USER_REQUIRED","you must login"
    "BAD_SR_NAME","the `sr` field, subreddit name, isn't given"
    "SUBREDDIT_NOEXIST","the specified subreddit doesn't exist"
    "SUBREDDIT_NOTALLOWED","you don't have permission to post to the subreddit.
@@ -412,6 +412,8 @@ Save
 *scope: save*
 
 Save a Submission or Comment.
+
+Returns an empty JSON object.
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"

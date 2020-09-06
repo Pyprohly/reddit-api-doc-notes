@@ -6,9 +6,11 @@ Welcome to reddit-api-docs's documentation!
    :maxdepth: 2
    :caption: API Reference:
 
+   topics/oauth2
+   api-reference/account
+   api-reference/user
    api-reference/submission
    api-reference/comment
-   api-reference/user
    api-reference/listings
 
 

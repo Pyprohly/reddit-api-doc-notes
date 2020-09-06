@@ -32,6 +32,8 @@ Schema
    "verified","boolean",""
 
 
+.. _my_user_schema:
+
 Additional fields for when the client has a user context and the user object matches that user.
 
 .. csv-table:: User Object
@@ -211,20 +213,28 @@ Get information about a user by account name.
 .. seealso:: https://www.reddit.com/dev/api/#GET_user_{username}_about
 
 
-Bulk get by ID
-~~~~~~~~~~~~~~
+Get partial by ID
+~~~~~~~~~~~~~~~~~
 
 .. http:get:: /api/user_data_by_account_ids
 
-*scope: privatemessages???[needs checking]*
+*scope: privatemessages*
 
-Bulk get partial user objects by ID.
+Bulk get partial user objects by (full) IDs.
 
-This endpoint returns an object that maps user full IDs to partial user objects.
+This endpoint returns a JSON object that maps user full IDs to partial user objects.
 
-The `ids` parameter will process up to 100 IDs[needs checking]. Any ID not found will be ignored.
-Alphabetic characters in the IDs must be lowercase or they will be ignored.
+Specify the IDs with the `ids` parameter.
+IDs must be prefixed with `t2_`.
+Any ID that can't be resolved will be ignored.
+Alphabetic characters in IDs must be all lowercase or they will be ignored.
 Duplicate IDs will be ignored.
+
+This endpoint will process as many IDs as it can as long as the total URL length is
+less than the 7220 character limit.
+This means you can request up to a little over 500 IDs at a time assuming each ID
+string is the largest observed length for a user ID at this time of this writing.
+Clients should be able to safely request in batches of up to 500 IDs at a time.
 
 This end point returns an object with the following fields:
 
@@ -247,7 +257,7 @@ This end point returns an object with the following fields:
    :header: "Field","Type (hint)","Description"
    :escape: \
 
-   "ids","string","A comma separated list of user full IDs."
+   "ids","string","A comma separated list of user full IDs (each being prefixed by `t2_`)."
 
 |
 
@@ -255,6 +265,6 @@ This end point returns an object with the following fields:
    :header: "Status Code","Description"
    :escape: \
 
-   "404","None of the IDs matched."
+   "414","The requested URL length is too long (over 7219 characters)."
 
 \.\.\.
