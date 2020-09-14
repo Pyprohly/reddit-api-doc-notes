@@ -62,14 +62,49 @@ Listing implementations
 Frontpage listings
 ^^^^^^^^^^^^^^^^^^
 
-.. http:get:: [/]
+Variants
+~~~~~~~~
+
+*Best*
+""""""
+
+.. http:get:: /
 .. http:get:: /best
+
+*Hot*
+"""""
+
 .. http:get:: /hot
+
+*Rising*
+""""""""
+
 .. http:get:: /rising
+
+*New*
+"""""
+
 .. http:get:: /new
+
+*Top*
+"""""
+
 .. http:get:: /top
+
+*Controversial*
+"""""""""""""""
+
 .. http:get:: /controversial
+
+*Gilded*
+""""""""
+
 .. http:get:: /gilded
+
+.. _frontpage_overview:
+
+Overview
+~~~~~~~~
 
 *scope: read*
 
@@ -79,7 +114,7 @@ Get a submission listing of your frontpage. This will include submissions from y
 subscribed subreddits, otherwise, if not logged in, Reddit will decide which subreddits to
 retrieve submissions from to populate the listing.
 
-Additional URL Params:
+Additional URL params:
 
 .. csv-table:: URL Params
    :header: "Field","Type (hint)","Description"
@@ -91,7 +126,7 @@ Additional URL Params:
    A string that starts with `0` or `F` or `f` is treated as a falsy string and explicitly
    disables this option. All other strings are truthy."
 
-Additional URL Params for `/hot`:
+Additional URL params for `/hot`:
 
 .. csv-table:: URL Params
    :header: "Field","Type (hint)","Description"
@@ -110,7 +145,7 @@ Additional URL Params for `/hot`:
    Default: `GLOBAL`
    "
 
-Additional URL Params for `/top` and `/controversial`:
+Additional URL params for `/top` and `/controversial`:
 
 .. csv-table:: URL Params
    :header: "Field","Type (hint)","Description"
@@ -124,26 +159,120 @@ Additional URL Params for `/top` and `/controversial`:
    Default: `all`
    "
 
+.. seealso:: https://www.reddit.com/dev/api/#section_listings
+
 
 Subreddit submission listings
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. http:get:: /r/{subreddit}[/[{sort}]]
+Variants
+~~~~~~~~
+
+*Hot*
+"""""
+
+.. http:get:: /r/{subreddit}
 .. http:get:: /r/{subreddit}/hot
+
+*Best*
+""""""
+
 .. http:get:: /r/{subreddit}/best
+
+*Rising*
+""""""""
+
 .. http:get:: /r/{subreddit}/rising
+
+*Top*
+"""""
+
 .. http:get:: /r/{subreddit}/top
+
+*New*
+"""""
+
 .. http:get:: /r/{subreddit}/new
+
+*Controversial*
+"""""""""""""""
+
 .. http:get:: /r/{subreddit}/controversial
+
+*Gilded*
+""""""""
+
 .. http:get:: /r/{subreddit}/gilded
+
+Overview
+~~~~~~~~
 
 *scope: read*
 
-If the sort component of the URL is omitted it is treated the same as `/hot`.
+If the sort component of the URL is omitted it is treated the same as `/hot`
+(unlike frontpage listings where the default is *best*).
 
 The hot listing may include pinned posts at the start of the listing.
 
 `/best` returns the same listing as `/hot`.
 
-The listings contain submission objects except for `/gilded` which can contain
+The listings contain submission objects. `/gilded` is a
 a mix of submission and comment objects.
+
+All the 'additional URL param' tables in the :ref:`frontpage listings section <frontpage_overview>` apply.
+
+.. seealso:: https://www.reddit.com/dev/api/#section_listings
+
+
+Account listings
+^^^^^^^^^^^^^^^^
+
+Variants
+~~~~~~~~
+
+*Friends*
+"""""""""
+
+.. http:get:: /api/v1/me/friends
+.. http:get:: /prefs/friends
+
+`/prefs/friends` is the same as `/api/v1/me/friends` but it returns a list of two
+'UserList' listing structures where the second one is empty. The first listing
+structure matches that of `/api/v1/me/friends`.
+
+*Blocked*
+"""""""""
+
+.. http:get:: /prefs/blocked
+
+.. note::
+   Although `/api/v1/me/blocked` is documented requesting against this endpoint returns a 404.
+
+*Trusted*
+"""""""""
+
+.. http:get:: /prefs/messaging
+
+Returns a list of two 'UserList' listing structures. The fist listing structure is the blocked users
+list (same as returned by `/prefs/blocked`). The second listing is the trusted users list.
+
+See `/api/add_whitelisted` for adding a user to the trusted users list.
+
+Overview
+~~~~~~~~
+
+If the client is not logged in then the endpoints return the string `"{}"`.
+Notice this is a string of an empty JSON object.
+
+The user objects contained in the listings have the following fields:
+
+.. csv-table:: User Item Object
+   :header: "Field","Type (hint)","Description"
+   :escape: \
+
+   "date","float","Unix timestamp of when this item was added to the list. Will always be a whole number."
+   "rel_id","string","Unknown. E.g., `r9_1w4acm`"
+   "name","string","The name of the user."
+   "id","string","The full ID of the user. E.g., `t2_4x25quk`"
+
+Also see User listings for more relevant listings.
