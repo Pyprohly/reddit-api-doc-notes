@@ -253,7 +253,7 @@ This end point returns an object with the following fields:
 
 |
 
-.. csv-table:: Form Data
+.. csv-table:: URL Params
    :header: "Field","Type (hint)","Description"
    :escape: \
 
@@ -267,4 +267,110 @@ This end point returns an object with the following fields:
 
    "414","The requested URL length is too long (over 7219 characters)."
 
-\.\.\.
+
+Block
+~~~~~
+
+.. http:post:: /api/block_user
+
+*scope: account*
+
+Block a user.
+
+Specify an account full ID (with `account_id`) or user name (with `name`) to block.
+If both parameters are specified together then `account_id` will be used.
+
+An empty JSON object is returned on success.
+
+.. csv-table:: Form data (or URL params)
+   :header: "Field","Type (hint)","Description"
+   :escape: \
+
+   "account_id","string","Full ID (prefixed with `t2_`) of a user."
+   "name","string","A case-insensitive user name."
+
+|
+
+.. csv-table:: API Errors
+   :header: "Error","Description"
+   :escape: \
+
+   "USER_REQUIRED","you must login"
+
+|
+
+.. csv-table:: HTTP Errors
+   :header: "Status Code","Description"
+   :escape: \
+
+   "400","* `account_id` nor `name` was specified.
+
+   * You tried to block yourself.
+
+   * The user or account ID doesn't exist."
+
+.. seealso:: https://www.reddit.com/dev/api/#POST_api_block_user
+
+
+Report
+~~~~~~
+
+.. http:post:: /api/report_user
+
+*scope: report*
+
+Report a user. Reporting a user brings it to the attention of a Reddit admin.
+
+[WIP]
+
+.. csv-table:: Form data
+   :header: "Field","Type (hint)","Description"
+   :escape: \
+
+   "details","string","JSON data"
+   "reason","string","a string no longer than 100 characters"
+   "user","string","A valid, existing reddit username"
+
+.. seealso:: https://www.reddit.com/dev/api/#POST_api_report_user
+
+
+List trophies
+~~~~~~~~~~~~~
+
+.. http:post:: /api/v1/user/{username}/trophies
+
+*scope: read*
+
+Return a list of trophies for the a given user.
+
+Returns a 'TrophyList' listing structure.
+
+For a description of the Trophie object schema, see :ref:`here <account_list_trophies>`.
+
+.. seealso:: https://www.reddit.com/dev/api/#GET_api_v1_user_{username}_trophies
+
+
+Check username registered
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. http:get:: /api/username_available
+
+*scope: (any)*
+
+Check whether a username is available for registration.
+
+Valid usernames match `/[A-Za-z0-9_-]{3,20}/`.
+
+Returns `true` or `false`.
+
+.. csv-table:: API Errors (variant 2)
+   :header: "Error","Description"
+   :escape: \
+
+   "BAD_USERNAME","* The `user` param was not specified or is empty.
+
+   * The username specified contains illegal characters.
+
+   \"invalid username\""
+
+.. seealso:: https://www.reddit.com/dev/api/#GET_api_username_available

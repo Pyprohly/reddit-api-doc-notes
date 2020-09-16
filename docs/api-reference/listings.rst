@@ -108,11 +108,11 @@ Overview
 
 *scope: read*
 
-If the URL path is `/` (or omitted entirely), it is treated the same as `/best`.
-
 Get a submission listing of your frontpage. This will include submissions from your list of
 subscribed subreddits, otherwise, if not logged in, Reddit will decide which subreddits to
 retrieve submissions from to populate the listing.
+
+.. _frontpage_listings_additional_url_params:
 
 Additional URL params:
 
@@ -126,7 +126,7 @@ Additional URL params:
    A string that starts with `0` or `F` or `f` is treated as a falsy string and explicitly
    disables this option. All other strings are truthy."
 
-Additional URL params for `/hot`:
+Additional URL params for *Hot*:
 
 .. csv-table:: URL Params
    :header: "Field","Type (hint)","Description"
@@ -145,7 +145,7 @@ Additional URL params for `/hot`:
    Default: `GLOBAL`
    "
 
-Additional URL params for `/top` and `/controversial`:
+Additional URL params for *Top* and *Controversial*:
 
 .. csv-table:: URL Params
    :header: "Field","Type (hint)","Description"
@@ -230,6 +230,8 @@ Account listings
 Variants
 ~~~~~~~~
 
+.. _account_listings_friends:
+
 *Friends*
 """""""""
 
@@ -261,6 +263,8 @@ See `/api/add_whitelisted` for adding a user to the trusted users list.
 Overview
 ~~~~~~~~
 
+*scope: read*
+
 If the client is not logged in then the endpoints return the string `"{}"`.
 Notice this is a string of an empty JSON object.
 
@@ -271,8 +275,100 @@ The user objects contained in the listings have the following fields:
    :escape: \
 
    "date","float","Unix timestamp of when this item was added to the list. Will always be a whole number."
-   "rel_id","string","Unknown. E.g., `r9_1w4acm`"
+   "rel_id","string","Some unknown string. E.g., `r9_1w4acm`"
    "name","string","The name of the user."
    "id","string","The full ID of the user. E.g., `t2_4x25quk`"
 
 Also see User listings for more relevant listings.
+
+
+User listings
+^^^^^^^^^^^^^
+
+Variants
+~~~~~~~~
+
+*Overview*
+""""""""""
+
+.. http:get:: /user/{username}
+.. http:get:: /user/{username}/overview
+
+A listing of submissions and comments.
+
+*Submitted*
+"""""""""""
+
+.. http:get:: /user/{username}/submitted
+
+A listing of submissions.
+
+*Comments*
+""""""""""
+
+.. http:get:: /user/{username}/comments
+
+A listing of comments.
+
+*Upvoted*
+"""""""""
+
+.. http:get:: /user/{username}/upvoted
+
+A listing of submissions.
+
+*Downvoted*
+"""""""""""
+
+.. http:get:: /user/{username}/downvoted
+
+A listing of submissions.
+
+*Hidden*
+""""""""
+
+.. http:get:: /user/{username}/hidden
+
+A listing of submissions.
+
+*Saved*
+"""""""
+
+.. http:get:: /user/{username}/saved
+
+A listing of submissions.
+
+*Gilded*
+""""""""
+
+.. http:get:: /user/{username}/gilded
+
+A listing of submissions and comments.
+
+Overview
+~~~~~~~~
+
+*scope: history*
+
+User listings.
+
+See :ref:`Additional URL Params <frontpage_listings_additional_url_params>`.
+
+Additional URL params for *Overview*, *Comments*, *Submissions*:
+
+.. csv-table:: URL Params
+   :header: "Field","Type (hint)","Description"
+   :escape: \
+
+   "sort","string","one of `hot`, `new`, `top`, `controversial`)
+
+   For *Overview* and *Comments* listings, `new` is the default.
+   For *Submissions*, `hot` is the default."
+
+|
+
+.. csv-table:: HTTP Errors
+   :header: "Status Code","Description"
+   :escape: \
+
+   "403","You don't have permission to view this listing."
