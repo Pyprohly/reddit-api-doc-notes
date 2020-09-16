@@ -1,0 +1,33 @@
+POST /api/mod/conversations/:conversation_id/temp_ban
+modmail
+
+<div class="info">
+ <div class="md">
+  <p>
+   Temporary ban (switch from permanent to temporary ban) the non mod
+user associated with a particular conversation.
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    conversation_id
+   </th>
+   <td>
+    <p>
+     base36 modmail conversation id
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    duration
+   </th>
+   <td>
+    <p>
+     an integer between 1 and 999
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

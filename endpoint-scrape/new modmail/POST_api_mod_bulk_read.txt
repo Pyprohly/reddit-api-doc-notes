@@ -43,6 +43,10 @@ within the passed list of subreddits.
      </code>
      ,
      <code>
+      inbox
+     </code>
+     ,
+     <code>
       default
      </code>
      ,

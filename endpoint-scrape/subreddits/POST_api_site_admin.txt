@@ -158,6 +158,16 @@ there.
   </tr>
   <tr>
    <th scope="row">
+    allow_predictions
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
     allow_top
    </th>
    <td>

@@ -13,6 +13,56 @@ For links and comments, the thing is implicitly hidden as well (see
    </a>
    for details).
   </p>
+  <p>
+   If
+   <code>
+    strict_freeform_reports
+   </code>
+   is true, POST_report will fail validation for links and
+comments if:
+  </p>
+  <ul>
+   <li>
+    this report reason does not match a sitewide rule
+   </li>
+   <li>
+    this subreddit has disabled
+    <code>
+     free_form_reports
+    </code>
+   </li>
+   <li>
+    the user submitting the report is not a moderator
+   </li>
+   <li>
+    this report does not match one of the subreddits existing rule violation reasons
+   </li>
+  </ul>
+  <p>
+   The
+   <code>
+    strict_freeform_reports
+   </code>
+   parameter is intended for migration only and will
+be the default behavior in the near future, so it is recommended you
+enable this when sending reports to avoid unexpected errors later.
+  </p>
+  <p>
+   See
+   <a href="#GET_r_%7Bsubreddit%7D_about_rules">
+    /r/{subreddit}/about/rules
+   </a>
+   for
+for more about subreddit rules, and
+   <a href="#GET_r_%7Bsubreddit%7D_about">
+    /r/{subreddit}/about
+   </a>
+   for more about
+   <code>
+    free_form_reports
+   </code>
+   .
+  </p>
  </div>
  <table class="parameters">
   <tr>
@@ -125,6 +175,16 @@ For links and comments, the thing is implicitly hidden as well (see
    <td>
     <p>
      a string no longer than 1000 characters
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    strict_freeform_reports
+   </th>
+   <td>
+    <p>
+     boolean value
     </p>
    </td>
   </tr>

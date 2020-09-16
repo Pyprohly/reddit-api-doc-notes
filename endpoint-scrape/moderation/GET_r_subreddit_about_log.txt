@@ -366,6 +366,10 @@ returned to only those of the type specified.
      <code>
       submit_content_rating_survey
      </code>
+     ,
+     <code>
+      adjust_post_crowd_control_level
+     </code>
      )
     </p>
    </td>

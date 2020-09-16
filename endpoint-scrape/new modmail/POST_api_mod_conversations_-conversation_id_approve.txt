@@ -1,0 +1,22 @@
+POST /api/mod/conversations/:conversation_id/approve
+modmail
+
+<div class="info">
+ <div class="md">
+  <p>
+   Approve the non mod user associated with a particular conversation.
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    conversation_id
+   </th>
+   <td>
+    <p>
+     base36 modmail conversation id
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

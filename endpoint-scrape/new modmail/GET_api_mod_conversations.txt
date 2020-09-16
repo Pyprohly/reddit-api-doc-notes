@@ -88,6 +88,10 @@ modmail
      </code>
      ,
      <code>
+      inbox
+     </code>
+     ,
+     <code>
       default
      </code>
      ,
