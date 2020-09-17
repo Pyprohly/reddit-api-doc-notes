@@ -224,8 +224,8 @@ All the 'additional URL param' tables in the :ref:`frontpage listings section <f
 .. seealso:: https://www.reddit.com/dev/api/#section_listings
 
 
-Account listings
-^^^^^^^^^^^^^^^^
+Account user listings
+^^^^^^^^^^^^^^^^^^^^^
 
 Variants
 ~~~~~~~~
@@ -265,10 +265,7 @@ Overview
 
 *scope: read*
 
-If the client is not logged in then the endpoints return the string `"{}"`.
-Notice this is a string of an empty JSON object.
-
-The user objects contained in the listings have the following fields:
+Listings contain user objects that have the following fields:
 
 .. csv-table:: User Item Object
    :header: "Field","Type (hint)","Description"
@@ -279,8 +276,64 @@ The user objects contained in the listings have the following fields:
    "name","string","The name of the user."
    "id","string","The full ID of the user. E.g., `t2_4x25quk`"
 
-Also see User listings for more relevant listings.
+If the client is not logged in then the endpoints return the string `"{}"`.
+Notice this is a string of an empty JSON object.
 
+See :ref:`Additional URL Params <frontpage_listings_additional_url_params>`.
+
+Also see :ref:`User listings <user_listings>` for more relevant listings.
+
+.. seealso:: https://www.reddit.com/dev/api/#GET_prefs_{where}
+
+
+Account subreddit listings
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Variants
+~~~~~~~~
+
+*Subscribed*
+""""""""""""
+
+.. http:get:: /subreddits/mine/subscriber
+
+Subreddits the user is subscribed to.
+
+*Contributor*
+"""""""""""""
+
+.. http:get:: /subreddits/mine/contributor
+
+Subreddits the user is an approved user in.
+
+*Moderator*
+"""""""""""
+
+.. http:get:: /subreddits/mine/moderator
+
+Subreddits the user is a moderator of.
+
+*Streams*
+"""""""""
+
+.. http:get:: /subreddits/mine/streams
+
+Subscribed to subreddits that contain hosted video links.
+
+Overview
+~~~~~~~~
+
+*scope: mysubreddits*
+
+Listings return Subreddit objects.
+
+If the client is not logged in then the endpoints return the string `"{}"`.
+Notice this is a string of an empty JSON object.
+
+See :ref:`Additional URL Params <frontpage_listings_additional_url_params>`.
+
+
+.. _user_listings:
 
 User listings
 ^^^^^^^^^^^^^

@@ -13,7 +13,7 @@ Schema
    :widths: 8, 6, 30
    :escape: \
 
-   "approved_at_utc","integer?","Unix time when the comment was approved. `null` if not approved."
+   "approved_at_utc","integer?","Unix time when the comment was approved. `null` if not approved or the current user is not a moderator of the subreddit."
    "subreddit","string","The subreddit name. E.g., `IAmA`"
    "selftext","string","The body text of the submission. Empty string if it is a link post."
    "author_fullname?","string","The full ID of the author.
@@ -29,21 +29,22 @@ Schema
    "link_flair_richtext","unknown array",""
    "subreddit_name_prefixed","string","Same as the `subreddit` field but prefixed with `r/`. E.g., `r/IAmA`."
    "hidden","boolean",""
-   "pwls","integer","Unknown. Often `6`. Possibly stands for \"parent white list status\"?"
+   "pwls","integer?","Unknown. Possibly stands for \"parent white list status\"?"
    "link_flair_css_class","unknown?",""
    "downs","integer","Always `0`."
-   "thumbnail_height","integer","Thumbnail height."
-   "hide_score","boolean","Whether the upvote count is currently hidden."
+   "thumbnail_height","integer?","Thumbnail height. `null` if text post."
+   "hide_score","boolean","Whether the score is currently hidden."
    "name","string","The post's full ID (with prefix `t3_`). Also see `id`."
    "quarantine","boolean","Whether the post is in a quarantined subreddit."
    "link_flair_text_color","string",""
+   "upvote_ratio","float","Upvote ratio."
    "author_flair_background_color","string?",""
    "subreddit_type","string","One of `public`, `private`, `restricted`, `archived`, `employees_only`,
    `gold_only`, or `gold_restricted`."
    "ups","integer","Same as `score`."
    "total_awards_received","integer","Number of rewards on the post."
    "media_embed","unknown object",""
-   "thumbnail_width","integer","Thumbnail width."
+   "thumbnail_width","integer?","Thumbnail width. `null` if text post."
    "author_flair_template_id","unknown?",""
    "is_original_content","boolean","Whether the post is marked as OC."
    "user_reports","unknown array",""
@@ -55,8 +56,8 @@ Schema
    "secure_media_embed","unknown object",""
    "link_flair_text","string?","Post flair text."
    "can_mod_post","boolean",""
-   "score","integer","The number of upvotes (minus downvotes)."
-   "approved_by","string?","The name of the redditor who approved this post.[needs checking]"
+   "score","integer","The number of upvotes (minus downvotes). This attribute will work even if `hide_score` is `true`."
+   "approved_by","string?","The name of the redditor who approved this post. `null` if not approved or the current user is not a moderator of the subreddit."
    "author_premium?","boolean","Whether or not the submitter has Reddit Premium.
 
    This attribute is not available if the post was removed or deleted."
@@ -75,8 +76,8 @@ Schema
    "created","float","Legacy. Same as `created_utc` but subtract 28800."
    "link_flair_type","string","Possible values: `text`, `richtext`, ...?"
    "wls","integer","Unknown. Often `6`. Possibly stands for \"white list status\"?"
-   "removed_by_category","unknown?",""
-   "banned_by","unknown?",""
+   "removed_by_category","string?",""
+   "banned_by","string?","The name of the redditor who banned this post. `null` if not approved or the current user is not a moderator of the subreddit."
    "author_flair_type?","string","This attribute is not available if the post was removed or deleted."
    "domain","string","If a link post, the domain of the link. If a text post, it is
    the name of the subreddit prefixed with `self.`, e.g., `self.IAmA`."
@@ -89,7 +90,7 @@ Schema
    "archived","boolean","Whether the post is archived. Archived posts cannot be commented on, but the author can still edit the OP."
    "no_follow","boolean",""
    "is_crosspostable","boolean","Whether the post can be crossposted. Will be `false` if the post was removed or deleted."
-   "pinned","boolean","Possibly same as `stickied`?"
+   "pinned","boolean","Whether the post is pinned to the poster's profile."
    "over_18","boolean","Whether the submission has been marked as NSFW."
    "preview?","unknown object","This attribute is not available if the post was removed or deleted."
    "all_awardings","unknown object",""
@@ -103,7 +104,7 @@ Schema
    "locked","boolean","Whether the post has been locked. https://www.reddit.com/r/modnews/comments/3qguqv/moderators_lock_a_post/"
    "author_flair_text","string?",""
    "visited","boolean",""
-   "removed_by","unknown?",""
+   "removed_by","string?","The name of the redditor who removed this post. `null` if not removed or the current user is not a moderator of the subreddit."
    "num_reports","unknown?",""
    "distinguished","unknown?",""
    "subreddit_id","string","The full ID of the subreddit that was posted to. E.g., `t5_2qzb6` for `r/IAmA`."
@@ -125,8 +126,8 @@ Schema
    "author_flair_text_color","string?",""
    "permalink","string","The uri of the post without the domain.
    E.g., `/r/IAmA/comments/erd8si/i_was_born_with_two_y_chromosomes_ama/`"
-   "parent_whitelist_status","string",""
-   "stickied","boolean","Possibly same as `pinned`?[needs checking]"
+   "parent_whitelist_status","unknown?",""
+   "stickied","boolean","Whether the post is a 'stickied' post in the subreddit."
    "url","string","If a text post, it is the url of the submission. If a link post,
    it is the url of the link. Also see `permalink`."
    "subreddit_subscribers","integer","The number of subscribers in the subreddit."
@@ -134,7 +135,27 @@ Schema
    "num_crossposts","integer",""
    "media","unknown?",""
    "is_video","boolean",""
+   "spam?","boolean","`true` if the submission is marked as spam else `false`.
 
+   This field is not available if the current user is not a moderator of the subreddit
+   (or there's no user context)."
+   "ignore_reports?","boolean","`true` if ignoring reports for the submission, else `false`.
+
+   This field is not available if the current user is not a moderator of the subreddit
+   (or there's no user context)."
+   "approved?","boolean","`true` if the submission is approved.
+
+   This field is not available if the current user is not a moderator of the subreddit
+   (or there's no user context)."
+   "removed?","boolean","`true` if the submission is removed.
+
+   This field is not available if the current user is not a moderator of the subreddit
+   (or there's no user context)."
+   "rte_mode?","string","The string 'markdown'.
+
+   Field not available if the post is not a text post.
+   Field not available if no user context is available[?]"
+   "url_overridden_by_dest","string",""
 
 Actions
 -------
