@@ -425,3 +425,40 @@ Additional URL params for *Overview*, *Comments*, *Submissions*:
    :escape: \
 
    "403","You don't have permission to view this listing."
+
+
+Subreddit listings
+^^^^^^^^^^^^^^^^^^
+
+Variants
+~~~~~~~~
+
+*Popular*
+"""""""""
+
+.. http:get:: /subreddits/popular
+.. http:get:: /subreddits/default
+
+*New*
+"""""
+
+.. http:get:: /subreddits/new
+
+*Premium*
+"""""""""
+
+.. http:get:: /subreddits/premium
+.. http:get:: /subreddits/gold
+
+Returns an empty listing structure if the user does not have Reddit Premium.
+
+Overview
+~~~~~~~~
+
+*scope: read*
+
+Subreddit listings.
+
+Returns a 'Listing' listing kind.
+
+See :ref:`Additional URL Params <frontpage_listings_additional_url_params>`.

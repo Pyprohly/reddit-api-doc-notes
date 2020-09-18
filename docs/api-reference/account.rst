@@ -192,6 +192,7 @@ Returns an object with the following fields:
 
 .. seealso:: https://www.reddit.com/dev/api/#GET_api_v1_me_friends_{username}
 
+
 List friends
 ~~~~~~~~~~~~
 
@@ -274,3 +275,35 @@ Returns zero data on success.
    "NOT_FRIEND","That user is not a friend."
 
 .. seealso:: https://www.reddit.com/dev/api/#DELETE_api_v1_me_friends_{username}
+
+
+Add trusted user
+~~~~~~~~~~~~~~~~
+
+.. http:post:: /api/add_whitelisted
+
+Add a user to your trusted users list.
+
+https://www.reddit.com/prefs/blocked/
+
+Trusted users will always be able to send you PMs.
+
+.. csv-table:: URL Params
+   :header: "Field","Type (hint)","Description"
+   :escape: \
+
+   "name","string","The name of the user."
+
+|
+
+.. csv-table:: API Errors (variant 2)
+   :header: "Error","Description"
+   :escape: \
+
+   "USER_REQUIRED","you must login
+
+   \"Please log in to do that.\""
+   "CANT_WHITELIST_AN_ENEMY","\"You can't add a blocked user as a trusted user.\""
+   "USER_DOESNT_EXIST","The specified user in `name` does not exist or the `name` field was not specified.
+
+   \"that user doesn't exist\""
