@@ -8,7 +8,7 @@ Overview
 Schema
 ~~~~~~
 
-.. csv-table:: Submission Object
+.. csv-table:: Subreddit Object
    :header: "Field","Type (hint)","Description"
    :widths: 8, 6, 30
    :escape: \
@@ -26,7 +26,7 @@ Schema
    "allow_videogifs","boolean",""
    "allow_videos","boolean",""
    "banner_background_color","string","E.g., `#7193ff`"
-   "banner_background_image","string","The url of the background banner image.",
+   "banner_background_image","string","The url of the background banner image."
    "banner_img","string",""
    "banner_size","unknown?",""
    "can_assign_link_flair","boolean",""
@@ -82,7 +82,7 @@ Schema
    "subscribers","integer","The number of subscribers"
    "suggested_comment_sort","unknown?",""
    "title","string","Seems to be the same as `display_name`?"
-   "url","string"," "E.g., `/r/AskReddit/`"
+   "url","string","E.g., `/r/AskReddit/`"
    "user_can_flair_in_sr","unknown?",""
    "user_flair_background_color","unknown?",""
    "user_flair_css_class","unknown?",""

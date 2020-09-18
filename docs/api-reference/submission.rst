@@ -67,16 +67,14 @@ Schema
    "author_flair_css_class","string?",""
    "author_flair_richtext?","unknown array","This attribute is not available if the post was removed or deleted."
    "gildings","unknown object",""
-   "post_hint?","string","`\"self\"` if a text post. `\"link\"` if a link post.
-
-   This attribute is not available if the post was removed or deleted."
+   "post_hint?","string","E.g., `\"image\"`"
    "content_categories","unknown?",""
    "is_self","boolean","`true` if it is a text post. `false` if link post."
    "mod_note","unknown?",""
    "created","float","Legacy. Same as `created_utc` but subtract 28800."
    "link_flair_type","string","Possible values: `text`, `richtext`, ...?"
    "wls","integer","Unknown. Often `6`. Possibly stands for \"white list status\"?"
-   "removed_by_category","string?",""
+   "removed_by_category","string?","Possible values: null, `anti_evil_ops`, `moderator`, ...?"
    "banned_by","string?","The name of the redditor who banned this post. `null` if not approved or the current user is not a moderator of the subreddit."
    "author_flair_type?","string","This attribute is not available if the post was removed or deleted."
    "domain","string","If a link post, the domain of the link. If a text post, it is
