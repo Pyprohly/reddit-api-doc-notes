@@ -39,8 +39,7 @@ Schema
    "link_flair_text_color","string",""
    "upvote_ratio","float","Upvote ratio."
    "author_flair_background_color","string?",""
-   "subreddit_type","string","One of `public`, `private`, `restricted`, `archived`, `employees_only`,
-   `gold_only`, or `gold_restricted`."
+   "subreddit_type","string","One of `public`, `private`, `restricted`, `archived`, `employees_only`, `gold_only`, `gold_restricted`, or `user`."
    "ups","integer","Same as `score`."
    "total_awards_received","integer","Number of rewards on the post."
    "media_embed","unknown object",""
@@ -49,7 +48,7 @@ Schema
    "is_original_content","boolean","Whether the post is marked as OC."
    "user_reports","unknown array",""
    "secure_media","unknown?",""
-   "is_reddit_media_domain","boolean","Whether media was uploaded to a reddit media host, that is
+   "is_reddit_media_domain","boolean","Whether media is reddit hosted, that is
    either i.redd.it for images or v.redd.it for videos. This will always be false for a text post.[needs checking]"
    "is_meta","boolean",""
    "category","unknown?",""
@@ -74,7 +73,7 @@ Schema
    "created","float","Legacy. Same as `created_utc` but subtract 28800."
    "link_flair_type","string","Possible values: `text`, `richtext`, ...?"
    "wls","integer","Unknown. Often `6`. Possibly stands for \"white list status\"?"
-   "removed_by_category","string?","Possible values: null, `anti_evil_ops`, `moderator`, ...?"
+   "removed_by_category","string?","`null` if not removed, otherwise possible values: `anti_evil_ops`, `community_ops`, `legal_operations`, `copyright_takedown`, `reddit`, `user`, `deleted`, `moderator`, `automod_filtered`?"
    "banned_by","string?","The name of the redditor who banned this post. `null` if not approved or the current user is not a moderator of the subreddit."
    "author_flair_type?","string","This attribute is not available if the post was removed or deleted."
    "domain","string","If a link post, the domain of the link. If a text post, it is
@@ -82,7 +81,7 @@ Schema
    "allow_live_comments","boolean",""
    "selftext_html","string?","The HTML of the post. This will be null if it is a link post."
    "likes","unknown?",""
-   "suggested_sort","unknown?",""
+   "suggested_sort","string?","`null` if suggested sort is not set, or one of `confidence` (best), `top`, `new`, `controversial`, `old`, `qa`."
    "banned_at_utc","unknown?",""
    "view_count","unknown?",""
    "archived","boolean","Whether the post is archived. Archived posts cannot be commented on, but the author can still edit the OP."
@@ -116,7 +115,7 @@ Schema
    or `[deleted]` if the post was removed by the author."
    "discussion_type","unknown?",""
    "num_comments","integer","The number of comments."
-   "send_replies","boolean",""
+   "send_replies","boolean","Whether an inbox message will be sent to you when the submission receives a new top-level comment."
    "whitelist_status","string",""
    "contest_mode","boolean","Whether the post is in contest mode or not."
    "mod_reports","unknown array",""
@@ -152,8 +151,8 @@ Schema
    "rte_mode?","string","The string 'markdown'.
 
    Field not available if the post is not a text post.
-   Field not available if no user context is available[?]"
-   "url_overridden_by_dest","string",""
+   Field not available if no user context is available."
+   "url_overridden_by_dest?","string","The url of the linked item for the link post (`is_self` is `true`)."
 
 Actions
 -------
@@ -463,7 +462,7 @@ Mark NSFW
 
 *scope: modposts*
 
-Save a Submission or Comment.
+Mark a Submission as NSFW.
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
@@ -501,7 +500,7 @@ Mark Spoiler
 
 *scope: modposts*
 
-Save a Submission or Comment.
+Mark a Submission as spolier.
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"

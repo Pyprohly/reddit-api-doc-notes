@@ -1,9 +1,9 @@
 
 Listings
-========
+########
 
 Overview
---------
+********
 
 Listings are a protocol for controlling pagination of Reddit content.
 Endpoints that return listings share five common parameters:
@@ -56,50 +56,55 @@ must be greater than the number of stickied posts, and the `before` value will b
 first stickied post.
 
 
-Listing implementations
------------------------
+Implementations
+***************
 
-Frontpage listings
-^^^^^^^^^^^^^^^^^^
+Frontpage
+=========
+
+Common listings
+---------------
 
 Variants
 ~~~~~~~~
 
 *Best*
-""""""
+^^^^^^
 
 .. http:get:: /
 .. http:get:: /best
 
 *Hot*
-"""""
+^^^^^
 
 .. http:get:: /hot
 
 *Rising*
-""""""""
+^^^^^^^^
 
 .. http:get:: /rising
 
 *New*
-"""""
+^^^^^
 
 .. http:get:: /new
 
 *Top*
-"""""
+^^^^^
 
 .. http:get:: /top
 
 *Controversial*
-"""""""""""""""
+^^^^^^^^^^^^^^^
 
 .. http:get:: /controversial
 
 *Gilded*
-""""""""
+^^^^^^^^
 
 .. http:get:: /gilded
+
+A listing of comments and submissions.
 
 .. _frontpage_overview:
 
@@ -111,6 +116,8 @@ Overview
 Get a submission listing of your frontpage. This will include submissions from your list of
 subscribed subreddits, otherwise, if not logged in, Reddit will decide which subreddits to
 retrieve submissions from to populate the listing.
+
+The listings contain only submission objects, except as indicated otherwise.
 
 .. _frontpage_listings_additional_url_params:
 
@@ -161,48 +168,60 @@ Additional URL params for *Top* and *Controversial*:
 
 .. seealso:: https://www.reddit.com/dev/api/#section_listings
 
+*New comments*
+--------------
 
-Subreddit submission listings
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. http:get:: /r/{subreddit}/comments
+
+A listing of comments. This listing does not support the `sr_detail` parameter.
+
+
+Subreddit listings
+==================
+
+Common listings
+---------------
 
 Variants
 ~~~~~~~~
 
 *Hot*
-"""""
+^^^^^
 
 .. http:get:: /r/{subreddit}
 .. http:get:: /r/{subreddit}/hot
 
 *Best*
-""""""
+^^^^^^
 
 .. http:get:: /r/{subreddit}/best
 
 *Rising*
-""""""""
+^^^^^^^^
 
 .. http:get:: /r/{subreddit}/rising
 
 *Top*
-"""""
+^^^^^
 
 .. http:get:: /r/{subreddit}/top
 
 *New*
-"""""
+^^^^^
 
 .. http:get:: /r/{subreddit}/new
 
 *Controversial*
-"""""""""""""""
+^^^^^^^^^^^^^^^
 
 .. http:get:: /r/{subreddit}/controversial
 
 *Gilded*
-""""""""
+^^^^^^^^
 
 .. http:get:: /r/{subreddit}/gilded
+
+A listing of comments and submissions.
 
 Overview
 ~~~~~~~~
@@ -216,16 +235,25 @@ The hot listing may include pinned posts at the start of the listing.
 
 `/best` returns the same listing as `/hot`.
 
-The listings contain submission objects. `/gilded` is a
-a mix of submission and comment objects.
+The listings contain only submission objects, except as indicated otherwise.
 
-All the 'additional URL param' tables in the :ref:`frontpage listings section <frontpage_overview>` apply.
+All 'additional URL param' tables in the :ref:`frontpage listings section <frontpage_overview>` apply.
 
 .. seealso:: https://www.reddit.com/dev/api/#section_listings
 
+*New comments*
+--------------
 
-Account user listings
-^^^^^^^^^^^^^^^^^^^^^
+.. http:get:: /r/{subreddit}/comments
+
+A listing of comments. This listing does not support the `sr_detail` parameter.
+
+
+Account
+=======
+
+User listings
+-------------
 
 Variants
 ~~~~~~~~
@@ -233,7 +261,7 @@ Variants
 .. _account_listings_friends:
 
 *Friends*
-"""""""""
+^^^^^^^^^
 
 .. http:get:: /api/v1/me/friends
 .. http:get:: /prefs/friends
@@ -243,7 +271,7 @@ Variants
 structure matches that of `/api/v1/me/friends`.
 
 *Blocked*
-"""""""""
+^^^^^^^^^
 
 .. http:get:: /prefs/blocked
 
@@ -251,7 +279,7 @@ structure matches that of `/api/v1/me/friends`.
    Although `/api/v1/me/blocked` is documented requesting against this endpoint returns a 404.
 
 *Trusted*
-"""""""""
+^^^^^^^^^
 
 .. http:get:: /prefs/messaging
 
@@ -286,35 +314,35 @@ Also see :ref:`User listings <user_listings>` for more relevant listings.
 .. seealso:: https://www.reddit.com/dev/api/#GET_prefs_{where}
 
 
-Account subreddit listings
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+Subreddit listings
+------------------
 
 Variants
 ~~~~~~~~
 
 *Subscribed*
-""""""""""""
+^^^^^^^^^^^^
 
 .. http:get:: /subreddits/mine/subscriber
 
 Subreddits the user is subscribed to.
 
 *Contributor*
-"""""""""""""
+^^^^^^^^^^^^^
 
 .. http:get:: /subreddits/mine/contributor
 
 Subreddits the user is an approved user in.
 
 *Moderator*
-"""""""""""
+^^^^^^^^^^^
 
 .. http:get:: /subreddits/mine/moderator
 
 Subreddits the user is a moderator of.
 
 *Streams*
-"""""""""
+^^^^^^^^^
 
 .. http:get:: /subreddits/mine/streams
 
@@ -333,70 +361,95 @@ Notice this is a string of an empty JSON object.
 See :ref:`Additional URL Params <frontpage_listings_additional_url_params>`.
 
 
+Comment and submission listings
+-------------------------------
+
+See :ref:`User listings <user_listings>`.
+
+
 .. _user_listings:
 
-User listings
-^^^^^^^^^^^^^
+User
+====
+
+Common listings
+---------------
 
 Variants
 ~~~~~~~~
 
 *Overview*
-""""""""""
+^^^^^^^^^^
 
 .. http:get:: /user/{username}
 .. http:get:: /user/{username}/overview
 
 A listing of submissions and comments.
 
+Available publicly for any user.
+
 *Submitted*
-"""""""""""
+^^^^^^^^^^^
 
 .. http:get:: /user/{username}/submitted
 
 A listing of submissions.
 
+Available publicly for any user.
+
 *Comments*
-""""""""""
+^^^^^^^^^^
 
 .. http:get:: /user/{username}/comments
 
 A listing of comments.
 
+Available publicly for any user.
+
+*Gilded*
+^^^^^^^^
+
+.. http:get:: /user/{username}/gilded
+
+A listing of submissions and comments.
+
+Available publicly for any user.
+
 *Upvoted*
-"""""""""
+^^^^^^^^^
 
 .. http:get:: /user/{username}/upvoted
 
 A listing of submissions.
 
+Only available publicly for a given user if their 'make my votes public' privacy option is checked.
+
 *Downvoted*
-"""""""""""
+^^^^^^^^^^^
 
 .. http:get:: /user/{username}/downvoted
 
 A listing of submissions.
 
+Only available publicly for a given user if their 'make my votes public' privacy option is checked.
+
 *Hidden*
-""""""""
+^^^^^^^^
 
 .. http:get:: /user/{username}/hidden
 
 A listing of submissions.
 
+Not available publicly for any user.
+
 *Saved*
-"""""""
+^^^^^^^
 
 .. http:get:: /user/{username}/saved
 
 A listing of submissions.
 
-*Gilded*
-""""""""
-
-.. http:get:: /user/{username}/gilded
-
-A listing of submissions and comments.
+Not available publicly for any user.
 
 Overview
 ~~~~~~~~
@@ -427,25 +480,28 @@ Additional URL params for *Overview*, *Comments*, *Submissions*:
    "403","You don't have permission to view this listing."
 
 
-Subreddit listings
-^^^^^^^^^^^^^^^^^^
+Subreddit
+=========
+
+Main listings
+-------------
 
 Variants
 ~~~~~~~~
 
 *Popular*
-"""""""""
+^^^^^^^^^
 
 .. http:get:: /subreddits/popular
 .. http:get:: /subreddits/default
 
 *New*
-"""""
+^^^^^
 
 .. http:get:: /subreddits/new
 
 *Premium*
-"""""""""
+^^^^^^^^^
 
 .. http:get:: /subreddits/premium
 .. http:get:: /subreddits/gold

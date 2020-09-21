@@ -13,8 +13,8 @@ Schema
    :escape: \
 
    "all_awardings","unknown array",""
-   "approved_at_utc","integer?","Unix time when the comment was approved. `null` if not approved."
-   "approved_by","string?","The name of the redditor who approved this post.[needs checking]"
+   "approved_at_utc","integer?","Unix time when the comment was approved. `null` if not approved or the current user is not a moderator of the subreddit."
+   "approved_by","string?","The name of the redditor who approved this post. `null` if not approved or the current user is not a moderator of the subreddit."
    "archived","boolean","Whether the post is archived. Archived posts cannot be commented on, but the author can still edit the OP."
    "associated_award","unknown?",""
    "author","string","The redditor name. Possibly `[removed]` if the post was removed by a mod,
@@ -46,9 +46,9 @@ Schema
    "controversiality","integer",""
    "created","float","Legacy. Same as `created_utc` but subtract 28800. Will always be a whole number."
    "created_utc","float","Unix timestamp of when the post was made."
-   "distinguished","unknown?",""
+   "distinguished","string?","`null` if not distinguished, otherwise one of `moderator`, ...?"
    "downs","integer","Always `0`."
-   "edited","boolean | float","`false` if the post wasn't edited, otherwise a Unix timestamp of when it was edited."
+   "edited","boolean | float","`false` if the post wasn't edited, otherwise a Unix timestamp of when it was edited. Always a whole number."
    "gilded","integer",""
    "gildings","unknown object",""
    "id","string","The ID of the comment (without the `t1_` prefix). Also see `name`."
@@ -70,20 +70,40 @@ Schema
    "replies","object | string","A listing object if this object was drawn from a comment tree,
    otherwise an empty string."
    "report_reasons","unknown?",""
-   "saved","boolean","Whether the authenticated user has saved this post. For clients with no user context this will always be false."
+   "saved","boolean","Whether the authenticated user has saved this comment. For clients with no user context this will always be false."
    "score","integer","The number of upvotes (minus downvotes)."
    "score_hidden","boolean","Whether the score is hidden."
-   "send_replies","boolean",""
-   "stickied","boolean","Possibly same as `pinned`?[needs checking]"
+   "send_replies","boolean","Whether an inbox message will be sent to you when the comment receives a reply."
+   "stickied","boolean","Whether the comment is 'stickied' in the thread. If `true` then the `distinguished` should also be not `null`."
    "subreddit","string","The subreddit name. E.g., `IAmA`"
    "subreddit_id","string","The full ID of the subreddit that was posted to. E.g., `t5_2qzb6` for `r/IAmA`."
    "subreddit_name_prefixed","string","Same as the `subreddit` field but prefixed with `r/`. E.g., `r/IAmA`."
-   "subreddit_type","string","One of `public`, `private`, `restricted`, `archived`, `employees_only`,
+   "subreddit_type","string","One of `public`, `private`, `restricted`, `archived`, `employees_only`, `gold_only`, `gold_restricted`, or `user`."
    "top_awarded_type","unknown?",""
    "total_awards_received","integer","Number of rewards on the comment."
    "treatment_tags","unknown array",""
    "ups","integer","Same as `score`."
    "user_reports","unknown array",""
+   "rte_mode?","string","The string 'markdown'.
+
+   Field not available if the post is not a text post.
+   Field not available if no user context is available."
+   "removed?","boolean","`true` if the submission is removed.
+
+   This field is not available if the current user is not a moderator of the subreddit
+   (or there's no user context)."
+   "approved?","boolean","`true` if the submission is approved.
+
+   This field is not available if the current user is not a moderator of the subreddit
+   (or there's no user context)."
+   "ignore_reports?","boolean","`true` if ignoring reports for the comment, else `false`.
+
+   This field is not available if the current user is not a moderator of the subreddit
+   (or there's no user context)."
+   "spam?","boolean","`true` if the submission is marked as spam else `false`.
+
+   This field is not available if the current user is not a moderator of the subreddit
+   (or there's no user context)."
 
 
 Actions
@@ -160,18 +180,6 @@ Save
 ~~~~
 
 See :ref:`here <post_api_save>`.
-
-
-Mark NSFW
-~~~~~~~~~
-
-See :ref:`here <post_api_marknsfw>`.
-
-
-Mark Spoiler
-~~~~~~~~~~~~
-
-See :ref:`here <post_api_spoiler>`.
 
 
 Distinguish
