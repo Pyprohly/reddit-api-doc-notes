@@ -5,6 +5,8 @@ Submission
 Overview
 --------
 
+.. _submission_schema:
+
 Schema
 ~~~~~~
 
@@ -111,7 +113,7 @@ Schema
    "id","string","The ID of the submission (without the `t3_` prefix). Also see `name`."
    "is_robot_indexable","boolean","Possibly always `false` for archived posts?[needs checking]"
    "report_reasons","unknown?",""
-   "author","string","The redditor name. Possibly `[removed]` if the post was removed by a mod,
+   "author","string","The redditor name. Possibly `[removed]` if the post was removed
    or `[deleted]` if the post was removed by the author."
    "discussion_type","unknown?",""
    "num_comments","integer","The number of comments."
@@ -171,6 +173,7 @@ Return Submission, Comment, and Subreddit resource info.
 The `id` parameter will take up to 100 IDs. Any ID not found will be ignored.
 Alphabetic characters in the ID must be lowercase or they will be ignored.
 If more than 100 IDs are given, a blank listing structure is returned.
+If none of the IDs are found, a blank listing structure is returned.
 
 .. csv-table:: URL Params
    :header: "Field","Type (hint)","Description"
@@ -761,11 +764,3 @@ If `state` is not provided, `true` (enable) is assumed.
    "USER_REQUIRED","you must login"
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_sendreplies
-
-
-Get More Comments
-~~~~~~~~~~~~~~~~~
-
-.. http:post:: /api/morechildren
-
-TODO.

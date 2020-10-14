@@ -62,8 +62,8 @@ Implementations
 Frontpage
 =========
 
-Common listings
----------------
+Main listings
+-------------
 
 Variants
 ~~~~~~~~
@@ -84,15 +84,15 @@ Variants
 
 .. http:get:: /rising
 
-*New*
-^^^^^
-
-.. http:get:: /new
-
 *Top*
 ^^^^^
 
 .. http:get:: /top
+
+*New*
+^^^^^
+
+.. http:get:: /new
 
 *Controversial*
 ^^^^^^^^^^^^^^^
@@ -127,8 +127,14 @@ Additional URL params:
    :header: "Field","Type (hint)","Description"
    :escape: \
 
-   "sr_detail","string","Whether to include in each submission an `sr_detail` key that maps
-   to an object containing subreddit information in which the submission item belongs.
+   "sr_detail","string","Whether to include in each submission an `sr_detail` key that holds
+   an object containing subreddit information in which the submission/comment item belongs.
+
+   This subreddit object has different fields than the ones returned from `/api/info`.
+   It has half as many fields and also a couple different ones.
+
+   Note that submission and comment objects already contain the name and ID of the containing
+   subreddit which is enough information to fetch a full subreddit object from `/api/info`.
 
    A string that starts with `0` or `F` or `f` is treated as a falsy string and explicitly
    disables this option. All other strings are truthy."
@@ -168,19 +174,38 @@ Additional URL params for *Top* and *Controversial*:
 
 .. seealso:: https://www.reddit.com/dev/api/#section_listings
 
+.. _front_page_new_comments:
+
 *New comments*
 --------------
 
-.. http:get:: /r/{subreddit}/comments
+.. http:get:: /comments
 
 A listing of comments. This listing does not support the `sr_detail` parameter.
 
+Comment objects have the following extra fields:
 
-Subreddit listings
-==================
+.. _frontpage_new_comments_comment_object:
 
-Common listings
----------------
+.. csv-table:: Comment Object extra fields
+   :header: "Field","Type (hint)","Description"
+   :escape: \
+
+   "num_comments","integer","The number of comments in the submission containing this comment."
+   "quarantine","boolean","Whether this comment is in a quarantined subreddit."
+   "over_18","boolean","Whether the submission of this comment has been marked as NSFW."
+   "link_title","string","Title of the submission containing this comment."
+   "link_author","string","The submission redditor name. Possibly `[removed]` if the post was removed
+   or `[deleted]` if the post was removed by the author."
+   "link_url","string","Equivalent to the Submission object `url` field. If a text post, it is the url of the submission. If a link post, it is the url of the link. Also see permalink."
+   "link_permalink","string","The url of the submission. Unlike the Submission object `permalink` field this url will include the domain name."
+
+
+Subreddit submission listings
+=============================
+
+Main listings
+-------------
 
 Variants
 ~~~~~~~~
@@ -195,6 +220,8 @@ Variants
 ^^^^^^
 
 .. http:get:: /r/{subreddit}/best
+
+This is the same as the *Hot* listing.
 
 *Rising*
 ^^^^^^^^
@@ -241,12 +268,16 @@ All 'additional URL param' tables in the :ref:`frontpage listings section <front
 
 .. seealso:: https://www.reddit.com/dev/api/#section_listings
 
+.. _subreddit_new_comments:
+
 *New comments*
 --------------
 
 .. http:get:: /r/{subreddit}/comments
 
 A listing of comments. This listing does not support the `sr_detail` parameter.
+
+Comment objects have extra fields. See :ref:`here <frontpage_new_comments_comment_object>`.
 
 
 Account
@@ -518,3 +549,41 @@ Subreddit listings.
 Returns a 'Listing' listing kind.
 
 See :ref:`Additional URL Params <frontpage_listings_additional_url_params>`.
+
+
+Submission
+==========
+
+*Duplicates*
+------------
+
+.. http:get:: [/r/{subreddit}]/duplicates/{article}
+
+*scope: read*
+
+Return a listing of 'other discussions' for the submission.
+
+`{subreddit}` can be obmitted. If given it must be correctly match the subreddit for the
+article ID otherwise an empty listing will be returned.
+`{article}` is a submission ID36.
+
+See :ref:`Additional URL Params <frontpage_listings_additional_url_params>`.
+
+More additional URL params:
+
+.. csv-table:: URL Params
+   :header: "Field","Type (hint)","Description"
+   :escape: \
+
+   "crossposts_only","boolean","If truthy (any string matching `/^[^0Ff]/`), return only crossposts."
+   "sort","string","One of `num_comments`, `new`."
+   "sr","string","Filter by subreddit name. If the subreddit name specified doesn't exist then
+   no filter will be applied and all posts will be returned."
+
+|
+
+.. csv-table:: HTTP Errors
+   :header: "Status Code","Description"
+   :escape: \
+
+   "404","The article ID could not be found."

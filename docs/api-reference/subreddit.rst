@@ -126,10 +126,9 @@ Get by name
 Return information about the subreddit by name.
 
 Returns a JSON object with two keys: `kind` and `data`.
-The value of `kind` is always `t5`, and then `data` is your subreddit object.
+The value of `kind` is `t5`, and then `data` is your subreddit object.
 
-If the subreddit is not found then the endpoint returns an empty listing
-(strangely)::
+If the subreddit is not found then the endpoint returns an empty listing (strangely)::
 
    {"kind": "Listing", "data": {"modhash": null, "dist": 0, "children": [], "after": null, "before": null}}
 
@@ -138,7 +137,9 @@ If the subreddit is not found then the endpoint returns an empty listing
    :escape: \
 
    "403","You don't have permission to access this subreddit."
-   "404","You specified the name of a special subreddit: `all`, `popular`, `friends`, `mod`"
+   "404","* You specified the name of a special subreddit: `all`, `popular`, `friends`, `mod`.
+
+   * The subreddit name specified contains invalid characters. This will return a 'page not found' HTML document."
 
 .. seealso:: https://www.reddit.com/dev/api/#GET_r_{subreddit}_about
 
