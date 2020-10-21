@@ -127,7 +127,7 @@ Additional URL params:
    :header: "Field","Type (hint)","Description"
    :escape: \
 
-   "sr_detail","string","Whether to include in each submission an `sr_detail` key that holds
+   "sr_detail","boolean","Whether to include in each submission an `sr_detail` key that holds
    an object containing subreddit information in which the submission/comment item belongs.
 
    This subreddit object has different fields than the ones returned from `/api/info`.
@@ -201,8 +201,8 @@ Comment objects have the following extra fields:
    "link_permalink","string","The url of the submission. Unlike the Submission object `permalink` field this url will include the domain name."
 
 
-Subreddit submission listings
-=============================
+Subreddit thread
+================
 
 Main listings
 -------------
@@ -215,13 +215,9 @@ Variants
 
 .. http:get:: /r/{subreddit}
 .. http:get:: /r/{subreddit}/hot
-
-*Best*
-^^^^^^
-
 .. http:get:: /r/{subreddit}/best
 
-This is the same as the *Hot* listing.
+(`/best` is the same as `/hot`.)
 
 *Rising*
 ^^^^^^^^
@@ -298,7 +294,7 @@ Variants
 .. http:get:: /prefs/friends
 
 `/prefs/friends` is the same as `/api/v1/me/friends` but it returns a list of two
-'UserList' listing structures where the second one is empty. The first listing
+'UserList' list structures where the second one is empty. The first list
 structure matches that of `/api/v1/me/friends`.
 
 *Blocked*
@@ -312,12 +308,21 @@ structure matches that of `/api/v1/me/friends`.
 *Trusted*
 ^^^^^^^^^
 
-.. http:get:: /prefs/messaging
+.. http:get:: /prefs/trusted
 
-Returns a list of two 'UserList' listing structures. The fist listing structure is the blocked users
-list (same as returned by `/prefs/blocked`). The second listing is the trusted users list.
+Returns a list of two 'UserList' list structures. The first list structure is the blocked users
+list (same as returned by `/prefs/blocked`). The second list is the trusted users list.
 
 See `/api/add_whitelisted` for adding a user to the trusted users list.
+
+*Messaging*
+^^^^^^^^^^^
+
+.. http:get:: /prefs/messaging
+
+Returns a list of two 'UserList' list structures. The first list structure is the blocked users
+list (same as returned by `/prefs/blocked`). The second list is the trusted users list
+(same as returned by `/prefs/trusted`).
 
 Overview
 ~~~~~~~~
@@ -335,14 +340,21 @@ Listings contain user objects that have the following fields:
    "name","string","The name of the user."
    "id","string","The full ID of the user. E.g., `t2_4x25quk`"
 
+
+|
+
+.. csv-table:: HTTP Errors
+   :header: "Status Code","Description"
+   :escape: \
+
+   "500","The `sr_detail` parameter was used and its value is truthy (matches `/^[^fF0]/`)."
+
 If the client is not logged in then the endpoints return the string `"{}"`.
 Notice this is a string of an empty JSON object.
 
-See :ref:`Additional URL Params <frontpage_listings_additional_url_params>`.
-
 Also see :ref:`User listings <user_listings>` for more relevant listings.
 
-.. seealso:: https://www.reddit.com/dev/api/#GET_prefs_{where}
+.. seealso:: `<https://www.reddit.com/dev/api/#GET_prefs_{where}>`_
 
 
 Subreddit listings
@@ -392,12 +404,6 @@ Notice this is a string of an empty JSON object.
 See :ref:`Additional URL Params <frontpage_listings_additional_url_params>`.
 
 
-Comment and submission listings
--------------------------------
-
-See :ref:`User listings <user_listings>`.
-
-
 .. _user_listings:
 
 User
@@ -436,6 +442,8 @@ Available publicly for any user.
 A listing of comments.
 
 Available publicly for any user.
+
+This does not support the `sr_detail` parameter.
 
 *Gilded*
 ^^^^^^^^
@@ -478,7 +486,7 @@ Not available publicly for any user.
 
 .. http:get:: /user/{username}/saved
 
-A listing of submissions.
+A listing of submissions and comments.
 
 Not available publicly for any user.
 
@@ -508,6 +516,7 @@ Additional URL params for *Overview*, *Comments*, *Submissions*:
    :header: "Status Code","Description"
    :escape: \
 
+   "404","The user name was not found."
    "403","You don't have permission to view this listing."
 
 
@@ -520,11 +529,16 @@ Main listings
 Variants
 ~~~~~~~~
 
+*Default*
+^^^^^^^^^
+
+.. http:get:: /subreddits
+.. http:get:: /subreddits/default
+
 *Popular*
 ^^^^^^^^^
 
 .. http:get:: /subreddits/popular
-.. http:get:: /subreddits/default
 
 *New*
 ^^^^^
@@ -548,7 +562,7 @@ Subreddit listings.
 
 Returns a 'Listing' listing kind.
 
-See :ref:`Additional URL Params <frontpage_listings_additional_url_params>`.
+Does not support `sr_detail` param (that would be silly).
 
 
 Submission

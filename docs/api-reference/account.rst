@@ -103,6 +103,16 @@ Get karma breakdown
 
 Return a breakdown of subreddit karma.
 
+.. csv-table:: Karma Breakdown Object
+   :header: "Field","Type (hint)","Description"
+   :escape: \
+
+   "sr","string","Subreddit name."
+   "comment_karma","integer","Karma accumulated from commenting."
+   "link_karma","integer","Karama accumulated from posting."
+
+|
+
 .. csv-table:: API Errors
    :header: "Error","Description"
    :escape: \
@@ -131,10 +141,10 @@ Returns a 'TrophyList' listing structure.
 
    "award_id","string?",""
    "description","string?",""
-   "granted_at","integer",""
-   "icon_40","string","E.g., `https://www.redditstatic.com/awards2/3_year_club-40.png`"
-   "icon_70","string","E.g., `https://www.redditstatic.com/awards2/3_year_club-70.png`"
-   "id","string","Trophie ID."
+   "granted_at","integer?",""
+   "icon_40","string","The URL of a 41x41 px icon for the trophy. E.g., `https://www.redditstatic.com/awards2/3_year_club-40.png`"
+   "icon_70","string","The URL of a 71x71 px icon for the trophy. E.g., `https://www.redditstatic.com/awards2/3_year_club-70.png`"
+   "id","string","Trophie ID36."
    "name","string","E.g., `Three-Year Club`"
    "url","string?",""
 
@@ -284,9 +294,9 @@ Add trusted user
 
 Add a user to your trusted users list.
 
-https://www.reddit.com/prefs/blocked/
-
 Trusted users will always be able to send you PMs.
+
+On success, the endpoint returns `{'json': {'errors': []}}`.
 
 .. csv-table:: URL Params
    :header: "Field","Type (hint)","Description"
@@ -307,3 +317,29 @@ Trusted users will always be able to send you PMs.
    "USER_DOESNT_EXIST","The specified user in `name` does not exist or the `name` field was not specified.
 
    \"that user doesn't exist\""
+
+
+Remove trusted user
+~~~~~~~~~~~~~~~~~~~
+
+.. http:post:: /api/remove_whitelisted
+
+Remove a user from your trusted users list.
+
+On success, the endpoint returns `"{}"` (a string of an empty JSON object).
+
+.. csv-table:: URL Params
+   :header: "Field","Type (hint)","Description"
+   :escape: \
+
+   "name","string","The name of the user."
+
+|
+
+.. csv-table:: API Errors (variant 2)
+   :header: "Error","HTTP status","Description"
+   :escape: \
+
+   "USER_REQUIRED","200","you must login
+
+   \"Please log in to do that.\""

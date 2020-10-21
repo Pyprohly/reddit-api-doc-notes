@@ -155,6 +155,14 @@ Schema
    Field not available if the post is not a text post.
    Field not available if no user context is available."
    "url_overridden_by_dest?","string","The url of the linked item for the link post (`is_self` is `true`)."
+   "event_start?","float","Unix timestamp of when the post's event time begins. Key does not exist if
+   there is no event metadata on the post. The float is always a whole number.
+
+   When an event is started early this field gets updated."
+   "event_end?","float","Unix timestamp of when the post's event time ends. Key does not exist if
+   there is no event metadata on the post. The float is always a whole number."
+   "event_is_live?","boolean","True if the event is live."
+
 
 Actions
 -------

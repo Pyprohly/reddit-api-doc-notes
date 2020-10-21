@@ -12,6 +12,7 @@ Welcome to reddit-api-docs's documentation!
    api-reference/submission
    api-reference/comment
    api-reference/subreddit
+   api-reference/collection
    api-reference/listings
 
 

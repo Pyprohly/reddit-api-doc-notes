@@ -210,7 +210,7 @@ Get information about a user by account name.
 
    "404","A user with the specified name was not found."
 
-.. seealso:: https://www.reddit.com/dev/api/#GET_user_{username}_about
+.. seealso:: `<https://www.reddit.com/dev/api/#GET_user_{username}_about>`_
 
 
 Get partial by ID
@@ -245,7 +245,7 @@ This end point returns an object with the following fields:
    "comment_karma","integer","Karma accumulated from commenting."
    "created_utc","float","Unix timestamp of when the post was made. Will always be a whole number."
    "link_karma","integer","Karma accumulated from posting."
-   "name","string","The user account name. E.g., `"spez"`"
+   "name","string","The user account name. E.g., `spez`"
    "profile_color","string",""
    "profile_img","string","Avatar image. Same value as the `icon_img` field in normal user objects.
    E.g., `https://www.redditstatic.com/avatars/avatar_default_01_A5A4A4.png`."
@@ -265,6 +265,7 @@ This end point returns an object with the following fields:
    :header: "Status Code","Description"
    :escape: \
 
+   "404","None of the IDs matched any user."
    "414","The requested URL length is too long (over 7219 characters)."
 
 

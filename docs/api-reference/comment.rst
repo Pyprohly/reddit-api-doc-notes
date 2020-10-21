@@ -225,7 +225,7 @@ Example::
    "sort","string","One of `confidence` ('best'), `top`, `new`, `controversial`, `old`, `random`, `qa`, `live`.
 
    If not given or not a valid sort value (including empty string), the default is the 'sort comments by'
-   preference of the logged in user. Otherwise, if there is no user context the default is `confidence`.
+   preference of the logged in user. Otherwise, if there is no user context the default is `confidence`."
    "threaded","boolean",""
    "truncate","integer","An integer from 0 to 50. Seems to behave the same as `limit` but won't return
    a more comment object at the top-level."
@@ -282,13 +282,13 @@ Elements are ordered in pre-order DFS traversal order, the same as on the site.
 
    If not given or not a valid sort value (including empty string), the default is the 'sort comments by'
    preference of the logged in user. Otherwise, if there is no user context the default is `confidence`.
+
+   This should ideally be the same as the sort given in the original `/comments` call."
    "depth","integer","The number of levels deep to retrieve comments for.
    A value of 0 is ignored.
    A value of 1 will return 0 items.
    A value of 2 means to retrieve comments one level deep.
    And so on."
-
-   This should ideally be the same as the sort given in the original `/comments` call."
    "limit_children","boolean","If truthy (any string matching `/^[0Ff]/` is falsy),
    only return the children requested, and not sub-comments.
 
@@ -302,6 +302,11 @@ Elements are ordered in pre-order DFS traversal order, the same as on the site.
    :header: "Status Code","Description"
    :escape: \
 
+   "400","There are too many comment ID36s (`children` parameter) for the server to handle.
+
+   For example, see the large thread linked in
+   `this <https://www.reddit.com/r/redditdev/comments/7si641/praw_530_toolarge_received_413_http_response_when/>`_
+   submission."
    "403","* The submission ID from `link_id` does not exist.
 
    * The `link_id` parameter was not specified."
