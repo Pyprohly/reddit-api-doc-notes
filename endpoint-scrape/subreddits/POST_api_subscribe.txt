@@ -66,6 +66,56 @@ for an unsubscribe action will result in an error.
   </tr>
   <tr>
    <th scope="row">
+    action_source
+   </th>
+   <td>
+    <p>
+     one of (
+     <code>
+      o
+     </code>
+     ,
+     <code>
+      n
+     </code>
+     ,
+     <code>
+      b
+     </code>
+     ,
+     <code>
+      o
+     </code>
+     ,
+     <code>
+      a
+     </code>
+     ,
+     <code>
+      r
+     </code>
+     ,
+     <code>
+      d
+     </code>
+     ,
+     <code>
+      i
+     </code>
+     ,
+     <code>
+      n
+     </code>
+     ,
+     <code>
+      g
+     </code>
+     )
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
     skip_initial_defaults
    </th>
    <td>

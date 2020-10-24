@@ -26,6 +26,16 @@ read
   </tr>
   <tr>
    <th scope="row">
+    sr_name
+   </th>
+   <td>
+    <p>
+     comma-delimited list of subreddit names
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
     url
    </th>
    <td>

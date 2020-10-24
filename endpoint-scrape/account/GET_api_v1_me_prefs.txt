@@ -90,6 +90,10 @@ identity
      </code>
      <br/>
      <code>
+      feed_recommendations_enabled
+     </code>
+     <br/>
+     <code>
       clickgadget
      </code>
      <br/>
