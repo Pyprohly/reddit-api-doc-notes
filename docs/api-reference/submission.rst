@@ -178,16 +178,29 @@ Get
 
 Return Submission, Comment, and Subreddit resource info.
 
-The `id` parameter will take up to 100 IDs. Any ID not found will be ignored.
+The `id` parameter will take up to 100 IDs.
+Any ID not found will be ignored.
 Alphabetic characters in the ID must be lowercase or they will be ignored.
-If more than 100 IDs are given, a blank listing structure is returned.
-If none of the IDs are found, a blank listing structure is returned.
+If more than 100 IDs are given, all IDs are ignored.
+Duplicates are ignored.
+
+The `sr_name` parameter will take up to 100 names.
+Any ID not found will be ignored.
+Names are case-insensitive.
+If more than 100 names are given, the first 100 are used and the rest are ignored.
+Duplicates are ignored.
+
+The `id` and `sr_name` parameters can be used together for a maximum output of 200 items.
+
+The input order will not be the same as the output order. The output order is seemingly random
+and differs each time.
 
 .. csv-table:: URL Params
    :header: "Field","Type (hint)","Description"
    :escape: \
 
-   "id","string","a comma-separated list of full IDs"
+   "id","string","A comma-separated list of full ID36s."
+   "sr_name","string","A comma-separated list of subreddit names."
    "url","string","a valid URL"
 
 .. seealso:: https://www.reddit.com/dev/api/#GET_api_info

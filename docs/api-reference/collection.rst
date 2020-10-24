@@ -25,11 +25,13 @@ Schema
    "author_id","string","The full ID36 (prefixed with `t2_`) of the author of the collection."
    "author_name","string","Name of the author of the collection."
    "title","string","The title of this collection."
+   "description","string","The description of the collection set by the author."
    "created_at_utc","float","The UNIX timestamp of when the collection was created."
    "last_update_utc","float","The UNIX timestamp of when the last post was added. This field is not updated in
    any other circumstance such as updating the title or description."
-   "description","string","The description of the collection set by the author."
-   "display_layout","unknown?",""
+   "display_layout","string?","Either `null`, `\"TIMELINE\"`, or `\"GALLERY\"`.
+
+   A new collection will have this field value be `null` which is treated the same as `\"TIMELINE\"`."
    "link_ids","string array","The full ID36s of the submissions contained in the collection."
    "permalink","string","An absolute permalink for this collection."
    "primary_link_id?","string","The full ID36 of the submission that users see when visiting the collection
@@ -121,7 +123,7 @@ Collection objects will not have the `primary_link_id` or `sorted_links` fields.
 Create
 ~~~~~~
 
-.. http:post:: /api/v1/collections/subreddit_collections
+.. http:post:: /api/v1/collections/create_collection
 
 *scope: modposts*
 
@@ -134,10 +136,10 @@ The collection object will not have the `primary_link_id` or `sorted_links` fiel
    :header: "Field","Type (hint)","Description"
    :escape: \
 
-   "description","string","A string no longer than 500 characters."
-   "display_layout","string","One of `TIMELINE`, `GALLERY`. Default is `TIMELINE`."
    "sr_fullname","string","A full ID36 (prefixed with `t5_`) of a subreddit."
    "title","string","Title of the submission up to 300 characters long."
+   "description","string","A string no longer than 500 characters."
+   "display_layout","string","One of `TIMELINE`, `GALLERY`. Default is `TIMELINE`."
 
 |
 
@@ -154,7 +156,7 @@ The collection object will not have the `primary_link_id` or `sorted_links` fiel
 
    *\"we need something here\"* -> title"
    "TOO_LONG","* The specified title was longer than 300 characters.
-   (*\"this is too long (max: 300)\"* -> title)
+     (*\"this is too long (max: 300)\"* -> title)
 
    * The specified description was longer than 500 characters."
    "INVALID_OPTION","The value for `display_layout` is not valid.
@@ -292,8 +294,8 @@ Returns `{'json': {'errors': []}}` on success.
    "TOO_SHORT","The specified `collection_id` is under 36 characters.
 
    *\"this is too short (max: 36)\"* -> collection_id"
-   "INVALID_COLLECTION_UPDATE","* The submission specified by `link_fullname` does not exist
-   in the collection.
+   "INVALID_COLLECTION_UPDATE","* The submission specified by `link_fullname` does not
+     exist in the collection.
 
    *\"That collection couldn't be updated\"* -> collection_id"
    "USER_REQUIRED","A user context is required. *\"Please log in to do that.\"*"
@@ -466,9 +468,10 @@ Returns `{'json': {'errors': []}}` on success.
    :escape: \
 
    "collection_id","string","The collection's UUID."
-   "display_layout","string","Either `TIMELINE` or `GALLERY`. (Case-sensitive.)
+   "display_layout","string","Options: `TIMELINE` or `GALLERY`. (Case-sensitive.)
 
-   If not specified or an empty string, `TIMELINE` will be used."
+   If not specified or an empty string, the `display_layout` field on the collection object
+   will be set to `null`, which is treated the same as `\"TIMELINE\"`."
 
 |
 
