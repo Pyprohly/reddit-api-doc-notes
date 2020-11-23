@@ -29,8 +29,6 @@ Schema
    "banner_background_image","string","The url of the background banner image."
    "banner_img","string",""
    "banner_size","unknown?",""
-   "can_assign_link_flair","boolean",""
-   "can_assign_user_flair","boolean",""
    "collapse_deleted_comments","boolean",""
    "comment_score_hide_mins","integer",""
    "community_icon","string",""
@@ -56,8 +54,6 @@ Schema
    "is_enrolled_in_new_modmail","unknown?",""
    "key_color","string",""
    "lang","string","E.g., `en`"
-   "link_flair_enabled","boolean",""
-   "link_flair_position","string","E.g., `left`"
    "mobile_banner_image","string",""
    "name","string","The subreddit's full ID (with prefix `t5_`). Also see `id`."
    "notification_level","string","E.g., `low`"
@@ -83,29 +79,87 @@ Schema
    "suggested_comment_sort","string?","`null` if no sort, or one of `confidence` (best), `old`, `top`, `qa`, `controversial`, or `new`."
    "title","string","The title of the subreddit. 'Community name'. 100 characters max."
    "url","string","E.g., `/r/AskReddit/`"
-   "user_can_flair_in_sr","unknown?",""
-   "user_flair_background_color","unknown?",""
-   "user_flair_css_class","unknown?",""
-   "user_flair_enabled_in_sr","boolean",""
-   "user_flair_position","string","E.g., `right`"
-   "user_flair_richtext","unknown array",""
-   "user_flair_template_id","unknown?",""
-   "user_flair_text","unknown?",""
-   "user_flair_text_color","unknown?",""
-   "user_flair_type","string",""
    "user_has_favorited","boolean?","Current user has favourited the subreddit. `null` if no user context."
    "user_is_banned","boolean?","Current user is banned from the subreddit. `null` if no user context."
    "user_is_contributor","boolean?","Current user is a contributor to the subreddit. `null` if no user context."
    "user_is_moderator","boolean?","Current user is a moderator of the subreddit. `null` if no user context."
    "user_is_muted","boolean?","Current user is muted in the subreddit. `null` if no user context."
    "user_is_subscriber","boolean?","Current user is subscribed to the subreddit. `null` if no user context."
-   "user_sr_flair_enabled","boolean?","`null` if no user context."
    "user_sr_theme_enabled","boolean",""
    "videostream_links_count","integer",""
    "whitelist_status","string","E.g., `all_ads`"
    "wiki_enabled","boolean",""
    "wls","integer",""
 
+   "user_flair_enabled_in_sr","boolean","Whether user flairs are enabled in the subreddit.
+
+   In old Reddit this is the flair option that says \"enable user flair in this subreddit\"."
+   "can_assign_link_flair","boolean","Whether or not users can assign a flair to their submission in this subreddit. If false, only a moderator can assign flairs to submissions.
+
+   In old Reddit this is the flair option that says \"allow submitters to assign their own link flair\"."
+   "can_assign_user_flair","boolean","Whether or not users can assign a flair to themselves in this subreddit. If false, only a moderator can assign flairs to users.
+
+   In old Reddit this is the flair option that says \"allow users to assign their own flair\"."
+   "link_flair_enabled","boolean","True if link flairs are enabled. This field is tied to the 'link flair position' flair setting: this field is false when set to `none`."
+   "link_flair_position","string","Either `left`, or `right`, or empty string if `link_flair_enabled` is false (the 'none' option in the old Reddit UI)."
+   "user_can_flair_in_sr","boolean?","Whether or not the current user is allowed to set their user flair in this subreddit. This will be true if the 'allow users to assign their own' user flair option is enabled, or if the current user is a moderator of the subreddit with the 'flair' permission. If neither of these conditions are satisfied, this field value will be `null`.
+
+   Can also be `null` if there is no user context."
+   "user_flair_background_color","string?","Current user's flair background color hex string. E.g., `#46d160`.
+
+   If a flair template is not being used then the value will be an empty string.
+
+   If a flair template is being used and the background color is unset then the value is the string `\"transparent\"`.
+
+   Value `null` when:
+
+   * A flair has never been assigned to the current user before in this subreddit.
+
+   * There is no user context."
+   "user_flair_css_class","string?","The current user's flair CSS class.
+
+   Value starts as `null`.
+
+   If not using a flair template and a CSS class is not set, the value is a empty string.
+
+   If using a flair template and a CSS class is not set, the value is `null`.
+   If the CSS class is removed the value will be an empty string (it will never return to `null` again!).
+
+   Also value `null` when there is no user context."
+   "user_flair_position","string","Either `left`, or `right` or empty string. Starts off as `right` in new subreddits.
+
+   Can be set to an empty string via API calls (see `POST /r/{subreddit}/api/flairconfig`) but not through the UI.
+   If an empty string then all user flairs are hidden, despite the `user_flair_enabled_in_sr` setting."
+   "user_flair_richtext","unknown array","Richtext object."
+   "user_flair_template_id","string?","Current user's flair template UUID.
+
+   Value `null` when:
+
+   * The flair isn't using a template.
+
+   * User flairs are disabled in the subreddit (`user_flair_enabled_in_sr` is false)."
+   "user_flair_text","string?","The current user's flair text for the subreddit.
+
+   Value `null` when:
+
+   * A flair has never been assigned to the current user before in this subreddit.
+
+   * There is no user context."
+   "user_flair_text_color","string?","Either `dark` or `light`.
+
+   Value `null` when:
+
+   * A flair has never been assigned to the current user before in this subreddit.
+
+   * There is no user context."
+   "user_flair_type","string","Current user's flair type: either `text` or `richtext`. It is `text` by default."
+   "user_sr_flair_enabled","boolean?","Whether or not the current user has opted to display their user flair in this subreddit (the 'Show my flair on this subreddit' option in the legacy UI).
+
+   Value `null` when:
+
+   * A flair has never been assigned to the current user before in this subreddit.
+
+   * There is no user context."
 
 Actions
 -------

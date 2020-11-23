@@ -21,17 +21,9 @@ Schema
    "associated_award","unknown?",""
    "author","string","The redditor name. Possibly `[removed]` if the post was removed
    or `[deleted]` if the post was removed by the author."
-   "author_flair_background_color","string?",""
-   "author_flair_css_class","string?",""
-   "author_flair_richtext?","unknown array","This attribute is not available if the post was removed or deleted."
-   "author_flair_template_id","unknown?",""
-   "author_flair_text","string?",""
-   "author_flair_text_color","string?",""
-   "author_flair_type?","string","This attribute is not available if the post was removed or deleted."
    "author_fullname?","string","The full ID of the author.
 
    This attribute is not available if the post was removed or deleted."
-   "author_patreon_flair?","boolean","This attribute is not available if the post was removed or deleted."
    "author_premium?","boolean","Whether or not the submitter has Reddit Premium.
 
    This attribute is not available if the post was removed or deleted."
@@ -55,7 +47,9 @@ Schema
    "gildings","unknown object",""
    "id","string","The ID of the comment (without the `t1_` prefix). Also see `name`."
    "is_submitter","boolean","`true` if the author is the submission author."
-   "likes","unknown?",""
+   "likes","boolean?","`null` if no user context.
+
+   If user context: `null` if not voted on, `true` if upvoted, `false` if downvoted."
    "link_id","string","The full ID of the submission in which this comment belongs."
    "locked","boolean","Whether the post has been locked. https://www.reddit.com/r/modnews/comments/3qguqv/moderators_lock_a_post/"
    "mod_note","unknown?",""
@@ -106,6 +100,25 @@ Schema
 
    This field is not available if the current user is not a moderator of the subreddit
    (or there's no user context)."
+
+   "author_flair_background_color","string?","See `user_flair_background_color` field on the Subreddit schema.
+
+   Additionally: value `null` when user flairs are disabled in the subreddit (`user_flair_enabled_in_sr` is false)."
+   "author_flair_css_class","string?","See `user_flair_css_class` field on the Subreddit schema.
+
+   Additionally: value `null` when user flairs are disabled in the subreddit (`user_flair_enabled_in_sr` is false)."
+   "author_flair_richtext","unknown array","See `user_flair_richtext` field on the Subreddit schema."
+   "author_flair_type","string","This attribute is not available if the post was removed or deleted."
+   "author_flair_template_id","string?","See `user_flair_template_id` field on the Subreddit schema.
+
+   Additionally: value `null` when user flairs are disabled in the subreddit (`user_flair_enabled_in_sr` is false)."
+   "author_flair_text","string?","See `user_flair_text` field on the Subreddit schema.
+
+   Additionally: value `null` when user flairs are disabled in the subreddit (`user_flair_enabled_in_sr` is false)."
+   "author_flair_text_color","string?","See `user_flair_text_color` field on the Subreddit schema.
+
+   Additionally: value `null` when user flairs are disabled in the subreddit (`user_flair_enabled_in_sr` is false)."
+   "author_patreon_flair?","boolean","This attribute is not available if the post was removed or deleted."
 
 
 Actions

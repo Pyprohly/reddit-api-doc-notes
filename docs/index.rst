@@ -13,6 +13,7 @@ Welcome to reddit-api-docs's documentation!
    api-reference/comment
    api-reference/subreddit
    api-reference/collection
+   api-reference/flair
    api-reference/listings
 
 

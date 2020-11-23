@@ -28,25 +28,20 @@ Schema
    "gilded","integer",""
    "clicked","boolean",""
    "title","string","The title of the post."
-   "link_flair_richtext","unknown array",""
    "subreddit_name_prefixed","string","Same as the `subreddit` field but prefixed with `r/`. E.g., `r/IAmA`."
    "hidden","boolean",""
    "pwls","integer?","Unknown. Possibly stands for \"parent white list status\"?"
-   "link_flair_css_class","unknown?",""
    "downs","integer","Always `0`."
    "thumbnail_height","integer?","Thumbnail height. `null` if text post."
    "hide_score","boolean","Whether the score is currently hidden."
    "name","string","The post's full ID (with prefix `t3_`). Also see `id`."
    "quarantine","boolean","Whether the post is in a quarantined subreddit."
-   "link_flair_text_color","string",""
    "upvote_ratio","float","Upvote ratio."
-   "author_flair_background_color","string?",""
    "subreddit_type","string","One of `public`, `private`, `restricted`, `archived`, `employees_only`, `gold_only`, `gold_restricted`, or `user`."
    "ups","integer","Same as `score`."
    "total_awards_received","integer","Number of rewards on the post."
    "media_embed","unknown object",""
    "thumbnail_width","integer?","Thumbnail width. `null` if text post."
-   "author_flair_template_id","unknown?",""
    "is_original_content","boolean","Whether the post is marked as OC."
    "user_reports","unknown array",""
    "secure_media","unknown?",""
@@ -55,7 +50,6 @@ Schema
    "is_meta","boolean",""
    "category","unknown?",""
    "secure_media_embed","unknown object",""
-   "link_flair_text","string?","Post flair text."
    "can_mod_post","boolean",""
    "score","integer","The number of upvotes (minus downvotes). This attribute will work even if `hide_score` is `true`."
    "approved_by","string?","The name of the redditor who approved this post. `null` if not approved or the current user is not a moderator of the subreddit."
@@ -65,24 +59,22 @@ Schema
    "thumbnail","string","The URL of the post thumbnail. Other possible values include
    `self` (if there is no thumbnail?), or `default` (if the post was removed/deleted?)."
    "edited","boolean | float","`false` if the post wasn't edited, otherwise a Unix timestamp of when it was edited."
-   "author_flair_css_class","string?",""
-   "author_flair_richtext?","unknown array","This attribute is not available if the post was removed or deleted."
    "gildings","unknown object",""
    "post_hint?","string","E.g., `\"image\"`"
    "content_categories","unknown?",""
    "is_self","boolean","`true` if it is a text post. `false` if link post."
    "mod_note","unknown?",""
    "created","float","Legacy. Same as `created_utc` but subtract 28800."
-   "link_flair_type","string","Possible values: `text`, `richtext`, ...?"
    "wls","integer","Unknown. Often `6`. Possibly stands for \"white list status\"?"
    "removed_by_category","string?","`null` if not removed, otherwise possible values: `anti_evil_ops`, `community_ops`, `legal_operations`, `copyright_takedown`, `reddit`, `user`, `deleted`, `moderator`, `automod_filtered`?"
    "banned_by","string?","The name of the redditor who banned this post. `null` if not approved or the current user is not a moderator of the subreddit."
-   "author_flair_type?","string","This attribute is not available if the post was removed or deleted."
    "domain","string","If a link post, the domain of the link. If a text post, it is
    the name of the subreddit prefixed with `self.`, e.g., `self.IAmA`."
    "allow_live_comments","boolean",""
    "selftext_html","string?","The HTML of the post. This will be null if it is a link post."
-   "likes","unknown?",""
+   "likes","boolean?","`null` if no user context.
+
+   If user context: `null` if not voted on, `true` if upvoted, `false` if downvoted."
    "suggested_sort","string?","`null` if suggested sort is not set, or one of `confidence` (best), `top`, `new`, `controversial`, `old`, `qa`."
    "banned_at_utc","unknown?",""
    "view_count","unknown?",""
@@ -95,13 +87,9 @@ Schema
    "all_awardings","unknown object",""
    "awarders","unknown array",""
    "media_only","boolean",""
-   "link_flair_template_id?","string","The link flair UUID.
-
-   This attribute is not available if the post was removed or deleted."
    "can_gild","boolean",""
    "spoiler","boolean","Whether the post is marked as a spoiler."
    "locked","boolean","Whether the post has been locked. https://www.reddit.com/r/modnews/comments/3qguqv/moderators_lock_a_post/"
-   "author_flair_text","string?",""
    "visited","boolean",""
    "removed_by","string?","The name of the redditor who removed this post. `null` if not removed or the current user is not a moderator of the subreddit."
    "num_reports","unknown?",""
@@ -109,7 +97,6 @@ Schema
    "subreddit_id","string","The full ID of the subreddit that was posted to. E.g., `t5_2qzb6` for `r/IAmA`."
    "mod_reason_by","unknown?",""
    "removal_reason","unknown?",""
-   "link_flair_background_color","string",""
    "id","string","The ID of the submission (without the `t3_` prefix). Also see `name`."
    "is_robot_indexable","boolean","Possibly always `false` for archived posts?[needs checking]"
    "report_reasons","unknown?",""
@@ -121,8 +108,6 @@ Schema
    "whitelist_status","string",""
    "contest_mode","boolean","Whether the post is in contest mode or not."
    "mod_reports","unknown array",""
-   "author_patreon_flair?","boolean","This attribute is not available if the post was removed or deleted."
-   "author_flair_text_color","string?",""
    "permalink","string","The uri of the post without the domain.
    E.g., `/r/IAmA/comments/erd8si/i_was_born_with_two_y_chromosomes_ama/`"
    "parent_whitelist_status","unknown?",""
@@ -163,6 +148,33 @@ Schema
    there is no event metadata on the post. The float is always a whole number."
    "event_is_live?","boolean","True if the event is live."
 
+   "author_flair_background_color",".","See same field in Comment schema."
+   "author_flair_css_class",".","See same field in Comment schema."
+   "author_flair_richtext?",".","See same field in Comment schema."
+   "author_flair_type?",".","See same field in Comment schema."
+   "author_flair_template_id",".","See same field in Comment schema."
+   "author_flair_text",".","See same field in Comment schema."
+   "author_flair_text_color",".","See same field in Comment schema."
+   "author_patreon_flair?",".","See same field in Comment schema."
+   "link_flair_background_color","string","Submission flair's background color hex. E.g., `#46d160`. Empty string if flair has no background color."
+   "link_flair_css_class","string?","Post flair CSS class.
+
+   Empty string if flair is configured and no CSS class is set.
+
+   Value `null` if flair not configured."
+   "link_flair_richtext","unknown array",""
+   "link_flair_text","string?","Post flair text.
+
+   Value `null` if flair not configured."
+   "link_flair_text_color","string","Values: `dark`, `light`.
+
+   Starts as `dark`. If no flair set then `dark` is used."
+   "link_flair_type","string","Values: `text`, `richtext`."
+   "link_flair_template_id?","string","The link flair UUID.
+
+   Field not available if flair not configured.
+
+   Field not available if the post was removed or deleted."
 
 Actions
 -------
