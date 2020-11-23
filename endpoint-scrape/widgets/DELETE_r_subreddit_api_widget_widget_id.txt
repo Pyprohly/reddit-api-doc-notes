@@ -1,0 +1,22 @@
+DELETE [/r/subreddit]/api/widget/widget_id
+structuredstyles
+
+<div class="info">
+ <div class="md">
+  <p>
+   Delete a widget from the specified subreddit (if it exists)
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    widget_id
+   </th>
+   <td>
+    <p>
+     id of an existing widget
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

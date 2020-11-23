@@ -1,0 +1,22 @@
+GET [/r/subreddit]/api/widgets
+structuredstyles
+
+<div class="info">
+ <div class="md">
+  <p>
+   Return all widgets for the given subreddit
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    progressive_images
+   </th>
+   <td>
+    <p>
+     boolean value
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

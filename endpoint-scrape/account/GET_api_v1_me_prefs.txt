@@ -18,11 +18,19 @@ identity
     </p>
     <p>
      <code>
+      beta
+     </code>
+     <br/>
+     <code>
       threaded_messages
      </code>
      <br/>
      <code>
       hide_downs
+     </code>
+     <br/>
+     <code>
+      third_party_site_data_personalized_ads
      </code>
      <br/>
      <code>
@@ -58,6 +66,10 @@ identity
      </code>
      <br/>
      <code>
+      top_karma_subreddits
+     </code>
+     <br/>
+     <code>
       private_feeds
      </code>
      <br/>
@@ -70,6 +82,10 @@ identity
      </code>
      <br/>
      <code>
+      email_comment_reply
+     </code>
+     <br/>
+     <code>
       research
      </code>
      <br/>
@@ -78,7 +94,7 @@ identity
      </code>
      <br/>
      <code>
-      send_crosspost_messages
+      email_upvote_comment
      </code>
      <br/>
      <code>
@@ -146,6 +162,10 @@ identity
      </code>
      <br/>
      <code>
+      email_chat_request
+     </code>
+     <br/>
+     <code>
       allow_clicktracking
      </code>
      <br/>
@@ -170,7 +190,11 @@ identity
      </code>
      <br/>
      <code>
-      min_link_score
+      email_upvote_post
+     </code>
+     <br/>
+     <code>
+      email_username_mention
      </code>
      <br/>
      <code>
@@ -182,7 +206,7 @@ identity
      </code>
      <br/>
      <code>
-      over_18
+      email_user_new_follower
      </code>
      <br/>
      <code>
@@ -198,7 +222,7 @@ identity
      </code>
      <br/>
      <code>
-      third_party_site_data_personalized_ads
+      organic
      </code>
      <br/>
      <code>
@@ -222,7 +246,7 @@ identity
      </code>
      <br/>
      <code>
-      organic
+      email_post_reply
      </code>
      <br/>
      <code>
@@ -246,11 +270,11 @@ identity
      </code>
      <br/>
      <code>
-      beta
+      min_link_score
      </code>
      <br/>
      <code>
-      top_karma_subreddits
+      over_18
      </code>
      <br/>
      <code>
@@ -267,6 +291,14 @@ identity
      <br/>
      <code>
       legacy_search
+     </code>
+     <br/>
+     <code>
+      email_private_message
+     </code>
+     <br/>
+     <code>
+      send_crosspost_messages
      </code>
      <br/>
      <code>

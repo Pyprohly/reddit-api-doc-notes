@@ -370,6 +370,14 @@ returned to only those of the type specified.
      <code>
       adjust_post_crowd_control_level
      </code>
+     ,
+     <code>
+      deleteoverriddenclassification
+     </code>
+     ,
+     <code>
+      overrideclassification
+     </code>
      )
     </p>
    </td>

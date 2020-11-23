@@ -1,0 +1,225 @@
+POST [/r/subreddit]/api/widget
+structuredstyles
+
+<div class="info">
+ <div class="md">
+  <p>
+   Add and return a widget to the specified subreddit
+  </p>
+  <p>
+   Accepts a JSON payload representing the widget data to be saved.
+Valid payloads differ in shape based on the "kind" attribute passed on
+the root object, which must be a valid widget kind.
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    json
+   </th>
+   <td>
+    <p>
+     json data:
+    </p>
+    <pre><code>{
+  "data": [
+    {
+      "height": an integer,
+      "linkUrl": A valid URL (optional),
+      "url": a valid URL of a reddit-hosted image,
+      "width": an integer,
+    },
+    ...
+  ],
+  "kind": one of (`image`),
+  "shortName": a string no longer than 30 characters,
+  "styles": {
+    "backgroundColor": a 6-digit rgb hex color, e.g. `#AABBCC`,
+    "headerColor": a 6-digit rgb hex color, e.g. `#AABBCC`,
+  },
+}
+
+OR
+
+{
+  "configuration": {
+    "numEvents": an integer between 1 and 50 (default: 10),
+    "showDate": boolean value,
+    "showDescription": boolean value,
+    "showLocation": boolean value,
+    "showTime": boolean value,
+    "showTitle": boolean value,
+  },
+  "googleCalendarId": a valid email address,
+  "kind": one of (`calendar`),
+  "requiresSync": boolean value,
+  "shortName": a string no longer than 30 characters,
+  "styles": {
+    "backgroundColor": a 6-digit rgb hex color, e.g. `#AABBCC`,
+    "headerColor": a 6-digit rgb hex color, e.g. `#AABBCC`,
+  },
+}
+
+OR
+
+{
+  "kind": one of (`textarea`),
+  "shortName": a string no longer than 30 characters,
+  "styles": {
+    "backgroundColor": a 6-digit rgb hex color, e.g. `#AABBCC`,
+    "headerColor": a 6-digit rgb hex color, e.g. `#AABBCC`,
+  },
+  "text": raw markdown text,
+}
+
+OR
+
+{
+  "data": [
+    {
+      "text": a string no longer than 20 characters,
+      "url": a valid URL,
+    }
+
+    OR
+
+    {
+      "children": [
+        {
+          "text": a string no longer than 20 characters,
+          "url": a valid URL,
+        },
+        ...
+      ],
+      "text": a string no longer than 20 characters,
+    },
+    ...
+  ],
+  "kind": one of (`menu`),
+  "showWiki": boolean value,
+}
+
+OR
+
+{
+  "buttons": [
+    {
+      "color": a 6-digit rgb hex color, e.g. `#AABBCC`,
+      "fillColor": a 6-digit rgb hex color, e.g. `#AABBCC`,
+      "hoverState": {
+        "color": a 6-digit rgb hex color, e.g. `#AABBCC`,
+        "fillColor": a 6-digit rgb hex color, e.g. `#AABBCC`,
+        "kind": one of (`text`),
+        "text": a string no longer than 30 characters,
+        "textColor": a 6-digit rgb hex color, e.g. `#AABBCC`,
+      }
+
+      OR
+
+      {
+        "height": an integer,
+        "imageUrl": a valid URL of a reddit-hosted image,
+        "kind": one of (`image`),
+        "width": an integer,
+      },
+      "kind": one of (`text`),
+      "text": a string no longer than 30 characters,
+      "textColor": a 6-digit rgb hex color, e.g. `#AABBCC`,
+      "url": a valid URL,
+    }
+
+    OR
+
+    {
+      "height": an integer,
+      "hoverState": {
+        "color": a 6-digit rgb hex color, e.g. `#AABBCC`,
+        "fillColor": a 6-digit rgb hex color, e.g. `#AABBCC`,
+        "kind": one of (`text`),
+        "text": a string no longer than 30 characters,
+        "textColor": a 6-digit rgb hex color, e.g. `#AABBCC`,
+      }
+
+      OR
+
+      {
+        "height": an integer,
+        "imageUrl": a valid URL of a reddit-hosted image,
+        "kind": one of (`image`),
+        "width": an integer,
+      },
+      "imageUrl": a valid URL of a reddit-hosted image,
+      "kind": one of (`image`),
+      "linkUrl": a valid URL,
+      "text": a string no longer than 30 characters,
+      "width": an integer,
+    },
+    ...
+  ],
+  "description": raw markdown text,
+  "kind": one of (`button`),
+  "shortName": a string no longer than 30 characters,
+  "styles": {
+    "backgroundColor": a 6-digit rgb hex color, e.g. `#AABBCC`,
+    "headerColor": a 6-digit rgb hex color, e.g. `#AABBCC`,
+  },
+}
+
+OR
+
+{
+  "data": [
+    subreddit name,
+    ...
+  ],
+  "kind": one of (`community-list`),
+  "shortName": a string no longer than 30 characters,
+  "styles": {
+    "backgroundColor": a 6-digit rgb hex color, e.g. `#AABBCC`,
+    "headerColor": a 6-digit rgb hex color, e.g. `#AABBCC`,
+  },
+}
+
+OR
+
+{
+  "css": a string no longer than 100000 characters,
+  "height": an integer between 50 and 500,
+  "imageData": [
+    {
+      "height": an integer,
+      "name": a string no longer than 20 characters,
+      "url": a valid URL of a reddit-hosted image,
+      "width": an integer,
+    },
+    ...
+  ],
+  "kind": one of (`custom`),
+  "shortName": a string no longer than 30 characters,
+  "styles": {
+    "backgroundColor": a 6-digit rgb hex color, e.g. `#AABBCC`,
+    "headerColor": a 6-digit rgb hex color, e.g. `#AABBCC`,
+  },
+  "text": raw markdown text,
+}
+
+OR
+
+{
+  "display": one of (`cloud`, `list`),
+  "kind": one of (`post-flair`),
+  "order": [
+    a flair template ID,
+    ...
+  ],
+  "shortName": a string no longer than 30 characters,
+  "styles": {
+    "backgroundColor": a 6-digit rgb hex color, e.g. `#AABBCC`,
+    "headerColor": a 6-digit rgb hex color, e.g. `#AABBCC`,
+  },
+}
+</code></pre>
+   </td>
+  </tr>
+ </table>
+</div>

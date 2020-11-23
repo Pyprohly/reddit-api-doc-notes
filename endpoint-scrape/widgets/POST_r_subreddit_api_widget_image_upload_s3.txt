@@ -1,0 +1,42 @@
+POST [/r/subreddit]/api/widget_image_upload_s3
+structuredstyles
+
+<div class="info">
+ <div class="md">
+  <p>
+   Acquire and return an upload lease to s3 temp bucket.
+  </p>
+  <p>
+   The return value of this function is a json object containing
+credentials for uploading assets to S3 bucket, S3 url for upload
+request and the key to use for uploading. Using this lease the client
+will upload the emoji image to S3 temp bucket (included as part of
+the S3 URL).
+  </p>
+  <p>
+   This lease is used by S3 to verify that the upload is authorized.
+  </p>
+ </div>
+ <table class="parameters">
+  <tr>
+   <th scope="row">
+    filepath
+   </th>
+   <td>
+    <p>
+     name and extension of the image file e.g. image1.png
+    </p>
+   </td>
+  </tr>
+  <tr>
+   <th scope="row">
+    mimetype
+   </th>
+   <td>
+    <p>
+     mime type of the image e.g. image/png
+    </p>
+   </td>
+  </tr>
+ </table>
+</div>

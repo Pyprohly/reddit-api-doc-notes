@@ -66,6 +66,14 @@ read
      </code>
      ,
      <code>
+      FR
+     </code>
+     ,
+     <code>
+      DE
+     </code>
+     ,
+     <code>
       GR
      </code>
      ,
@@ -83,6 +91,10 @@ read
      ,
      <code>
       IE
+     </code>
+     ,
+     <code>
+      IT
      </code>
      ,
      <code>
@@ -127,6 +139,10 @@ read
      ,
      <code>
       SG
+     </code>
+     ,
+     <code>
+      ES
      </code>
      ,
      <code>
