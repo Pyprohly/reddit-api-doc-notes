@@ -21,7 +21,10 @@ Schema
    "awarder_karma","integer","Karma accumulated for giving awards."
    "total_karma","integer","Same as `link_karma`, `comment_karma`, `awardee_karma`, and `awarder_karma` added."
    "is_gold","boolean","Has Reddit Premium."
-   "has_subscribed","boolean",""
+   "has_subscribed","boolean","Whether the user has ever subscribed to any subreddits.
+
+   When a user makes their first subreddit subscription, they are automatically subscribed to a list a default
+   subreddits. This field is used to determine when this occurs."
    "has_verified_email","boolean","Whether the user has verified their email."
    "hide_from_robots","boolean",""
    "icon_img","string","Avatar image. E.g., `https://www.redditstatic.com/avatars/avatar_default_01_A5A4A4.png`."

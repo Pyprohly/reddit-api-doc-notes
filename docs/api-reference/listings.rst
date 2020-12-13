@@ -183,7 +183,9 @@ Additional URL params for *Top* and *Controversial*:
 
 .. http:get:: /comments
 
-A listing of comments. This listing does not support the `sr_detail` parameter.
+A listing of comments.
+
+This listing does not support the `sr_detail` parameter.
 
 Comment objects have the following extra fields:
 
@@ -203,8 +205,8 @@ Comment objects have the following extra fields:
    "link_permalink","string","The url of the submission. Unlike the Submission object `permalink` field this url will include the domain name."
 
 
-Subreddit thread
-================
+Subreddit threads
+=================
 
 Main listings
 -------------
@@ -447,6 +449,8 @@ Available publicly for any user.
 
 This does not support the `sr_detail` parameter.
 
+Comment objects have extra fields. See :ref:`here <frontpage_new_comments_comment_object>`.
+
 *Gilded*
 ^^^^^^^^
 
@@ -521,6 +525,22 @@ Additional URL params for *Overview*, *Comments*, *Submissions*:
    "404","The user name was not found."
    "403","You don't have permission to view this listing."
 
+Search
+------
+
+Variants
+~~~~~~~~
+
+*Search*
+^^^^^^^^
+
+.. http:get:: /users/search
+
+Overview
+~~~~~~~~
+
+Same as :ref:`/subreddits/search <listing_search_subreddits_by_title_and_description>`.
+
 
 Subreddit
 =========
@@ -537,15 +557,15 @@ Variants
 .. http:get:: /subreddits
 .. http:get:: /subreddits/default
 
-*Popular*
-^^^^^^^^^
-
-.. http:get:: /subreddits/popular
-
 *New*
 ^^^^^
 
 .. http:get:: /subreddits/new
+
+*Popular*
+^^^^^^^^^
+
+.. http:get:: /subreddits/popular
 
 *Premium*
 ^^^^^^^^^
@@ -565,6 +585,66 @@ Subreddit listings.
 Returns a 'Listing' listing kind.
 
 Does not support `sr_detail` param (that would be silly).
+
+User subreddit listings
+-----------------------
+
+Variants
+~~~~~~~~
+
+*New*
+^^^^^
+
+.. http:get:: /users/new
+
+*Popular*
+^^^^^^^^^
+
+.. http:get:: /users/popular
+
+Overview
+~~~~~~~~
+
+*scope: read*
+
+Get user subreddits.
+
+'Popular' sorts on the activity of the subreddit.
+'New' sorts the subreddits on creation date, newest first.
+
+Search
+------
+
+Variants
+~~~~~~~~
+
+*Search*
+^^^^^^^^
+
+.. http:get:: /subreddits/search
+
+.. _listing_search_subreddits_by_title_and_description:
+
+Overview
+~~~~~~~~
+
+*scope: read*
+
+Search subreddits by title and description.
+
+This listing does not support the `sr_detail` parameter (despite the offical docs saying so).
+
+Additional parameters:
+
+.. csv-table:: URL Params
+   :header: "Field","Type (hint)","Description"
+   :escape: \
+
+   "q","string","A search query. Matches subreddit titles and descriptions."
+   "show_users","boolean","If true, user accounts are included in the search."
+   "sort","string","Either `relevance` or `activity`."
+   "search_query_id","string","unknown"
+   "typeahead_active","boolean","unknown"
 
 
 Submission

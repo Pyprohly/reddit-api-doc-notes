@@ -15,8 +15,8 @@ Schema
    :escape: \
 
    "all_awardings","unknown array",""
-   "approved_at_utc","integer?","Unix time when the comment was approved. `null` if not approved or the current user is not a moderator of the subreddit."
-   "approved_by","string?","The name of the redditor who approved this post. `null` if not approved or the current user is not a moderator of the subreddit."
+   "approved_at_utc",".","See `approved_at_utc` field on the Submission schema."
+   "approved_by",".","See `approved_by` field on the Submission schema."
    "archived","boolean","Whether the post is archived. Archived posts cannot be commented on, but the author can still edit the OP."
    "associated_award","unknown?",""
    "author","string","The redditor name. Possibly `[removed]` if the post was removed
@@ -28,8 +28,8 @@ Schema
 
    This attribute is not available if the post was removed or deleted."
    "awarders","unknown array",""
-   "banned_at_utc","unknown?",""
-   "banned_by","unknown?",""
+   "banned_at_utc",".","See `banned_at_utc` field on the Submission schema.""
+   "banned_by",".","See `banned_by` field on the Submission schema.""
    "body","string","The body text of the comment."
    "body_html","string","The HTML of the comment."
    "can_gild","boolean",""
@@ -84,14 +84,8 @@ Schema
 
    Field not available if the post is not a text post.
    Field not available if no user context is available."
-   "removed?","boolean","`true` if the submission is removed.
-
-   This field is not available if the current user is not a moderator of the subreddit
-   (or there's no user context)."
-   "approved?","boolean","`true` if the submission is approved.
-
-   This field is not available if the current user is not a moderator of the subreddit
-   (or there's no user context)."
+   "removed?",".","See `removed` field on the Submission schema."
+   "approved?",".","See `approved` field on the Submission schema."
    "ignore_reports?","boolean","`true` if ignoring reports for the comment, else `false`.
 
    This field is not available if the current user is not a moderator of the subreddit
@@ -402,3 +396,15 @@ Set Inbox Replies
 ~~~~~~~~~~~~~~~~~
 
 See :ref:`here <post_api_sendreplies>`.
+
+
+Approve
+~~~~~~~
+
+See :ref:`here <post_api_approve>`.
+
+
+Remove
+~~~~~~
+
+See :ref:`here <post_api_remove>`.

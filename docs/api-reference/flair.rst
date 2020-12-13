@@ -18,6 +18,7 @@ Use either the `name` parameter to assign a flair to a user, or `link` to set a 
 If both are specified, `link` will take preference and `name` will be ignored.
 
 Both `text` and `css_class` should be specified. Each defaults to an empty string if not specified.
+If both values are empty strings or if neither parameters are specified then the user's flair is revoked.
 
 Returns `{"json": {"errors": []}}` on success.
 
@@ -60,6 +61,8 @@ Returns `{"json": {"errors": []}}` on success.
 
    * The submission targeted by `link` does not belong to the current subreddit."
    "404","(Sends HTML document.) The subreddit specified in the URL does not exist."
+
+.. seealso:: https://www.reddit.com/dev/api/#POST_api_flair
 
 
 Assign post flair
@@ -107,6 +110,8 @@ Returns `{"json": {"errors": []}}` on success.
    Note, the `POST /r/{subreddit}/api/flair` endpoint would return a BAD_FLAIR_TARGET API error instead
    so consider this when deciding to use this endpoint or that one."
 
+.. seealso:: https://www.reddit.com/dev/api/#POST_api_deleteflair
+
 
 Revoke post flair
 ~~~~~~~~~~~~~~~~~
@@ -127,6 +132,8 @@ Set the flair on multiple users in a subreddit at once.
 
 The parameter `flair_csv` expects a CSV string which has up to 100 lines of the form `user,flairtext,cssclass`.
 Lines beyond the 100th are ignored.
+
+CSV newlines can be `\r\n` or `\n`. (The `\r` in `\r\n` won't be counted towards any limit.)
 
 If both the `flairtext` and `cssclass` values are the empty string, the user's flair is cleared.
 Returns an array of objects indicating if each flair setting was applied, or a reason for the failure.
@@ -159,6 +166,8 @@ Example return value::
    :escape: \
 
    "403","The current user does not have permission to set flairs in the specified subreddit."
+
+.. seealso:: https://www.reddit.com/dev/api/#POST_api_flaircsv
 
 
 Create user flair template
@@ -236,6 +245,9 @@ Returns the newly created or updated flair template object. E.g.,::
 
    "403","The current user does not have permission to set flairs in the specified subreddit."
 
+.. seealso:: https://www.reddit.com/dev/api/#POST_api_flairtemplate_v2
+
+
 |
 |
 
@@ -285,6 +297,8 @@ Returns `{"json": {"errors": []}}` on success.
    The CSS class specified by `css_class` contained invalid characters.
 
    *\"invalid css name\"* -> css_class"
+
+.. seealso:: https://www.reddit.com/dev/api/#POST_api_flairtemplate
 
 
 Create post flair template
@@ -355,6 +369,8 @@ Returns `{"json": {"errors": []}}` on success.
 
    * The `name` specified was not found or contains invalid characters."
 
+.. seealso:: https://www.reddit.com/dev/api/#POST_api_selectflair
+
 
 Assign post flair template
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -406,6 +422,8 @@ Returns `{"json": {"errors": []}}` on success.
    "403","The current user does not have flair mod permission in the subreddit."
    "404","The `flair_template_id` specified does not exist."
 
+.. seealso:: https://www.reddit.com/dev/api/#POST_api_deleteflairtemplate
+
 
 Delete post flair template
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -440,6 +458,8 @@ Returns `{"json": {"errors": []}}` on success.
    :escape: \
 
    "403","The current user does not have flair mod permission in the subreddit."
+
+.. seealso:: https://www.reddit.com/dev/api/#POST_api_clearflairtemplates
 
 
 Delete all post flair templates
@@ -501,9 +521,11 @@ Returns `{"json": {"errors": []}}` on success.
 
    "403","The current user does not have flair mod permission in the subreddit."
 
+.. seealso:: https://www.reddit.com/dev/api/#POST_api_flairconfig
 
-Reorder flair templates
-~~~~~~~~~~~~~~~~~~~~~~~
+
+Reorder user flair templates
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. http:patch:: /api/flair_template_order
 .. http:patch:: /api/v1/{subreddit}/flair_template_order/{flair_type}
@@ -516,7 +538,7 @@ Flair template IDs should be given as a JSON array in the request body.
 
 The array must contain every flair ID. If you fail to supply an ID a 400 HTTP error is returned.
 
-If you duplicate an ID the flair will be duplicated.
+If you duplicate an ID the flair will have multiple references in the UI.
 
 If using the `/api/v1/{subreddit}/flair_template_order/{flair_type}` form, the `{flair_type}`
 must be specified, otherwise a 404 is returned.
@@ -526,7 +548,7 @@ must be specified, otherwise a 404 is returned.
    :escape: \
 
    "subreddit","string","The target subreddit."
-   "flair_type","boolean","Either `USER_FLAIR` or `LINK_FLAIR`.
+   "flair_type","string","Either `USER_FLAIR` or `LINK_FLAIR`.
 
    If not specified, defaults to `USER_FLAIR`."
 
@@ -539,13 +561,21 @@ must be specified, otherwise a 404 is returned.
    "400","* A flair template ID is missing from the provided list.
 
    * No JSON array was provided in the request body."
-   "500","* The subreddit specified by the `subreddit` parameter or `{subreddit}` URL placeholder does not exist.
+   "500","* The subreddit specified by the `subreddit` parameter or the `{subreddit}` URL placeholder does not exist.
 
    * The `subreddit` parameter was not specified."
 
+.. seealso:: https://www.reddit.com/dev/api/#PATCH_api_flair_template_order
 
-List user flair templates
-~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Reorder post flair templates
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+See `Reorder user flair templates`_. Use `flair_type=LINK_FLAIR`.
+
+
+Get user flair templates
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. http:get:: /r/{subreddit}/api/user_flair_v2
 
@@ -587,6 +617,9 @@ E.g.,::
 
    * The current user cannot access the subreddit, e.g., because it is a private subreddit."
 
+.. seealso:: https://www.reddit.com/dev/api/#GET_api_user_flair_v2
+
+
 |
 |
 
@@ -627,24 +660,31 @@ E.g.,::
 
    * The current user cannot access the subreddit, e.g., because it is a private subreddit."
 
+.. seealso:: https://www.reddit.com/dev/api/#GET_api_user_flair
 
-List post flairs templates
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Get post flairs templates
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. http:get:: /r/{subreddit}/api/link_flair_v2
 
-See `List user flair templates`_ for details.
+See `Get user flair templates`_ for details.
+
+.. seealso:: https://www.reddit.com/dev/api/#GET_api_link_flair_v2
+
 
 |
 |
 
 .. http:get:: /r/{subreddit}/api/link_flair
 
-See `List user flair templates`_ for details.
+See `Get user flair templates`_ for details.
+
+.. seealso:: https://www.reddit.com/dev/api/#GET_api_link_flair
 
 
-List user flair choices
-~~~~~~~~~~~~~~~~~~~~~~~
+Get user flair choices
+~~~~~~~~~~~~~~~~~~~~~~
 
 .. http:post:: /r/{subreddit}/api/flairselector
 
@@ -655,11 +695,14 @@ Return a user or post's flair options.
 An object of two fields, `current` and `choices`, is returned. `current` contains an object representing the
 flair configuration of the current user.
 
-In the `current` object the `flair_template_id` field may incorrectly be `null` until the flair is updated.
-The `flair_css_class` field may be `null` if a flair is assigned and the template
+In the `current` object:
+* The `flair_template_id` field may incorrectly be `null` until the flair is updated.
+* The `flair_css_class` field may be `null` if a flair is assigned and the template
 doesn't have a CSS class set.
-If `flair_css_class`, `flair_text`, and `flair_position` are empty strings, and `flair_template_id` is `null`
-then no flair template is assigned. Just checking `flair_text` is an empty string is adequate.
+* If `flair_template_id` is `null` then no flair template is assigned.
+* If `flair_css_class`, `flair_text`, and `flair_position` are empty strings, and `flair_template_id` is `null` then
+no flair is assigned. Just checking `flair_text` is an empty string is adequate since the flair text can't be empty.
+* There is no `flair_text_editable` field.
 
 Example output::
 
@@ -681,9 +724,9 @@ then the following object is returned::
                 "flair_template_id": null,
                 "flair_text": "",
                 "flair_position": ""},
-                "choices": []}
+    "choices": []}
 
-If there is no user context, `"{}"` (a string of empty object) is returned.
+If there is no user context, this endpoint returns `"{}"` (i.e., a string of an empty JSON object).
 
 .. csv-table:: Form Data (or URL Params)
    :header: "Field","Type (hint)","Description"
@@ -708,11 +751,13 @@ If there is no user context, `"{}"` (a string of empty object) is returned.
 
    "403","The submission specified by the full ID36 `link` does not belong to this subreddit."
 
+.. seealso:: https://www.reddit.com/dev/api/#POST_api_flairselector
 
-List post flair choices
-~~~~~~~~~~~~~~~~~~~~~~~
 
-See `List user flair choices`_.
+Get post flair choices
+~~~~~~~~~~~~~~~~~~~~~~
+
+See `Get user flair choices`_.
 
 Specify a truthy value for the `is_newlink` parameter.
 
@@ -722,13 +767,13 @@ Get user flair association
 
 Determine the flair text for a user in a subreddit.
 
-See `List user flair associations`_.
+See `Get user flair associations`_.
 
 Use the `name` parameter (with `limit=1`).
 
 
-List user flair associations
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Get user flair associations
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. http:get:: /r/{subreddit}/api/flairlist
 
@@ -741,6 +786,9 @@ flair association items that look like::
 
    {"flair_css_class": null, "user": "Pyprohly", "flair_text": "fghj"}
 
+All fields are strings. The `flair_css_class` field can be `null`. For information on when the
+`flair_css_class` field is `null`, see the `user_flair_css_class` field on the Subreddit schema.
+
 If there are more items in the listing then the root object will contain a `next` field
 that should be used as the `after` parameter value to retrieve the next page of results.
 Subsequent pages will have a `prev` field that can be used for the `before` parameter
@@ -750,17 +798,18 @@ to go backwards in the listing.
    :header: "Field","Type (hint)","Description"
    :escape: \
 
-   "after","...","See :ref:`Listings overview <listings_overview>`."
    "before","...","See :ref:`Listings overview <listings_overview>`."
-   "count","...","See :ref:`Listings overview <listings_overview>`."
-   "show","...","See :ref:`Listings overview <listings_overview>`."
+   "after","...","See :ref:`Listings overview <listings_overview>`."
    "limit","integer","See :ref:`Listings overview <listings_overview>`.
 
    The max is 1000."
-   "name","string","A username. If the given name doesn't have a flair association then the parameter is ignored.
+   "name","string","A username. If the given name doesn't have a flair association then the parameter is ignored
+   (i.e., as if it weren't specified).
 
    If using this parameter it is recommended to specify `limit=1` so that if the name is not found
    then only 1 item is returned instead of (up to) 25."
+
+.. seealso:: https://www.reddit.com/dev/api/#GET_api_flairlist
 
 
 Show my flair
@@ -797,3 +846,6 @@ Returns `{"json": {"errors": []}}` on success.
    :escape: \
 
    "404","(Sends HTML document.) The subreddit specified in the URL does not exist."
+
+.. seealso:: https://www.reddit.com/dev/api/#POST_api_setflairenabled
+

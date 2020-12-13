@@ -63,11 +63,25 @@ Schema
    "post_hint?","string","E.g., `\"image\"`"
    "content_categories","unknown?",""
    "is_self","boolean","`true` if it is a text post. `false` if link post."
-   "mod_note","unknown?",""
+   "mod_note","string?",""
    "created","float","Legacy. Same as `created_utc` but subtract 28800."
    "wls","integer","Unknown. Often `6`. Possibly stands for \"white list status\"?"
-   "removed_by_category","string?","`null` if not removed, otherwise possible values: `anti_evil_ops`, `community_ops`, `legal_operations`, `copyright_takedown`, `reddit`, `user`, `deleted`, `moderator`, `automod_filtered`?"
-   "banned_by","string?","The name of the redditor who banned this post. `null` if not approved or the current user is not a moderator of the subreddit."
+   "removed?","boolean","`true` if the submission is removed.
+
+   This will not be `true` if the removed post was indicated as spam! It is recommended to check for `null` in
+   `removed_by_category` to tell if a post was removed.
+
+   This field is not available if the current user is not a moderator of the subreddit
+   (or there's no user context)."
+   "removed_by_category","string?","`null` if not removed, otherwise possible values: `author`, `anti_evil_ops`, `community_ops`, `legal_operations`, `copyright_takedown`, `reddit`, `user`, `deleted`, `moderator`, `automod_filtered`.
+
+   `deleted`: The post author, who is not a moderator of the subreddit, deleted the post.
+   `author`: The post author, who is a moderator of the subreddit, removed the post.
+   `moderator`: A moderator of the subreddit removed the post.
+   "
+   "banned_by","string?","The name of the redditor who removed this post. `null` if not removed or the current user is not a moderator of the subreddit."
+   "banned_at_utc","integer?","Unix time when the comment was removed. `null` if not removed or the current user is not a moderator of the subreddit."
+   "ban_note?","string","The message provided by the moderator when the post was removed. The note will be `spam` if the post was indicated to be spam during removal."
    "domain","string","If a link post, the domain of the link. If a text post, it is
    the name of the subreddit prefixed with `self.`, e.g., `self.IAmA`."
    "allow_live_comments","boolean",""
@@ -76,7 +90,6 @@ Schema
 
    If user context: `null` if not voted on, `true` if upvoted, `false` if downvoted."
    "suggested_sort","string?","`null` if suggested sort is not set, or one of `confidence` (best), `top`, `new`, `controversial`, `old`, `qa`."
-   "banned_at_utc","unknown?",""
    "view_count","unknown?",""
    "archived","boolean","Whether the post is archived. Archived posts cannot be commented on, but the author can still edit the OP."
    "no_follow","boolean",""
@@ -98,7 +111,7 @@ Schema
    "mod_reason_by","unknown?",""
    "removal_reason","unknown?",""
    "id","string","The ID of the submission (without the `t3_` prefix). Also see `name`."
-   "is_robot_indexable","boolean","Possibly always `false` for archived posts?[needs checking]"
+   "is_robot_indexable","boolean","Will be `false` if the post was removed or deleted. Possibly `false` for archived posts?[needs checking]"
    "report_reasons","unknown?",""
    "author","string","The redditor name. Possibly `[removed]` if the post was removed
    or `[deleted]` if the post was removed by the author."
@@ -116,10 +129,10 @@ Schema
    it is the url of the link. Also see `permalink`."
    "subreddit_subscribers","integer","The number of subscribers in the subreddit."
    "created_utc","float","Unix timestamp of when the post was made. Will always be a whole number."
-   "num_crossposts","integer",""
+   "num_crossposts","integer","Crosspost count."
    "media","unknown?",""
    "is_video","boolean",""
-   "spam?","boolean","`true` if the submission is marked as spam else `false`.
+   "spam?","boolean","`true` if the submission was removed as spam else `false`.
 
    This field is not available if the current user is not a moderator of the subreddit
    (or there's no user context)."
@@ -128,10 +141,6 @@ Schema
    This field is not available if the current user is not a moderator of the subreddit
    (or there's no user context)."
    "approved?","boolean","`true` if the submission is approved.
-
-   This field is not available if the current user is not a moderator of the subreddit
-   (or there's no user context)."
-   "removed?","boolean","`true` if the submission is removed.
 
    This field is not available if the current user is not a moderator of the subreddit
    (or there's no user context)."
@@ -146,8 +155,9 @@ Schema
    When an event is started early this field gets updated."
    "event_end?","float","Unix timestamp of when the post's event time ends. Key does not exist if
    there is no event metadata on the post. The float is always a whole number."
-   "event_is_live?","boolean","True if the event is live."
-
+   "event_is_live?","boolean","`true` if the event is live (event is happening now), `false` if not. Field does not exist if there is no event info."
+   "is_followed?","boolean","`true` if the event is being followed by the current user.
+   Field does not exist if the event is not being followed or there is no user context."
    "author_flair_background_color",".","See same field in Comment schema."
    "author_flair_css_class",".","See same field in Comment schema."
    "author_flair_richtext?",".","See same field in Comment schema."
@@ -239,7 +249,6 @@ If `kind` is `"link"`, a link post is created with `url` as the link.
    :escape: \
 
    "ad","boolean","Setting to `true` appears to post the submission unlisted, accessible only by URL."
-   "api_type","string","the string ``\"json\"``"
    "app","unknown",""
    "collection_id","string","(beta) the UUID of a collection"
    "event_end","string","(beta) a datetime string e.g. `2018-09-11T12:00:00`"
@@ -309,7 +318,6 @@ This endpoint does not produce any kind of return value.
    :header: "Field","Type (hint)","Description"
    :escape: \
 
-   "api_type","string","the string ``\"json\"``"
    "id","string","the full ID of a comment or submission"
 
 |
@@ -387,7 +395,6 @@ moderators_you_may_now_lock_individual_comments/
    :header: "Field","Type (hint)","Description"
    :escape: \
 
-   "api_type","string","the string ``\"json\"``"
    "id","string","the full ID of a comment or submission"
 
 |
@@ -473,7 +480,6 @@ Returns an empty JSON object.
    :header: "Field","Type (hint)","Description"
    :escape: \
 
-   "api_type","string","the string ``\"json\"``"
    "id","string","full ID of a Submission or Comment"
    "category","string","a category name. premium only feature?"
 
@@ -504,7 +510,6 @@ Mark a Submission as NSFW.
    :header: "Field","Type (hint)","Description"
    :escape: \
 
-   "api_type","string","the string ``\"json\"``"
    "id","string","full ID of a Submission or Comment"
 
 |
@@ -542,7 +547,6 @@ Mark a Submission as spolier.
    :header: "Field","Type (hint)","Description"
    :escape: \
 
-   "api_type","string","the string ``\"json\"``"
    "id","string","full ID of a Submission or Comment"
 
 |
@@ -601,7 +605,6 @@ The target entity is returned in a listing structure.
    :header: "Field","Type (hint)","Description"
    :escape: \
 
-   "api_type","string","the string ``\"json\"``"
    "id","string","full ID of a Submission or Comment"
    "how","string","one of `yes`, `admin`, `no`, `special`"
    "sticky","boolean","make a comment sticky"
@@ -660,7 +663,6 @@ You cannot reorder sticky posts directly. You must unsticky them then re-sticky 
    :header: "Field","Type (hint)","Description"
    :escape: \
 
-   "api_type","string","the string ``\"json\"``"
    "id","string","full ID of a Submission"
    "state","boolean","whether to sticky (`true`) or unsticky (`false`) this post"
    "num","integer","an integer position"
@@ -703,7 +705,6 @@ If `state` is not specified, `false` is assumed.
    :header: "Field","Type (hint)","Description"
    :escape: \
 
-   "api_type","string","the string ``\"json\"``"
    "id","string","full ID of a Submission"
    "state","boolean","whether to enable or disable contest mode"
 
@@ -744,7 +745,6 @@ If `sort` is `blank`, not given, or an unknown value, the suggested sort will be
    :header: "Field","Type (hint)","Description"
    :escape: \
 
-   "api_type","string","the string ``\"json\"``"
    "id","string","full ID of a Submission"
    "sort","string","one of `confidence`, `top`, `new`, `controversial`, `old`, `random`, `qa`, `live`, `blank`"
 
@@ -784,7 +784,6 @@ If `state` is not provided, `true` (enable) is assumed.
    :header: "Field","Type (hint)","Description"
    :escape: \
 
-   "api_type","string","the string ``\"json\"``"
    "id","string","full ID of a Submission or Comment"
    "state","boolean","whether to enable or disable inbox replies"
 
@@ -797,3 +796,189 @@ If `state` is not provided, `true` (enable) is assumed.
    "USER_REQUIRED","you must login"
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_sendreplies
+
+
+Set Event Times
+~~~~~~~~~~~~~~~
+
+.. http:post:: /api/event_post_time
+
+*scope: modposts*
+
+Add or modify post event times.
+
+Specify only `event_start` to change only the starting date.
+The same cannot be done for `event_end`, a 500 HTTP error will occur.
+
+If both `event_start` and `event_end` are specified then the `event_start` must be before `event_end`
+otherwise a `MIN_EVENT_TIME` API error is returned.
+It's possible however to make a second request specifying only `event_start` to modify the start date
+so that `event_start` is after `event_end`. If this happens then the time difference can be longer than
+7 days.
+
+.. csv-table:: Form Data
+   :header: "Field","Type (hint)","Description"
+   :escape: \
+
+   "id","string","Full ID36 of a post."
+   "event_start","string","A datetime in ISO 8601 format. E.g., `2018-09-11T12:00:00`.
+
+   If value is empty the parameter is ignored."
+   "event_end","string","A datetime in ISO 8601 format. E.g., `2018-09-11T12:00:00`.
+
+   If value is empty the parameter is ignored."
+   "event_tz","string","A timezone. E.g., `America/Los_Angeles`.
+
+   If not specified, defaults to `UTC`."
+
+|
+
+.. csv-table:: API Errors (variant 2)
+   :header: "Error","Description"
+   :escape: \
+
+   "BAD_TIME","* The value specified for `event_start` or `event_end` is in a bad format.
+
+   * The date string specified for `event_start` or `event_end` is in the past.
+
+   Note that this error will always indicate `event_start` is wrong even if its `event_end` that needs fixing.
+
+   \"This time is invalid\" -> event_start"
+   "INVALID_TIMEZONE","*\"This timezone is invalid\"* -> *event_tz*"
+   "MAX_EVENT_TIME","*\"This event can't be longer than 7 days\"* -> *event_end*"
+   "MIN_EVENT_TIME","*\"This event must last at least 30 minutes\"* -> *event_end*"
+
+|
+
+.. csv-table:: HTTP Errors
+   :header: "Status Code","Description"
+   :escape: \
+
+   "500","The `event_start` parameter was not specified."
+
+
+.. _post_api_approve:
+
+Approve
+~~~~~~~
+
+.. http:post:: /api/approve
+
+*scope: modposts*
+
+Approve a post or comment.
+
+A removed target can be approved. If so it will be re-inserted into appropriate listings and
+any reports on the approved thing will be discarded.
+
+Returns an empty JSON object on success.
+
+A removed post's attributes will change as follows:
+
+.. csv-table:: Object attribute changes
+   :header: "Field","Description"
+   :escape: \
+
+   "removed","Resets to `false`."
+   "removed_by_category","Resets to `null`."
+   "banned_by","Resets to `null`."
+   "banned_at_utc","Resets to `null`."
+   "ban_note","Field no longer exists."
+   "spam","Resets to `false`."
+   "is_crosspostable","Resets to `true`."
+   "is_robot_indexable","Resets to `true`."
+
+Returns an empty JSON object on success.
+
+Approving a post/comment affects it's attributes:
+
+.. csv-table:: Object attribute changes
+   :header: "Field","Description"
+   :escape: \
+
+   "approved","Becomes `true`. (Value start as `false`.)"
+   "approved_by","Name of the redditor who approved. (Value start as `null`.)"
+   "approved_at_utc","The unix timestamp of when the item was approved. (Value starts as `null`.)"
+
+|
+
+.. csv-table:: Form Data
+   :header: "Field","Type (hint)","Description"
+   :escape: \
+
+   "id","string","Full ID36 of a post or comment."
+
+|
+
+.. csv-table:: HTTP Errors
+   :header: "Status Code","Description"
+   :escape: \
+
+   "404","* The target specified by the `id` parameter does not belong to a subreddit you have permission to approve.
+
+   * The `id` parameter was not specified."
+
+
+.. _post_api_remove:
+
+Remove
+~~~~~~
+
+.. http:post:: /api/remove
+
+*scope: modposts*
+
+As a moderator, remove a post, comment, or modmail message.
+
+Returns an empty JSON object on success.
+
+Removing a post/comment affects it's attributes:
+
+.. csv-table:: Object attribute changes
+   :header: "Field","Description"
+   :escape: \
+
+   "banned_by","Name of the redditor who removed. (Value start as `null`.)"
+   "banned_at_utc","The unix timestamp of when the item was removed. (Value starts as `null`.)"
+   "ban_note","Ban note.
+
+   Value is `spam` if `spam` parameter was `true`.
+
+   Value is `remove not spam` if `spam` parameter was `false`.
+
+   Value is `confirm spam` if a removal was made with the `spam` parameter as `false` then again with
+   the `spam` parameter as `true`. If the order is reversed then the the note will be `remove not spam`.
+   "
+   "spam","Becomes `true` if `spam` parameter was `true`."
+
+Extra attributes for posts only:
+
+.. csv-table:: Object attribute changes
+   :header: "Field","Description"
+   :escape: \
+
+   "removed_by_category","The removed by category. It will be `author` even if the remover was the author even if the
+   author is a moderator. (Value starts as `null`.)"
+   "is_crosspostable","Becomes `false`. (Value starts as `true`.)"
+   "is_robot_indexable","Becomes `false`. (Value starts as `true`.)"
+
+|
+
+.. csv-table:: Form Data
+   :header: "Field","Type (hint)","Description"
+   :escape: \
+
+   "id","string","Full ID36 of a post or comment."
+   "spam","boolean","Indicate whether the post should be removed as spam.
+
+   Default: `true`."
+
+|
+
+.. csv-table:: HTTP Errors
+   :header: "Status Code","Description"
+   :escape: \
+
+   "404","* The target specified by the `id` parameter does not belong to a subreddit you have permission to approve.
+
+   * The `id` parameter was not specified."
