@@ -1,0 +1,319 @@
+
+Flair Emoji
+===========
+
+Overview
+--------
+
+Put little images in your flairs with flair emojis.
+
+See `<https://mods.reddithelp.com/hc/en-us/articles/360010560371-Emojis>`_.
+
+
+Schema
+~~~~~~
+
+.. csv-table:: Custom Feed Object
+   :header: "Field","Type (hint)","Description"
+   :escape: \
+
+   "url","string","The emoji image file."
+   "created_by","string","The full ID36 (prefixed with `t2_`) of the user who added the emoji."
+   "mod_flair_only","boolean","Whether the emoji can only be used by a moderator."
+   "post_flair_allowed","boolean","Whether the emoji can be used on post flairs."
+   "user_flair_allowed","boolean","Whether the emoji can be used on user flairs."
+
+
+Actions
+-------
+
+Get subreddit emojis
+~~~~~~~~~~~~~~~~~~~~
+
+.. http:get:: /api/v1/{subreddit}/emojis/all
+
+*scope: read*
+
+Get a list of all emojis for a subreddit.
+
+The response includes reddit-wide 'snoomoji' emojis as well as custom emojis for the
+subreddit specified in the request URL.
+
+.. csv-table:: API Errors (variant 2)
+   :header: "Error","Description"
+   :escape: \
+
+   "USER_REQUIRED","   *Please log in to do that.*"
+
+|
+
+.. csv-table:: HTTP Errors
+   :header: "Status Code","Description"
+   :escape: \
+
+   "403","The specified subreddit cannot be accessed."
+   "500","The specified subreddit does not exist."
+
+.. seealso:: https://www.reddit.com/dev/api/#GET_api_v1_{subreddit}_emojis_all
+
+
+Upload
+~~~~~~
+
+.. http:post:: /api/v1/{subreddit}/emoji_asset_upload_s3
+
+*scope: structuredstyles*
+
+Upload an emoji image.
+
+Uploading and adding an emoji to a subreddit is two separate steps. The uploading the step
+can further be broken down into two steps: obtaining an upload lease and then uploading the
+emoji image to an Amazon S3 bucket.
+
+Use the `POST /api/v1/subreddit/emoji_asset_upload_s3` endpoint to obtain an upload lease for the
+emoji image. In the response data there will be a field called `action` whose value is a URL but
+missing the `https:` prefix. Prepend `https:` to the URL and add your emoji image to a field
+named `file` in a multipart request, along with the parameters in the `fields` array from the
+upload lease as form data in the multipart request.
+
+The `action` value is typically `//reddit-uploaded-emoji.s3-accelerate.amazonaws.com`.
+This endpoint returns XML data. Remember to check for a bad status value.
+If the image was too large, this endpoint returns 400 Bad Request, and a message indicating this
+is included in the XML.
+
+The file name specified by `filepath` doesn't appear to have any significance.
+The name of the file when you download it from the site will be the name of the emoji plus extension.
+
+.. csv-table:: Form Data
+   :header: "Field","Type (hint)","Description"
+   :escape: \
+
+   "filepath","string","The file name (base name not full path) of the image file to upload.
+   Example: `image.png`."
+   "mimetype","string","The mimetype of the image file to upload. It does not have to match the
+   extension of the `filepath`. Example: `image/png`."
+
+|
+
+.. csv-table:: API Errors (variant 2)
+   :header: "Error","Description"
+   :escape: \
+
+   "USER_REQUIRED","   *Please log in to do that.*"
+
+|
+
+.. csv-table:: HTTP Errors
+   :header: "Status Code","Description"
+   :escape: \
+
+   "400","* The `filepath` or `mimetype` form parameter was not specified or the value was empty.
+
+   * The file extension in the name specified by `filepath` is not supported.
+
+   * Invalid value specified for `mimetype`."
+   "403","The specified subreddit cannot be accessed."
+   "500","The specified subreddit does not exist."
+
+.. seealso:: https://www.reddit.com/dev/api/#POST_api_v1_{subreddit}_emoji_asset_upload_s3.json
+
+
+Add
+~~~
+
+.. http:post:: /api/v1/{subreddit}/emoji
+
+*scope: structuredstyles*
+
+Add a new emoji to a subreddit.
+
+By specifying the name of an existing emoji, the permissions of that emoji can be changed.
+In general this endpoint should not be used to modify the permissions of an emoji since
+this endpoint requires knowing the S3 key of the emoji, which cannot be re-obtained if lost.
+
+The name of an emoji cannot be changed with this endpoint. If the same S3 key is used with a different
+`name` value, a new emoji will be created.
+
+If the `s3_key` is not valid the request will appear to succeed but no emoji will be added to the subreddit.
+
+Returns `{'json': {'errors': []}}` on success.
+
+.. csv-table:: Form Data
+   :header: "Field","Type (hint)","Description"
+   :escape: \
+
+   "s3_key","string","The key of the Amazon S3 bucket containing the emoji image."
+   "name","string","A name for the emoji. This will be the text used to write the emoji. E.g., `:name:`."
+   "mod_flair_only","boolean","Whether the emoji can only be used by mods. Default: false."
+   "post_flair_allowed","boolean","Whether the emoji can be used on post flairs. Default: true."
+   "user_flair_allowed","boolean","Whether the emoji can be used on user flairs. Default: true."
+
+|
+
+.. csv-table:: API Errors (variant 2)
+   :header: "Error","Description"
+   :escape: \
+
+   "USER_REQUIRED","   *Please log in to do that.*"
+
+|
+
+.. csv-table:: HTTP Errors
+   :header: "Status Code","Description"
+   :escape: \
+
+   "400","The `s3_key` parameter was not specified or was empty."
+   "403","You do not have permission to add an emoji to the specified subreddit."
+   "500","* The `name` parameter was not specified or was empty.
+
+   * The specified subreddit does not exist."
+
+.. seealso:: https://www.reddit.com/dev/api/#POST_api_v1_{subreddit}_emoji.json
+
+
+Modify emoji permissions
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+..http:post:: /api/v1/{subreddit}/emoji_permissions
+
+Change emoji permissions.
+
+Returns `{'json': {'errors': []}}` on success.
+
+.. csv-table:: Form Data
+   :header: "Field","Type (hint)","Description"
+   :escape: \
+
+   "name","string","The target emoji name."
+   "mod_flair_only","boolean","Whether the emoji can only be used by mods. Default: false."
+   "post_flair_allowed","boolean","Whether the emoji can be used on post flairs. Default: true."
+   "user_flair_allowed","boolean","Whether the emoji can be used on user flairs. Default: true."
+
+|
+
+.. csv-table:: API Errors (variant 2)
+   :header: "Error","Description"
+   :escape: \
+
+   "USER_REQUIRED","   *Please log in to do that.*"
+
+|
+
+.. csv-table:: HTTP Errors
+   :header: "Status Code","Description"
+   :escape: \
+
+   "403","You do not have permission to make changes to the specified subreddit."
+   "404","The emoji specified by `name` does not exist."
+   "500","* The `name` parameter was not specified or was empty.
+
+   * The specified subreddit does not exist."
+
+
+Delete
+~~~~~~
+
+.. http:delete:: /api/v1/{subreddit}/emoji/{emoji_name}
+
+*scope: structuredstyles*
+
+Delete a flair emoji.
+
+Returns `{'json': {'errors': []}}` on success.
+
+.. csv-table:: API Errors (variant 2)
+   :header: "Error","Description"
+   :escape: \
+
+   "USER_REQUIRED","   *Please log in to do that.*"
+
+|
+
+.. csv-table:: HTTP Errors
+   :header: "Status Code","Description"
+   :escape: \
+
+   "400","* The specified emoji does not exist.
+
+   * The specified subreddit does not exist."
+
+.. seealso:: https://www.reddit.com/dev/api/#DELETE_api_v1_{subreddit}_emoji_{emoji_name}
+
+
+Set custom emoji size
+~~~~~~~~~~~~~~~~~~~~~
+
+.. http:post:: /api/v1/{subreddit}/emoji_custom_size
+
+*scope: structuredstyles*
+
+Set subreddit custom emoji size.
+
+Omitting either `width` or `height` parameters will disable custom emoji sizing.
+
+Returns `{'json': {'errors': []}}` on success.
+
+.. csv-table:: Form Data
+   :header: "Field","Type (hint)","Description"
+   :escape: \
+
+   "width","integer","An integer from 1 to 40, but numbers less than 15 are invalid.
+   Parameter is ignored if a non-number is passed."
+   "height","integer","\" \""
+
+|
+
+.. csv-table:: API Errors (variant 2)
+   :header: "Error","Description"
+   :escape: \
+
+   "USER_REQUIRED","   *Please log in to do that.*"
+
+|
+
+.. csv-table:: HTTP Errors
+   :header: "Status Code","Description"
+   :escape: \
+
+   "403","You do not have permission to make changes to the specified subreddit."
+   "500","The specified subreddit does not exist."
+
+.. seealso:: https://www.reddit.com/dev/api/#POST_api_v1_{subreddit}_emoji_custom_size
+
+
+Enable/disable emojis in subreddit
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. http:post:: /api/enable_emojis_in_sr
+
+Enable/disable flair emojis in a subreddit.
+
+Returns `{'json': {'errors': []}}` on success.
+
+.. csv-table:: Form Data
+   :header: "Field","Type (hint)","Description"
+   :escape: \
+
+   "subreddit","string","The target subreddit name."
+   "enable","boolean","True for enable, false for disable. Default: false."
+
+|
+
+.. csv-table:: API Errors (variant 2)
+   :header: "Error","Description"
+   :escape: \
+
+   "USER_REQUIRED","   *Please log in to do that.*"
+
+|
+
+.. csv-table:: HTTP Errors
+   :header: "Status Code","Description"
+   :escape: \
+
+   "403","You do not have permission to set emoji options in the target subreddit."
+   "500","* The `subreddit` parameter was not specified or was empty.
+
+   * The specified subreddit does not exist."
+
+

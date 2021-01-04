@@ -343,3 +343,35 @@ On success, the endpoint returns `"{}"` (a string of an empty JSON object).
    "USER_REQUIRED","200","you must login
 
    \"Please log in to do that.\""
+
+
+Get saved categories
+~~~~~~~~~~~~~~~~~~~~
+
+.. http:get:: /api/saved_categories
+
+Get saved categories.
+
+Requires Reddit Premium.
+
+Saved categories are automatically removed when the last item using it is removed for the saved list.
+
+Example output::
+
+   {'categories': [{'category': 'asdf'}, {'category': 'zxcv'}]}
+
+.. csv-table:: API Errors (variant 2)
+   :header: "Error","Description"
+   :escape: \
+
+   "USER_REQUIRED","   *Please log in to do that.*"
+
+|
+
+.. csv-table:: HTTP Errors
+   :header: "Status Code","Description"
+   :escape: \
+
+   "403","The current user does not have Reddit Premium."
+
+.. seealso:: https://www.reddit.com/dev/api/#GET_api_saved_categories

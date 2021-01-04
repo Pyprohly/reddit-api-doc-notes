@@ -14,6 +14,8 @@ Welcome to reddit-api-docs's documentation!
    api-reference/subreddit
    api-reference/collection
    api-reference/flair
+   api-reference/emoji
+   api-reference/custom_feed
    api-reference/listings
 
 

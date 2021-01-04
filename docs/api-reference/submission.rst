@@ -111,7 +111,7 @@ Schema
    "mod_reason_by","unknown?",""
    "removal_reason","unknown?",""
    "id","string","The ID of the submission (without the `t3_` prefix). Also see `name`."
-   "is_robot_indexable","boolean","Will be `false` if the post was removed or deleted. Possibly `false` for archived posts?[needs checking]"
+   "is_robot_indexable","boolean","Will be `false` if the post was removed or deleted."
    "report_reasons","unknown?",""
    "author","string","The redditor name. Possibly `[removed]` if the post was removed
    or `[deleted]` if the post was removed by the author."
@@ -455,9 +455,10 @@ Cast a vote on a Submission or Comment.
    :header: "Status Code","Description"
    :escape: \
 
-   "404","no `id` was given or the target could not be found"
-   "500","returned after a long wait if (1) `dir` was not specified,
-   (2) a non-integer argument is specified for `dir`"
+   "404","No `id` was given or the target could not be found."
+   "500","Returned after a long wait if:
+   * `dir` was not specified.
+   * A non-integer argument is specified for `dir`."
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_vote
 
@@ -480,8 +481,8 @@ Returns an empty JSON object.
    :header: "Field","Type (hint)","Description"
    :escape: \
 
-   "id","string","full ID of a Submission or Comment"
-   "category","string","a category name. premium only feature?"
+   "id","string","The full ID of a submission or comment."
+   "category","string","A category name. Requires Reddit Premium. Ignored if no Reddit Premium."
 
 |
 
@@ -489,7 +490,15 @@ Returns an empty JSON object.
    :header: "Error","Description"
    :escape: \
 
-   "USER_REQUIRED","you must login"
+   "USER_REQUIRED","   *Please log in to do that.*"
+
+|
+
+.. csv-table:: HTTP Errors
+   :header: "Status Code","Description"
+   :escape: \
+
+   "403","The category name specified was invalid."
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_save
 
@@ -798,8 +807,8 @@ If `state` is not provided, `true` (enable) is assumed.
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_sendreplies
 
 
-Set Event Times
-~~~~~~~~~~~~~~~
+Set Event Time
+~~~~~~~~~~~~~~
 
 .. http:post:: /api/event_post_time
 
@@ -855,6 +864,48 @@ so that `event_start` is after `event_end`. If this happens then the time differ
    :escape: \
 
    "500","The `event_start` parameter was not specified."
+
+.. seealso:: https://www.reddit.com/dev/api/#POST_api_event_post_time
+
+
+Follow post event
+~~~~~~~~~~~~~~~~~
+
+.. http:post:: /api/follow_post
+
+*scope: subscribe*
+
+Follow or unfollow a post event.
+
+Followers will receive a push notification when the event starts.
+
+Returns an empty JSON object on success.
+
+.. csv-table:: Form Data
+   :header: "Field","Type (hint)","Description"
+   :escape: \
+
+   "fullname","string","The full ID36 of a submission."
+   "follow","boolean","True to follow, false to unfollow. Default: false."
+
+|
+
+.. csv-table:: API Errors (variant 2)
+   :header: "Error","Description"
+   :escape: \
+
+   "USER_REQUIRED","   *Please log in to do that.*"
+
+|
+
+.. csv-table:: HTTP Errors
+   :header: "Status Code","Description"
+   :escape: \
+
+   "403","The submission specified by the `fullname` parameter is not an event."
+   "404","The submission specified by the `fullname` parameter does not exist."
+
+.. seealso:: https://www.reddit.com/dev/api/#POST_api_follow_post
 
 
 .. _post_api_approve:

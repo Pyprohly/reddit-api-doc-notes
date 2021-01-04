@@ -620,7 +620,7 @@ Returns an object with one field, `names`, which is an array of subreddit names.
    This parameter is ignored if there is a user context. If there is a user context the value is taken from the
    \"include not safe for work (NSFW) search results in searches\" preference option.
 
-   This parameter is ignored if the `exact` parameter is true."
+   This parameter is ignored and enabled if the `exact` parameter is true."
    "include_unadvertisable","boolean","If false, subreddits that have `hide_ads` set to `true` or are on
    the `anti_ads_subreddits` list will be filtered. Default: ??? [needs checking]"
    "search_query_id","string","unknown"
