@@ -301,6 +301,8 @@ Variants
 'UserList' list structures where the second one is empty. The first list
 structure matches that of `/api/v1/me/friends`.
 
+.. _account_listings_blocked:
+
 *Blocked*
 ^^^^^^^^^
 

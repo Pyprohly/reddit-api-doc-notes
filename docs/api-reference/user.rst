@@ -272,50 +272,6 @@ This end point returns an object with the following fields:
    "414","The requested URL length is too long (over 7219 characters)."
 
 
-Block
-~~~~~
-
-.. http:post:: /api/block_user
-
-*scope: account*
-
-Block a user.
-
-Specify an account full ID (with `account_id`) or user name (with `name`) to block.
-If both parameters are specified together then `account_id` will be used.
-
-An empty JSON object is returned on success.
-
-.. csv-table:: Form data (or URL params)
-   :header: "Field","Type (hint)","Description"
-   :escape: \
-
-   "account_id","string","Full ID (prefixed with `t2_`) of a user."
-   "name","string","A case-insensitive user name."
-
-|
-
-.. csv-table:: API Errors
-   :header: "Error","Description"
-   :escape: \
-
-   "USER_REQUIRED","you must login"
-
-|
-
-.. csv-table:: HTTP Errors
-   :header: "Status Code","Description"
-   :escape: \
-
-   "400","* `account_id` nor `name` was specified.
-
-   * You tried to block yourself.
-
-   * The user or account ID doesn't exist."
-
-.. seealso:: https://www.reddit.com/dev/api/#POST_api_block_user
-
-
 Report
 ~~~~~~
 
@@ -366,6 +322,12 @@ Check whether a username is available for registration.
 Valid usernames match `/[A-Za-z0-9_-]{3,20}/`.
 
 Returns `true` or `false`.
+
+.. csv-table:: URL Params
+   :header: "Field","Type (hint)","Description"
+   :escape: \
+
+   "user","string","A username."
 
 .. csv-table:: API Errors (variant 2)
    :header: "Error","Description"

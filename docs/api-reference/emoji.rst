@@ -66,29 +66,32 @@ Upload
 
 Upload an emoji image.
 
-Uploading and adding an emoji to a subreddit is two separate steps. The uploading the step
+Uploading and adding an emoji to a subreddit is two separate steps. The uploading step
 can further be broken down into two steps: obtaining an upload lease and then uploading the
-emoji image to an Amazon S3 bucket.
+emoji image to the Amazon S3 bucket specified in the lease.
 
-Use the `POST /api/v1/subreddit/emoji_asset_upload_s3` endpoint to obtain an upload lease for the
+Use the `POST /api/v1/{subreddit}/emoji_asset_upload_s3` endpoint to obtain an upload lease for the
 emoji image. In the response data there will be a field called `action` whose value is a URL but
 missing the `https:` prefix. Prepend `https:` to the URL and add your emoji image to a field
 named `file` in a multipart request, along with the parameters in the `fields` array from the
 upload lease as form data in the multipart request.
 
 The `action` value is typically `//reddit-uploaded-emoji.s3-accelerate.amazonaws.com`.
-This endpoint returns XML data. Remember to check for a bad status value.
+This endpoint returns XML data. Check for a bad status value here.
 If the image was too large, this endpoint returns 400 Bad Request, and a message indicating this
-is included in the XML.
+is included in the XML data.
 
-The file name specified by `filepath` doesn't appear to have any significance.
-The name of the file when you download it from the site will be the name of the emoji plus extension.
+The `s3_key` for use in the adding stage is the value of `s3UploadLease.fields.key` in the lease.
+
+The file name specified by `filepath` doesn't appear to have any actual significance.
+The name of the file when you download it from the site will always be the name of the emoji,
+plus the file extension.
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
    :escape: \
 
-   "filepath","string","The file name (base name not full path) of the image file to upload.
+   "filepath","string","The file name (base name, not a full path) of the image file to upload.
    Example: `image.png`."
    "mimetype","string","The mimetype of the image file to upload. It does not have to match the
    extension of the `filepath`. Example: `image/png`."
@@ -127,12 +130,12 @@ Add
 
 Add a new emoji to a subreddit.
 
-By specifying the name of an existing emoji, the permissions of that emoji can be changed.
-In general this endpoint should not be used to modify the permissions of an emoji since
+By specifying the name of an existing emoji the permissions on that emoji can be changed,
+but in general this endpoint should not be used to modify the permissions of an emoji since
 this endpoint requires knowing the S3 key of the emoji, which cannot be re-obtained if lost.
 
 The name of an emoji cannot be changed with this endpoint. If the same S3 key is used with a different
-`name` value, a new emoji will be created.
+`name` value then a new emoji will be created.
 
 If the `s3_key` is not valid the request will appear to succeed but no emoji will be added to the subreddit.
 
@@ -143,7 +146,7 @@ Returns `{'json': {'errors': []}}` on success.
    :escape: \
 
    "s3_key","string","The key of the Amazon S3 bucket containing the emoji image."
-   "name","string","A name for the emoji. This will be the text used to write the emoji. E.g., `:name:`."
+   "name","string","A name for the emoji. Up to 24 characters. This will be the text used to write the emoji. E.g., `:name:`."
    "mod_flair_only","boolean","Whether the emoji can only be used by mods. Default: false."
    "post_flair_allowed","boolean","Whether the emoji can be used on post flairs. Default: true."
    "user_flair_allowed","boolean","Whether the emoji can be used on user flairs. Default: true."
@@ -162,7 +165,9 @@ Returns `{'json': {'errors': []}}` on success.
    :header: "Status Code","Description"
    :escape: \
 
-   "400","The `s3_key` parameter was not specified or was empty."
+   "400","* The `s3_key` parameter was not specified or was empty.
+
+   * More than 24 characters were used for the `name` parameter."
    "403","You do not have permission to add an emoji to the specified subreddit."
    "500","* The `name` parameter was not specified or was empty.
 
@@ -315,5 +320,3 @@ Returns `{'json': {'errors': []}}` on success.
    "500","* The `subreddit` parameter was not specified or was empty.
 
    * The specified subreddit does not exist."
-
-

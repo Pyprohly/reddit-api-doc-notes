@@ -57,7 +57,7 @@ Get preferences
 
 Retrieve the preference settings of the logged in user.
 
-.. csv-table:: API Errors
+.. csv-table:: API Errors (variant 1)
    :header: "Error","Description"
    :escape: \
 
@@ -75,21 +75,18 @@ Set preferences
 
 Set preference settings for the logged in user.
 
-Returns the updated preferences.
+This endpoint expects JSON data.
+
+Returns the updated preferences, as you would get from `GET /api/v1/me/prefs`.
 
 For boolean values, a string that starts with `0` or `F` or `f` is treated as falsy.
 
-.. csv-table:: API Errors
-   :header: "Error","Description"
-   :escape: \
-
-   "BAD_NUMBER","E.g., when setting the `numsites` preference to a non-number or outside the valid range (1 to 100)."
-
-.. csv-table:: API Errors
+.. csv-table:: API Errors (variant 1)
    :header: "Error","Description"
    :escape: \
 
    "USER_REQUIRED","you must login"
+   "JSON_PARSE_ERROR","The JSON provided was invalid."
 
 .. seealso:: https://www.reddit.com/dev/api/#PATCH_api_v1_me_prefs
 
@@ -285,6 +282,123 @@ Returns zero data on success.
    "NOT_FRIEND","That user is not a friend."
 
 .. seealso:: https://www.reddit.com/dev/api/#DELETE_api_v1_me_friends_{username}
+
+
+List blocked
+~~~~~~~~~~~~
+
+See :ref:`Blocked Account listing <account_listings_blocked>`.
+
+
+Block user
+~~~~~~~~~~
+
+.. http:post:: /api/block_user
+
+*scope: account*
+
+Block a user.
+
+Specify an account full ID36 (with `account_id`) or user name (with `name`) to block.
+If both parameters are specified together then `account_id` will be used.
+
+An empty JSON object is returned on success.
+
+.. csv-table:: Form data
+   :header: "Field","Type (hint)","Description"
+   :escape: \
+
+   "account_id","string","Full ID36 (prefixed with `t2_`) of a user."
+   "name","string","A case-insensitive user name."
+
+|
+
+.. csv-table:: API Errors
+   :header: "Error","Description"
+   :escape: \
+
+   "USER_REQUIRED","you must login"
+
+|
+
+.. csv-table:: HTTP Errors
+   :header: "Status Code","Description"
+   :escape: \
+
+   "400","* `account_id` nor `name` was specified.
+
+   * You tried to block yourself.
+
+   * The user or account ID doesn't exist."
+
+.. seealso:: https://www.reddit.com/dev/api/#POST_api_block_user
+
+
+Unblock user
+~~~~~~~~~~~~
+
+*scope: privatemessages*
+
+Use `POST /api/unfriend` with `type: enemy` form data.
+
+------------
+
+.. http:post:: [/r/{subreddit}]/api/unfriend
+
+Remove a relationship between a user and another user or subreddit
+
+The user can either be passed in by name (`name`) or by full ID36 (`id`). If both `id` and `name` are specified
+then `id` will take preference and `name` is ignored.
+
+If `type: enemy`, `container` must be the current user's full ID36. For other types, the subreddit must be
+specififed via URL (e.g., `/r/funny/api/unfriend`).
+
+The required scope of this endpoint is based on the type of the relationship:
+
+* moderator: `modothers`
+* moderator_invite: `modothers`
+* contributor: `modcontributors`
+* banned: `modcontributors`
+* muted: `modcontributors`
+* wikibanned: `modcontributors` and `modwiki`
+* wikicontributor: `modcontributors` and `modwiki`
+* enemy: `privatemessages`
+
+Returns an empty JSON object on success. If the target specified by `id` or `name` doesn't exist, it is treated
+as successful.
+
+.. csv-table:: Form data
+   :header: "Field","Type (hint)","Description"
+   :escape: \
+
+   "type","string","Either: `enemy`, `moderator`, `moderator_invite`, `contributor`, `banned`,
+   `muted`, `wikibanned`, `wikicontributor`."
+   "container","string","If `type: enemy` then this needs to be set to the current user's full ID36."
+   "id","string","Full ID36 of the target."
+   "name","string","Name of a target user."
+
+|
+
+.. csv-table:: API Errors (variant 2)
+   :header: "Error","Description"
+   :escape: \
+
+   "USER_REQUIRED","you must login"
+
+|
+
+.. csv-table:: HTTP Errors
+   :header: "Status Code","Description"
+   :escape: \
+
+   "400","* `type: friend` was specified.
+
+   * The `id` or `name` parameter was not specified.
+
+   * The the user specified by `id` or `name` doesn't exist."
+   "500","An invalid value was specified for `type`."
+
+.. seealso:: https://www.reddit.com/dev/api/#POST_api_unfriend
 
 
 Add trusted user
