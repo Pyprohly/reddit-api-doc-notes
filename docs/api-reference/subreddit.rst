@@ -206,16 +206,18 @@ Create
 
 Create or configure a subreddit.
 
+.. note::
+
+   To configure an existing subreddit's options it is recommended to use `POST /api/v1/subreddit/update_settings`
+   which allows you to modify a subset of options, without needing to specify all the options.
+
 If `sr` is specified, the request will attempt to modify the specified subreddit.
 If not, a subreddit with name `name` will be created.
 
-This endpoint expects all values to be supplied on every request.
+When configuring a subreddit, this endpoint expects all values to be supplied on every request.
 If modifying a subset of options, it may be useful to get the current settings from `GET /about/edit` first.
 
-To configure an existing subreddit's options it is recommended to use `POST /api/v1/subreddit/update_settings`
-which allows you to modify a subset of options.
-
-Returns `{'json': {'errors': []}}` on success.
+Returns ``{"json": {"errors": []}}`` on success.
 
 Mandatory parameters:
 
@@ -230,6 +232,7 @@ Mandatory parameters:
    "link_type","string","Mandatory. One of `any`, `link`, `self`."
    "type","string","Mandatory. One of `gold_restricted`, `archived`, `restricted`, `private`,
    `employees_only`, `gold_only`, `public`, `user`."
+   "\.\.\.","\.\.\.","\.\.\."
 
 This endpoint takes a lot of parameters see
 `the official documentation <https://www.reddit.com/dev/api/#POST_api_site_admin>`_ for a complete list.
@@ -265,7 +268,7 @@ Get settings
 
 Get the current settings of a subreddit.
 
-In the API, this returns the current settings of the subreddit as used by `POST /api/site_admin`.
+In the API, this returns the current settings of the subreddit. It can be used in `POST /api/site_admin`.
 
 Example output structure::
 
@@ -296,7 +299,7 @@ For a subreddit that you do not have permission to view subreddit settings for, 
 
    * There is no user context."
 
-.. seealso:: https://www.reddit.com/dev/api/#GET_r_{subreddit}_about_edit
+.. seealso:: `<https://www.reddit.com/dev/api/#GET_r_{subreddit}_about_edit>`_
 
 
 Update settings
@@ -356,8 +359,8 @@ Example output::
 .. seealso:: https://www.reddit.com/dev/api/#GET_api_trending_subreddits
 
 
-(Bulk) Subscribe
-~~~~~~~~~~~~~~~~
+Subscribe
+~~~~~~~~~
 
 .. http:post:: /api/subscribe
 
@@ -372,7 +375,7 @@ The `skip_initial_defaults` parameter can be set to a true value to prevent auto
 set of defaults when the user makes their first subscription (when `has_subscribed` attribute is false on the account).
 Attempting to set it for an unsubscribe action will result in a 400 HTTP error.
 
-If both `sr` and `sr_name` are used, `sr_name` will be ignored.
+If both `sr` and `sr_name` are used together, `sr` will take precedence and `sr_name` will be ignored.
 
 If all subreddits specified by the `sr` or `sr_name` parameters don't exist, a 404 HTTP error is returned.
 
@@ -398,7 +401,7 @@ Returns an empty JSON object on success.
    :escape: \
 
    "action","string","Either `sub` or `unsub`. Default if not specified: `unsub`."
-   "sr","string","A comma separated list of subreddit full ID36s (prefixed with)."
+   "sr","string","A comma separated list of subreddit full ID36s (prefixed with `t5_`)."
    "sr_name","string","A comma separated list of subreddit names."
    "skip_initial_defaults","boolean","Prevent automatically subscribing the user to the current set of
    defaults when they take their first subscription."
@@ -603,11 +606,11 @@ Subreddits whose names begin with `query` will be returned.
 
 The GET and POST endpoints are equivalent but POST also accepts form-encoded data.
 
-Subreddits that are banned or private will be included.
+Subreddits that are banned or private *will* be included.
 
 Returns an object with one field, `names`, which is an array of subreddit names.
 
-.. csv-table:: URL Params
+.. csv-table:: URL Params / Form Data
    :header: "Field","Type (hint)","Description"
    :escape: \
 
@@ -620,7 +623,9 @@ Returns an object with one field, `names`, which is an array of subreddit names.
    This parameter is ignored if there is a user context. If there is a user context the value is taken from the
    \"include not safe for work (NSFW) search results in searches\" preference option.
 
-   This parameter is ignored and enabled if the `exact` parameter is true."
+   This parameter is ignored and enabled if the `exact` parameter is true.
+
+   Default: true."
    "include_unadvertisable","boolean","If false, subreddits that have `hide_ads` set to `true` or are on
    the `anti_ads_subreddits` list will be filtered. Default: ??? [needs checking]"
    "search_query_id","string","unknown"

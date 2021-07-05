@@ -40,7 +40,7 @@ Schema
    "controversiality","integer",""
    "created","float","Legacy. Same as `created_utc` but subtract 28800. Will always be a whole number."
    "created_utc","float","Unix timestamp of when the post was made."
-   "distinguished","string?","`null` if not distinguished, otherwise one of `moderator`, ...?"
+   "distinguished","string?","`null` if not distinguished, otherwise `"moderator"` or `"admin"`."
    "downs","integer","Always `0`."
    "edited","boolean | float","`false` if the post wasn't edited, otherwise a Unix timestamp of when it was edited. Always a whole number."
    "gilded","integer",""
@@ -319,6 +319,8 @@ Elements are ordered in pre-order DFS traversal order, the same as on the site.
    * The `link_id` parameter was not specified."
 
 
+.. _comment_create:
+
 Create
 ~~~~~~
 
@@ -326,32 +328,53 @@ Create
 
 *scope: submit | privatemessages*
 
-Submit a new comment or message.
+Comment on a submission, reply to a comment, or reply to a message.
 
-The target entity (with the new body text) is returned in a listing structure,
-unless `return_rtjson` is truthy in which case it is not wrapped in a listing.
+The newly created comment object is returned in a structure like the following::
 
-Submitting a comment requires the 'submit' scope.
-Sending a message requires the 'privatemessages' scope.
+   {"json": {"errors": [], "data": {
+         "things": [
+            {"kind": "t1", "data": {"author_flair_background_color": "", ...}}
+         ]}}}
+
+If `return_rtjson` is truthy then the data is not wrapped in that strucuture and is provided directly. E.g.,::
+
+   {"author_flair_background_color": "", ...}
+
+But the `return_rtjson` parameter is ignored when replying to a message.
+
+Commenting on a submission requires the `submit` scope.
+Replying to a comment also requires the `submit` scope.
+Sending a message requires the `privatemessages` scope.
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
    :escape: \
 
+   "thing_id","string","The full ID36 of a comment, submission, or message."
+   "text","string","Markdown text."
+   "richtext_json","string","A string of RTJSON to use instead of `text`."
    "return_rtjson","boolean","If truthy (a string that starts with `0` or `F` or `f` is treated as falsy),
-   return the entity object as the top level JSON object."
-   "richtext_json","string","A string of RTJSON"
-   "text","string","Markdown text"
-   "thing_id","string","Full ID of a comment or text post"
+   return the newly created object as the top level JSON object instead of being wrapped in a listing.
+
+   If `thing_id` is a message (starting with `t4_`), this parameter is ignored."
 
 |
 
-.. csv-table:: API Errors
+.. csv-table:: API Errors (variant 2)
    :header: "Error","Description"
    :escape: \
 
    "USER_REQUIRED","you must login"
    "NO_THING_ID","`thing_id` field wasn't given or the ID doesn't exist"
+   "NO_TEXT","* Neither `text` nor `richtext_json` was specified.
+
+   * `text` was specified but was empty.
+
+   \"*NO_TEXT: we need something here -> text*\""
+   "TOO_OLD","The target is older than 6 months and cannot be replied to.
+
+   \"that's a piece of history now; it's too late to reply to it -> parent\""
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_comment
 

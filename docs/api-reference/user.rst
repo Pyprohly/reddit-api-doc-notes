@@ -233,11 +233,13 @@ Any ID that can't be resolved will be ignored.
 Alphabetic characters in IDs must be all lowercase or they will be ignored.
 Duplicate IDs will be ignored.
 
-This endpoint will process as many IDs as it can as long as the total URL length is
-less than the 7220 character limit.
-This means you can request up to a little over 500 IDs at a time assuming each ID
-string is the largest observed length for a user ID at this time of this writing.
-Clients should be able to safely request in batches of up to 500 IDs at a time.
+This endpoint will process as many IDs as it can so long as the total URL length is
+less than about 6544 characters.
+This means you can request up to a little over 450 IDs at a time assuming each ID
+string is the largest observed length for a user ID at this time of this writing
+(8 characters excluding `t2_`).
+
+It is recommended that clients request in batches of up to 300 IDs at a time.
 
 This end point returns an object with the following fields:
 
@@ -268,8 +270,9 @@ This end point returns an object with the following fields:
    :header: "Status Code","Description"
    :escape: \
 
+   "400","The requested URL length is too long (over 6544 characters)."
    "404","None of the IDs matched any user."
-   "414","The requested URL length is too long (over 7219 characters)."
+   "414","The requested URL length is way too long (over 8216 characters)."
 
 
 Report
@@ -287,9 +290,9 @@ Report a user. Reporting a user brings it to the attention of a Reddit admin.
    :header: "Field","Type (hint)","Description"
    :escape: \
 
+   "user","string","A valid, existing reddit username"
    "details","string","JSON data"
    "reason","string","a string no longer than 100 characters"
-   "user","string","A valid, existing reddit username"
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_report_user
 
@@ -307,7 +310,7 @@ Returns a 'TrophyList' listing structure.
 
 For a description of the Trophie object schema, see :ref:`here <account_list_trophies>`.
 
-.. seealso:: https://www.reddit.com/dev/api/#GET_api_v1_user_{username}_trophies
+.. seealso:: `<https://www.reddit.com/dev/api/#GET_api_v1_user_{username}_trophies>`_
 
 
 Check username registered

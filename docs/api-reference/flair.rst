@@ -149,7 +149,11 @@ Example return value::
      "ok": true,
      "warnings": {}},
     {"status": "skipped",
-     "errors": {"user": "unable to resolve user `afzaqazsfqaz", ignoring"},
+     "errors": {"user": "unable to resolve user `zjsargoquifanz', ignoring"},
+     "ok": false,
+     "warnings": {},
+    {"status": "skipped",
+     "errors": {"row": "improperly formatted row, ignoring"},
      "ok": false,
      "warnings": {}}]
 

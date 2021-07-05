@@ -18,7 +18,7 @@ Schema
    "approved_at_utc","integer?","Unix time when the comment was approved. `null` if not approved or the current user is not a moderator of the subreddit."
    "subreddit","string","The subreddit name. E.g., `IAmA`"
    "selftext","string","The body text of the submission. Empty string if it is a link post."
-   "author_fullname?","string","The full ID of the author.
+   "author_fullname?","string","The full ID36 of the author.
 
    This attribute is not available if the post was removed or deleted."
    "saved","boolean","Whether the authenticated user has saved this post.
@@ -34,7 +34,7 @@ Schema
    "downs","integer","Always `0`."
    "thumbnail_height","integer?","Thumbnail height. `null` if text post."
    "hide_score","boolean","Whether the score is currently hidden."
-   "name","string","The post's full ID (with prefix `t3_`). Also see `id`."
+   "name","string","The post's full ID36 (with prefix `t3_`). Also see `id`."
    "quarantine","boolean","Whether the post is in a quarantined subreddit."
    "upvote_ratio","float","Upvote ratio."
    "subreddit_type","string","One of `public`, `private`, `restricted`, `archived`, `employees_only`, `gold_only`, `gold_restricted`, or `user`."
@@ -106,8 +106,8 @@ Schema
    "visited","boolean",""
    "removed_by","string?","The name of the redditor who removed this post. `null` if not removed or the current user is not a moderator of the subreddit."
    "num_reports","unknown?",""
-   "distinguished","unknown?",""
-   "subreddit_id","string","The full ID of the subreddit that was posted to. E.g., `t5_2qzb6` for `r/IAmA`."
+   "distinguished","string?","`null` if not distinguished, otherwise `"moderator"` or `"admin"`."
+   "subreddit_id","string","The full ID36 of the subreddit that was posted to. E.g., `t5_2qzb6` for `r/IAmA`."
    "mod_reason_by","unknown?",""
    "removal_reason","unknown?",""
    "id","string","The ID of the submission (without the `t3_` prefix). Also see `name`."
@@ -148,7 +148,9 @@ Schema
 
    Field not available if the post is not a text post.
    Field not available if no user context is available."
-   "url_overridden_by_dest?","string","The url of the linked item for the link post (`is_self` is `true`)."
+   "url_overridden_by_dest?","string","The url of the linked item for the link post (`is_self` is `true`).
+
+   In rare cases the URL may be a path, for example, see link post `j74mzm`."
    "event_start?","float","Unix timestamp of when the post's event time begins. Key does not exist if
    there is no event metadata on the post. The float is always a whole number.
 
@@ -244,6 +246,10 @@ used as the body. An `INVALID_SELFPOST` error is returned if both are specified.
 
 If `kind` is `"link"`, a link post is created with `url` as the link.
 
+Return object example::
+
+   {"json": {"errors": [], "data": {"url": "https://www.reddit.com/r/Pyprohly_test3/comments/nxaraz/fifth_cool_website/", "drafts_count": 0, "id": "nxaraz", "name": "t3_nxaraz"}}}
+
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
    :escape: \
@@ -254,15 +260,14 @@ If `kind` is `"link"`, a link post is created with `url` as the link.
    "event_end","string","(beta) a datetime string e.g. `2018-09-11T12:00:00`"
    "event_start","string","(beta) a datetime string e.g. `2018-09-11T12:00:00`"
    "event_tz","string","(beta) a pytz timezone e.g. `America/Los_Angeles`"
-   "extension","unknown","This field is apparently used when the `resubmit` error occurs, but
-   that error cannot be reproduced?"
+   "extension","unknown","used for determining which view-type (e.g. `json`, `compact` etc.) to use for the redirect that is generated if the resubmit error occurs."
    "flair_id","string","a string no longer than 36 characters"
    "flair_text","string","a string no longer than 64 characters"
    "g-recaptcha-response","unknown",""
    "kind","string","one of `link`, `self`, `image`, `video`, `videogif`"
    "nsfw","boolean","mark as NSFW"
-   "resubmit","boolean","Ostensibly, if a link with the same URL has already been submitted
-   to the specified subreddit then an error would be returned unless this field is `true`.
+   "resubmit","boolean","If the 'Restrict how often the same link can be posted' content control setting is enabled
+   in the subreddit, if a link with the same URL has already been submitted then an error would be returned unless this field is `true`.
    This doesn't appear to be the case however."
    "richtext_json","string","a string of RTJSON"
    "sendreplies","boolean","Receive inbox notifications for replies. `true` if not specified."
@@ -312,17 +317,18 @@ Delete
 
 Delete a Comment or Submission.
 
-This endpoint does not produce any kind of return value.
+This endpoint does not produce any kind of return value. If the target doesn't exist or isn't valid,
+nothing happens.
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
    :escape: \
 
-   "id","string","the full ID of a comment or submission"
+   "id","string","The full ID36 of a comment or submission."
 
 |
 
-.. csv-table:: API Errors
+.. csv-table:: API Errors (variant 2)
    :header: "Error","Description"
    :escape: \
 
@@ -348,27 +354,30 @@ unless `return_rtjson` is truthy in which case it is not wrapped in a listing.
 If `text` and `richtext_json` are used together `richtext_json` will be used.
 
 Editing a richtext post with `text` a markdown post with `richtext_json` or vice versa
-will only sometimes switch the `rte_mode` from `markdown` or `richtext`. I don't know what
-the criteria is.
+will only sometimes switch the `rte_mode` from `markdown` or `richtext`.
+I don't know what the criteria is :P.
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
    :escape: \
 
+   "thing_id","string","Full ID36 of a comment or text post"
+   "text","string","Markdown text"
+   "richtext_json","string","A string of RTJSON"
    "return_rtjson","boolean","If truthy (a string that starts with `0` or `F` or `f` is treated as falsy),
    return the entity object as the top level JSON object."
-   "richtext_json","string","A string of RTJSON"
-   "text","string","Markdown text"
-   "thing_id","string","Full ID of a comment or text post"
 
 |
 
-.. csv-table:: API Errors
+.. csv-table:: API Errors (variant 2)
    :header: "Error","Description"
    :escape: \
 
    "USER_REQUIRED","you must login"
    "NO_THING_ID","`thing_id` field wasn't given or the ID doesn't exist"
+   "placeholder","The submission specified by `thing_id` isn't a text post and can't be edited.
+
+   *\"placeholder: This post can't be edited\"* -> text"
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_editusertext
 
@@ -395,11 +404,11 @@ moderators_you_may_now_lock_individual_comments/
    :header: "Field","Type (hint)","Description"
    :escape: \
 
-   "id","string","the full ID of a comment or submission"
+   "id","string","the full ID36 of a comment or submission"
 
 |
 
-.. csv-table:: API Errors
+.. csv-table:: API Errors (variant 2)
    :header: "Error","Description"
    :escape: \
 
@@ -411,7 +420,7 @@ moderators_you_may_now_lock_individual_comments/
    :header: "Status Code","Description"
    :escape: \
 
-   "403","Something went wrong. The full ID doesn't exist, you don't have permission to lock the target, etc."
+   "403","Something went wrong. The full ID36 doesn't exist, you don't have permission to lock the target, etc."
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_lock
 
@@ -437,13 +446,13 @@ Cast a vote on a Submission or Comment.
    :header: "Field","Type (hint)","Description"
    :escape: \
 
-   "id","string","full ID of a Submission or Comment"
+   "id","string","full ID36 of a Submission or Comment"
    "dir","integer or string","vote direction. one of `1`, `0`, or `-1`"
    "rank","integer","unknown purpose"
 
 |
 
-.. csv-table:: API Errors
+.. csv-table:: API Errors (variant 2)
    :header: "Error","Description"
    :escape: \
 
@@ -456,8 +465,8 @@ Cast a vote on a Submission or Comment.
    :escape: \
 
    "404","No `id` was given or the target could not be found."
-   "500","Returned after a long wait if:
-   * `dir` was not specified.
+   "500","* `dir` was not specified.
+
    * A non-integer argument is specified for `dir`."
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_vote
@@ -481,12 +490,12 @@ Returns an empty JSON object.
    :header: "Field","Type (hint)","Description"
    :escape: \
 
-   "id","string","The full ID of a submission or comment."
+   "id","string","The full ID36 of a submission or comment."
    "category","string","A category name. Requires Reddit Premium. Ignored if no Reddit Premium."
 
 |
 
-.. csv-table:: API Errors
+.. csv-table:: API Errors (variant 2)
    :header: "Error","Description"
    :escape: \
 
@@ -501,6 +510,54 @@ Returns an empty JSON object.
    "403","The category name specified was invalid."
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_save
+
+
+Hide
+~~~~
+
+.. http:post:: /api/hide
+.. http:post:: /api/unhide
+
+*scope: report*
+
+Hide a submission.
+
+If *any* of the list of submission IDs don't exist then the endpoint will
+return a HTTP 400 status error and none of the submissions will be hidden.
+This can be annoying since if the list is long it can be hard to tell which
+ID is the culprit.
+
+As a recommendation, clients should provide no more than 300 IDs at a time.
+
+Returns an empty JSON object.
+
+.. csv-table:: Form Data
+   :header: "Field","Type (hint)","Description"
+   :escape: \
+
+   "id","string","A comma-separated string of submission full ID36s."
+
+|
+
+.. csv-table:: API Errors (variant 2)
+   :header: "Error","Description"
+   :escape: \
+
+   "USER_REQUIRED","   *Please log in to do that.*"
+
+|
+
+.. csv-table:: HTTP Errors
+   :header: "Status Code","Description"
+   :escape: \
+
+   "400","* The `id` parameter was not specified.
+
+   * The value specified for `id` was empty.
+
+   * If any of the `id`\ s specified were not found."
+
+.. seealso:: https://www.reddit.com/dev/api/#POST_api_hide
 
 
 .. _post_api_marknsfw:
@@ -519,11 +576,11 @@ Mark a Submission as NSFW.
    :header: "Field","Type (hint)","Description"
    :escape: \
 
-   "id","string","full ID of a Submission or Comment"
+   "id","string","Full ID36 of a Submission."
 
 |
 
-.. csv-table:: API Errors
+.. csv-table:: API Errors (variant 2)
    :header: "Error","Description"
    :escape: \
 
@@ -556,11 +613,11 @@ Mark a Submission as spolier.
    :header: "Field","Type (hint)","Description"
    :escape: \
 
-   "id","string","full ID of a Submission or Comment"
+   "id","string","Full ID36 of a Submission."
 
 |
 
-.. csv-table:: API Errors
+.. csv-table:: API Errors (variant 2)
    :header: "Error","Description"
    :escape: \
 
@@ -587,7 +644,7 @@ Distinguish
 *scope: modposts*
 
 Distinguish a Submission or Comment by decorating the author's name:
-giving it a different color, and putting a 'sigil' beside it.
+giving it a different color, and putting a sigil beside it.
 
 Only moderators of the subreddit can do this. This can be useful to draw attention to and
 confirm the identity of the user in the context of their submission/comment.
@@ -614,17 +671,20 @@ The target entity is returned in a listing structure.
    :header: "Field","Type (hint)","Description"
    :escape: \
 
-   "id","string","full ID of a Submission or Comment"
-   "how","string","one of `yes`, `admin`, `no`, `special`"
-   "sticky","boolean","make a comment sticky"
+   "id","string","Full ID36 of a Submission or Comment."
+   "how","string","One of `yes`, `admin`, `no`, `special`. Error if not specified."
+   "sticky","boolean","Make a comment stickied to the top of the thread. Default false."
 
 |
 
 .. csv-table:: API Errors
-   :header: "Error","Description"
+   :header: "Error","Variant","Description"
    :escape: \
 
-   "USER_REQUIRED","you must login"
+   "USER_REQUIRED","2","you must login"
+   "COMMENT_NOT_STICKYABLE","1","The target comment can't be stickied because it is not a top-level comment.
+
+   *\"This comment is not stickyable. Ensure that it is a top level comment.\"*"
 
 |
 
@@ -632,9 +692,9 @@ The target entity is returned in a listing structure.
    :header: "Status Code","Description"
    :escape: \
 
-   "400","if `sticky` was specified and is `true` (or a truthy value) and `id` refers to submission rather than a comment"
-   "403","`how` was not given, was of an invalid value, or you do not have the right mod privileges"
-   "404","no `id` was given or the target could not be found"
+   "400","If `sticky` was specified and is `true` (or a truthy value) and `id` refers to submission rather than a comment."
+   "403","The `how` parameter was not given, was of an invalid value, or you do not have the right mod privileges."
+   "404","No `id` was given or the target could not be found."
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_distinguish
 
@@ -651,35 +711,42 @@ Set or unset a Submission as sticky, either in its subreddit or to your user pro
 Stickied posts are pinned to the top of the subreddit in the default 'hot' listing.
 On a user profile, they show as a pinned post at the top of the listing.
 
-The `num` argument is used when stickying (i.e., `state` is `true`). It specifies
+The `num` argument is used when stickying (i.e., `state` is true). It specifies
 which position the post is to be placed in the existing list of stickied posts.
+If a stickied post is already occupying that position, it will be **replaced** (the post
+in that position will be unsticked).
 In a subreddit, there can be 2 sticked posts at a time, `num` can be either `1` or `2`.
 On a user profile, there can be 4 sticked posts at a time, `num` can be from `1` to `4`.
-If a number is specified outside a range, it will be clamped within range.
+If a number is specified outside a range, it will be clamped.
 
 When stickying and `num` is not specified:
 
-* When subreddit stickying, the post will be appended to the bottom of the sticky list.
-  If the list was full then the bottom-most post will be replaced.
-* When user profile stickying, the post will be added to the top of the sticky list.
-  If the list was full then the bottom-most post will be evicted.
+* When subreddit stickying, the post will be appended to the **bottom** of the sticky list.
+  If the list is full then the bottom-most post will be **replaced**.
+* When user profile stickying, the post will be added to the **top** of the sticky list.
+  If the list is full then the bottom-most post will be **evicted**, like a queue.
+
+Stickying a post that is already stickied causes a 409 (Conflict) HTTP error.
+Unstickying a post that isn't stickied does nothing.
 
 If `state` is not specified then it is assumed to be `false` and the post will be unstickied.
 
 You cannot reorder sticky posts directly. You must unsticky them then re-sticky them.
 
+Returns ``{"json": {"errors": []}}`` on success.
+
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
    :escape: \
 
-   "id","string","full ID of a Submission"
-   "state","boolean","whether to sticky (`true`) or unsticky (`false`) this post"
-   "num","integer","an integer position"
-   "to_profile","boolean","if `true` sticky the post to your user profile instead of its subreddit"
+   "id","string","Full ID36 of a Submission."
+   "state","boolean","True to sticky, false to unsticky. Default false."
+   "num","integer","An integer position. Ignored if `state` is false."
+   "to_profile","boolean","If true, sticky the post to your user profile instead of its subreddit."
 
 |
 
-.. csv-table:: API Errors
+.. csv-table:: API Errors (variant 2)
    :header: "Error","Description"
    :escape: \
 
@@ -691,8 +758,8 @@ You cannot reorder sticky posts directly. You must unsticky them then re-sticky 
    :header: "Status Code","Description"
    :escape: \
 
-   "403","you do not have permission to sticky that post"
-   "409","you are trying to sticky a post that is already stickied"
+   "403","You do not have permission to sticky that post."
+   "409","You are trying to sticky a post that is already stickied."
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_set_subreddit_sticky
 
@@ -710,16 +777,18 @@ In contest mode, upvote counts are hidden and comments are displayed in a random
 
 If `state` is not specified, `false` is assumed.
 
+Returns ``{"json": {"errors": []}}`` on success.
+
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
    :escape: \
 
-   "id","string","full ID of a Submission"
-   "state","boolean","whether to enable or disable contest mode"
+   "id","string","Full ID36 of a Submission."
+   "state","boolean","Whether to enable (true) or disable (false) contest mode."
 
 |
 
-.. csv-table:: API Errors
+.. csv-table:: API Errors (variant 2)
    :header: "Error","Description"
    :escape: \
 
@@ -731,7 +800,7 @@ If `state` is not specified, `false` is assumed.
    :header: "Status Code","Description"
    :escape: \
 
-   "403","ID not found, or you do not have permission to enable/disable contest mode for this post"
+   "403","ID not found, or you do not have permission to enable/disable contest mode for this post."
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_set_contest_mode
 
@@ -754,12 +823,12 @@ If `sort` is `blank`, not given, or an unknown value, the suggested sort will be
    :header: "Field","Type (hint)","Description"
    :escape: \
 
-   "id","string","full ID of a Submission"
+   "id","string","full ID36 of a Submission"
    "sort","string","one of `confidence`, `top`, `new`, `controversial`, `old`, `random`, `qa`, `live`, `blank`"
 
 |
 
-.. csv-table:: API Errors
+.. csv-table:: API Errors (variant 2)
    :header: "Error","Description"
    :escape: \
 
@@ -793,12 +862,12 @@ If `state` is not provided, `true` (enable) is assumed.
    :header: "Field","Type (hint)","Description"
    :escape: \
 
-   "id","string","full ID of a Submission or Comment"
-   "state","boolean","whether to enable or disable inbox replies"
+   "id","string","A full ID36 of a Submission or Comment."
+   "state","boolean","Whether to enable or disable inbox replies."
 
 |
 
-.. csv-table:: API Errors
+.. csv-table:: API Errors (variant 2)
    :header: "Error","Description"
    :escape: \
 
@@ -816,6 +885,8 @@ Set Event Time
 
 Add or modify post event times.
 
+The datetimes provided must not contain milliseconds otherwise a `BAD_TIME` API error is returned.
+
 Specify only `event_start` to change only the starting date.
 The same cannot be done for `event_end`, a 500 HTTP error will occur.
 
@@ -824,6 +895,14 @@ otherwise a `MIN_EVENT_TIME` API error is returned.
 It's possible however to make a second request specifying only `event_start` to modify the start date
 so that `event_start` is after `event_end`. If this happens then the time difference can be longer than
 7 days.
+
+The endpoint returns a JSON object containing the Unix timestamps of the start and end times of the event.
+It's a bit odd that the Unix timestamps are in milliseconds given that the the endpoint does not accept
+date time strings with millisecond information. Also, the `event_start` and `event_end` fields of submission object are in seconds. Perhaps it's a good idea to ignore the output of this endpoint.
+
+Returned object example::
+
+   {"event_is_live": false, "event_start": 1623381648000, "event_end": 1623392449000}
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
@@ -922,8 +1001,6 @@ Approve a post or comment.
 A removed target can be approved. If so it will be re-inserted into appropriate listings and
 any reports on the approved thing will be discarded.
 
-Returns an empty JSON object on success.
-
 A removed post's attributes will change as follows:
 
 .. csv-table:: Object attribute changes
@@ -939,19 +1016,17 @@ A removed post's attributes will change as follows:
    "is_crosspostable","Resets to `true`."
    "is_robot_indexable","Resets to `true`."
 
-Returns an empty JSON object on success.
-
 Approving a post/comment affects it's attributes:
 
 .. csv-table:: Object attribute changes
    :header: "Field","Description"
    :escape: \
 
-   "approved","Becomes `true`. (Value start as `false`.)"
-   "approved_by","Name of the redditor who approved. (Value start as `null`.)"
+   "approved","Becomes `true`. (Value starts as `false`.)"
+   "approved_by","Name of the redditor who approved. (Value starts as `null`.)"
    "approved_at_utc","The unix timestamp of when the item was approved. (Value starts as `null`.)"
 
-|
+Returns an empty JSON object on success.
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
@@ -983,7 +1058,7 @@ As a moderator, remove a post, comment, or modmail message.
 
 Returns an empty JSON object on success.
 
-Removing a post/comment affects it's attributes:
+Removing a post/comment affects its attributes:
 
 .. csv-table:: Object attribute changes
    :header: "Field","Description"
@@ -1008,8 +1083,7 @@ Extra attributes for posts only:
    :header: "Field","Description"
    :escape: \
 
-   "removed_by_category","The removed by category. It will be `author` even if the remover was the author even if the
-   author is a moderator. (Value starts as `null`.)"
+   "removed_by_category","The removed by category. It will be `author` even if the remover is a moderator. (Value starts as `null`.)"
    "is_crosspostable","Becomes `false`. (Value starts as `true`.)"
    "is_robot_indexable","Becomes `false`. (Value starts as `true`.)"
 
@@ -1020,9 +1094,7 @@ Extra attributes for posts only:
    :escape: \
 
    "id","string","Full ID36 of a post or comment."
-   "spam","boolean","Indicate whether the post should be removed as spam.
-
-   Default: `true`."
+   "spam","boolean","Indicate whether the post should be removed as spam. Default: true."
 
 |
 
@@ -1033,3 +1105,27 @@ Extra attributes for posts only:
    "404","* The target specified by the `id` parameter does not belong to a subreddit you have permission to approve.
 
    * The `id` parameter was not specified."
+
+
+Report
+~~~~~~
+
+.. http:post:: /api/report
+
+*scope: report*
+
+\.\.\.
+
+.. seealso:: https://www.reddit.com/dev/api/#POST_api_report
+
+
+Report award
+~~~~~~~~~~~~
+
+.. http:post:: /api/report_award
+
+*scope: report*
+
+\.\.\.
+
+.. seealso:: https://www.reddit.com/dev/api/#POST_api_report_award

@@ -12,25 +12,27 @@ Schema
    :header: "Field","Type (hint)","Description"
    :escape: \
 
-   "display_name","string",""
-   "name","string",""
+   "display_name","string","The title of the custom feed. 50 characters long."
+   "name","string","The custom feed name."
    "can_edit","boolean",""
-   "description_html","string",""
-   "num_subscribers","integer",""
-   "copied_from","unknown?",""
-   "icon_url","string",""
-   "subreddits","object array","E.g., ``[{\"name\": \"pics\"}, {\"name\": \"u_spez\"}]``"
+   "description_html","string","HTML of `description_md` field."
+   "num_subscribers","integer","The number of redditors following this custom feed."
+   "copied_from","string?","A string if the custom feed has been duplicated, e.g.,
+   `/user/siryonkee/m/cruise_ships`, else `null`."
+   "icon_url","string","The PNG icon URL."
+   "subreddits","object array","An array of objects with one key: `name`.
+   E.g., ``[{\"name\": \"pics\"}, {\"name\": \"u_spez\"}]``"
    "created_utc","float","Unix timestamp of when the post was made. Will always be a whole number."
    "created","float","Legacy. Same as `created_utc` but subtract 28800."
    "visibility","string","Either `private` or `public`."
-   "over_18","boolean",""
-   "path","string","E.g., `/user/pyprohly/m/asdf/`"
+   "over_18","boolean","Is marked as NSFW."
+   "path","string","The custom feed URL path. E.g., `/user/pyprohly/m/asdf`"
    "owner","string","Username of the owner. E.g., `Pyprohly`."
    "owner_id","string","The full ID36 of the owner. E.g., `t2_4x25quk`."
-   "key_color","string",""
-   "is_subscriber","boolean",""
-   "description_md","string",""
-   "is_favorited","boolean",""
+   "key_color","string?",""
+   "is_subscriber","boolean","Whether the current user is following the custom feed. False if no user context."
+   "description_md","string","The custom feed's description."
+   "is_favorited","boolean","Whether the current user has favourited the custom feed. False if no user context."
 
 
 Actions
@@ -87,7 +89,7 @@ Example output::
 
       *that multireddit doesn't exist* -> *multipath*"
 
-.. seealso:: https://www.reddit.com/dev/api/#GET_api_multi_{multipath}
+.. seealso:: `<https://www.reddit.com/dev/api/#GET_api_multi_{multipath}>`_
 
 
 List own custom feeds
@@ -214,7 +216,7 @@ The newly created custom feed object is returned, with a 201 HTTP status code.
 
       *this is too long (max: 50)* -> *display_name*"
 
-.. seealso:: https://www.reddit.com/dev/api/#POST_api_multi_{multipath}
+.. seealso:: `<https://www.reddit.com/dev/api/#POST_api_multi_{multipath}>`_
 
 
 Update
@@ -250,7 +252,7 @@ Returns zero bytes on success.
 
       *you can't change that multireddit* -> *multipath*"
 
-.. seealso:: https://www.reddit.com/dev/api/#DELETE_api_multi_{multipath}
+.. seealso:: `<https://www.reddit.com/dev/api/#DELETE_api_multi_{multipath}>`_
 
 
 Duplicate
@@ -273,8 +275,10 @@ Returns the newly created custom feed object.
 
    "from","A custom feed path. E.g., `/user/Pyprohly/m/test2`."
    "to","Destination custom feed path."
-   "display_name","string","A new display name for the copied custom feed. A string no longer than 50 characters."
-   "description_md","string","New description text for the copied custom feed."
+   "display_name","string","A new display name for the copied custom feed. A string no longer than 50 characters.
+   If not specified, the feed name is used."
+   "description_md","string","New description text for the copied custom feed. If not specified, the description
+   will be like `copied from u/spez`."
    "expand_srs","boolean","See same parameter in :ref:`Get <custom_feed_get>`."
 
 |
@@ -330,7 +334,7 @@ Example output::
 
       *that multireddit doesn't exist* -> *multipath*"
 
-.. seealso:: https://www.reddit.com/dev/api/#GET_api_multi_{multipath}_description
+.. seealso:: `<https://www.reddit.com/dev/api/#GET_api_multi_{multipath}_description>`_
 
 
 Set description
@@ -370,7 +374,7 @@ markdown text description for the custom feed.
 
       *JSON missing key: \"body_md\"* -> *body_md*"
 
-.. seealso:: https://www.reddit.com/dev/api/#PUT_api_multi_{multipath}_description
+.. seealso:: `<https://www.reddit.com/dev/api/#PUT_api_multi_{multipath}_description>`_
 
 
 Check subreddit in custom feed
@@ -401,11 +405,11 @@ Otherwise a SUBREDDIT_NOEXIST API error is returned.
 
       *that subreddit doesn't exist* -> *srname*"
 
-.. seealso:: https://www.reddit.com/dev/api/#GET_api_multi_{multipath}_r_{srname}
+.. seealso:: `<https://www.reddit.com/dev/api/#GET_api_multi_{multipath}_r_{srname}>`_
 
 
-Add subreddit to custom feed
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Add to custom feed
+~~~~~~~~~~~~~~~~~~
 
 .. http:put:: /api/multi/user/{username}/m/{feed_name}/r/{sr_name}
 
@@ -445,11 +449,11 @@ seems to otherwise be ignored. Just always send ``{"name": "aa"}``.
 
      *that name isn't going to work* -> *name*"
 
-.. seealso:: https://www.reddit.com/dev/api/#PUT_api_multi_{multipath}_r_{srname}
+.. seealso:: `<https://www.reddit.com/dev/api/#PUT_api_multi_{multipath}_r_{srname}>`_
 
 
-Remove subreddit from custom feed
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Remove from custom feed
+~~~~~~~~~~~~~~~~~~~~~~~
 
 .. http:delete:: /api/multi/user/{username}/m/{feed_name}/r/{sr_name}
 
@@ -474,4 +478,4 @@ Returns zero bytes on success.
 
       *that multireddit doesn't exist* -> *multipath*"
 
-.. seealso:: https://www.reddit.com/dev/api/#DELETE_api_multi_{multipath}_r_{srname}
+.. seealso:: `<https://www.reddit.com/dev/api/#DELETE_api_multi_{multipath}_r_{srname}>`_

@@ -177,7 +177,7 @@ Delete
 
 Delete a collection.
 
-Returns `{'json': {'errors': []}}` on success.
+Returns ``{"json": {"errors": []}}`` on success.
 
 .. csv-table:: URL Params
    :header: "Field","Type (hint)","Description"
@@ -215,7 +215,7 @@ Add post
 
 Add a submission to a collection.
 
-Returns `{'json': {'errors': []}}` on success.
+Returns ``{"json": {"errors": []}}`` on success.
 
 .. csv-table:: URL Params
    :header: "Field","Type (hint)","Description"
@@ -270,7 +270,7 @@ Remove post
 
 Remove a submission from a collection.
 
-Returns `{'json': {'errors': []}}` on success.
+Returns ``{"json": {"errors": []}}`` on success.
 
 .. csv-table:: URL Params
    :header: "Field","Type (hint)","Description"
@@ -328,7 +328,7 @@ An error is returned (`INVALID_COLLECTION_UPDATE`) if an ID in the list is not f
 If only a subset of the IDs in the collection are specified then those submissions will be moved
 to the top of the collection in the order specified. The rest are moved down, maintaining their order.
 
-Returns `{'json': {'errors': []}}` on success.
+Returns ``{"json": {"errors": []}}`` on success.
 
 .. csv-table:: URL Params
    :header: "Field","Type (hint)","Description"
@@ -377,7 +377,7 @@ Update title
 
 Update a collection's title.
 
-Returns `{'json': {'errors': []}}` on success.
+Returns ``{"json": {"errors": []}}`` on success.
 
 .. csv-table:: URL Params
    :header: "Field","Type (hint)","Description"
@@ -419,7 +419,7 @@ Update description
 
 Update a collection's description.
 
-Returns `{'json': {'errors': []}}` on success.
+Returns ``{"json": {"errors": []}}`` on success.
 
 .. csv-table:: URL Params
    :header: "Field","Type (hint)","Description"
@@ -461,7 +461,7 @@ Update display layout
 
 Update a collection's display layout.
 
-Returns `{'json': {'errors': []}}` on success.
+Returns ``{"json": {"errors": []}}`` on success.
 
 .. csv-table:: URL Params
    :header: "Field","Type (hint)","Description"
@@ -509,7 +509,7 @@ Follow/unfollow
 
 Follow or unfollow a collection.
 
-Returns `{'json': {'errors': []}}` on success.
+Returns ``{"json": {"errors": []}}`` on success.
 
 .. csv-table:: URL Params
    :header: "Field","Type (hint)","Description"

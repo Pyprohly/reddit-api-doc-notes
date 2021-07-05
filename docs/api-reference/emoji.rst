@@ -54,7 +54,7 @@ subreddit specified in the request URL.
    "403","The specified subreddit cannot be accessed."
    "500","The specified subreddit does not exist."
 
-.. seealso:: https://www.reddit.com/dev/api/#GET_api_v1_{subreddit}_emojis_all
+.. seealso:: `<https://www.reddit.com/dev/api/#GET_api_v1_{subreddit}_emojis_all>`_
 
 
 Upload
@@ -118,7 +118,7 @@ plus the file extension.
    "403","The specified subreddit cannot be accessed."
    "500","The specified subreddit does not exist."
 
-.. seealso:: https://www.reddit.com/dev/api/#POST_api_v1_{subreddit}_emoji_asset_upload_s3.json
+.. seealso:: `<https://www.reddit.com/dev/api/#POST_api_v1_{subreddit}_emoji_asset_upload_s3.json>`_
 
 
 Add
@@ -139,7 +139,7 @@ The name of an emoji cannot be changed with this endpoint. If the same S3 key is
 
 If the `s3_key` is not valid the request will appear to succeed but no emoji will be added to the subreddit.
 
-Returns `{'json': {'errors': []}}` on success.
+Returns ``{"json": {"errors": []}}`` on success.
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
@@ -173,7 +173,7 @@ Returns `{'json': {'errors': []}}` on success.
 
    * The specified subreddit does not exist."
 
-.. seealso:: https://www.reddit.com/dev/api/#POST_api_v1_{subreddit}_emoji.json
+.. seealso:: `<https://www.reddit.com/dev/api/#POST_api_v1_{subreddit}_emoji.json>`_
 
 
 Modify emoji permissions
@@ -183,7 +183,7 @@ Modify emoji permissions
 
 Change emoji permissions.
 
-Returns `{'json': {'errors': []}}` on success.
+Returns ``{"json": {"errors": []}}`` on success.
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
@@ -224,7 +224,7 @@ Delete
 
 Delete a flair emoji.
 
-Returns `{'json': {'errors': []}}` on success.
+Returns ``{"json": {"errors": []}}`` on success.
 
 .. csv-table:: API Errors (variant 2)
    :header: "Error","Description"
@@ -242,7 +242,7 @@ Returns `{'json': {'errors': []}}` on success.
 
    * The specified subreddit does not exist."
 
-.. seealso:: https://www.reddit.com/dev/api/#DELETE_api_v1_{subreddit}_emoji_{emoji_name}
+.. seealso:: `<https://www.reddit.com/dev/api/#DELETE_api_v1_{subreddit}_emoji_{emoji_name}>`_
 
 
 Set custom emoji size
@@ -256,7 +256,7 @@ Set subreddit custom emoji size.
 
 Omitting either `width` or `height` parameters will disable custom emoji sizing.
 
-Returns `{'json': {'errors': []}}` on success.
+Returns ``{"json": {"errors": []}}`` on success.
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
@@ -283,7 +283,7 @@ Returns `{'json': {'errors': []}}` on success.
    "403","You do not have permission to make changes to the specified subreddit."
    "500","The specified subreddit does not exist."
 
-.. seealso:: https://www.reddit.com/dev/api/#POST_api_v1_{subreddit}_emoji_custom_size
+.. seealso:: `<https://www.reddit.com/dev/api/#POST_api_v1_{subreddit}_emoji_custom_size>`_
 
 
 Enable/disable emojis in subreddit
@@ -293,7 +293,7 @@ Enable/disable emojis in subreddit
 
 Enable/disable flair emojis in a subreddit.
 
-Returns `{'json': {'errors': []}}` on success.
+Returns ``{"json": {"errors": []}}`` on success.
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"

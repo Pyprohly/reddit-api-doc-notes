@@ -3,7 +3,7 @@ Welcome to reddit-api-docs's documentation!
 ===========================================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: API Reference:
 
    topics/oauth2
@@ -16,6 +16,8 @@ Welcome to reddit-api-docs's documentation!
    api-reference/flair
    api-reference/emoji
    api-reference/custom_feed
+   api-reference/private_message
+   api-reference/live_thread
    api-reference/listings
 
 

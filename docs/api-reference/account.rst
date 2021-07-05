@@ -197,7 +197,7 @@ Returns an object with the following fields:
    "NOT_FRIEND","\"you are not friends with that user -> id\""
    "USER_DOESNT_EXIST","\"that user doesn't exist -> id\""
 
-.. seealso:: https://www.reddit.com/dev/api/#GET_api_v1_me_friends_{username}
+.. seealso:: `<https://www.reddit.com/dev/api/#GET_api_v1_me_friends_{username}>`_
 
 
 List friends
@@ -252,7 +252,7 @@ Adding a friend who is already a friend does nothing but get the user item objec
    \"you must have an active reddit gold subscription to do that -> note\""
    "NO_TEXT","An empty string was specified for 'note'."
 
-.. seealso:: https://www.reddit.com/dev/api/#PUT_api_v1_me_friends_{username}
+.. seealso:: `<https://www.reddit.com/dev/api/#PUT_api_v1_me_friends_{username}>`_
 
 
 Remove friend
@@ -281,7 +281,7 @@ Returns zero data on success.
    "USER_REQUIRED","you must login"
    "NOT_FRIEND","That user is not a friend."
 
-.. seealso:: https://www.reddit.com/dev/api/#DELETE_api_v1_me_friends_{username}
+.. seealso:: `<https://www.reddit.com/dev/api/#DELETE_api_v1_me_friends_{username}>`_
 
 
 List blocked
@@ -289,6 +289,8 @@ List blocked
 
 See :ref:`Blocked Account listing <account_listings_blocked>`.
 
+
+.. _account_block_user:
 
 Block user
 ~~~~~~~~~~
@@ -313,7 +315,7 @@ An empty JSON object is returned on success.
 
 |
 
-.. csv-table:: API Errors
+.. csv-table:: API Errors (variant 2)
    :header: "Error","Description"
    :escape: \
 
