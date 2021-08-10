@@ -57,6 +57,8 @@ subreddit specified in the request URL.
 .. seealso:: `<https://www.reddit.com/dev/api/#GET_api_v1_{subreddit}_emojis_all>`_
 
 
+.. _emoji_upload:
+
 Upload
 ~~~~~~
 
@@ -68,7 +70,7 @@ Upload an emoji image.
 
 Uploading and adding an emoji to a subreddit is two separate steps. The uploading step
 can further be broken down into two steps: obtaining an upload lease and then uploading the
-emoji image to the Amazon S3 bucket specified in the lease.
+emoji image to the Amazon Simple Storage Service bucket specified in the lease.
 
 Use the `POST /api/v1/{subreddit}/emoji_asset_upload_s3` endpoint to obtain an upload lease for the
 emoji image. In the response data there will be a field called `action` whose value is a URL but
@@ -114,7 +116,7 @@ plus the file extension.
 
    * The file extension in the name specified by `filepath` is not supported.
 
-   * Invalid value specified for `mimetype`."
+   * Invalid value specified for `mimetype`, or the type is not supported."
    "403","The specified subreddit cannot be accessed."
    "500","The specified subreddit does not exist."
 
@@ -167,7 +169,10 @@ Returns ``{"json": {"errors": []}}`` on success.
 
    "400","* The `s3_key` parameter was not specified or was empty.
 
-   * More than 24 characters were used for the `name` parameter."
+   * More than 24 characters were used for the `name` parameter.
+
+   * The `name` specified was invalid because it contains a space or other invalid characters.
+     Name can only contain letters, numbers, underscores, or hyphens."
    "403","You do not have permission to add an emoji to the specified subreddit."
    "500","* The `name` parameter was not specified or was empty.
 
@@ -179,7 +184,7 @@ Returns ``{"json": {"errors": []}}`` on success.
 Modify emoji permissions
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-..http:post:: /api/v1/{subreddit}/emoji_permissions
+.. http:post:: /api/v1/{subreddit}/emoji_permissions
 
 Change emoji permissions.
 

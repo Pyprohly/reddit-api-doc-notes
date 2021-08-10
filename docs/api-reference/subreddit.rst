@@ -643,6 +643,8 @@ Search subreddits by name (returning partial subreddit objects)
 
 .. http:post:: /api/search_subreddits
 
+*scope: read*
+
 Same as `Search subreddits by name (returning subreddit names)`_ but returns an object with one field: `subreddits`.
 The value is an array of parial subreddit objects.
 

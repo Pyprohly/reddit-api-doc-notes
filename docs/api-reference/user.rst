@@ -343,3 +343,52 @@ Returns `true` or `false`.
    \"invalid username\""
 
 .. seealso:: https://www.reddit.com/dev/api/#GET_api_username_available
+
+
+List moderated subreddits
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. http:get:: /user/{user}/moderated_subreddits
+
+*scope: (unknown)*
+
+Get a list of partial subreddit objects that the target user is a moderator of.
+
+This endpoint isnt very reliable on users with big lists.
+
+Example output::
+
+   {'kind': 'ModeratedList',
+    'data': [{'banner_img': '',
+              'community_icon': '',
+              'display_name': 'RedditWarp',
+              'title': 'RedditWarp',
+              'over_18': False,
+              'icon_size': None,
+              'primary_color': '',
+              'icon_img': '',
+              'display_name_prefixed': 'r/RedditWarp',
+              'sr_display_name_prefixed': 'r/RedditWarp',
+              'subscribers': 1,
+              'whitelist_status': None,
+              'subreddit_type': 'public',
+              'key_color': '',
+              'name': 't5_3a9ph7',
+              'created': 1603244493.0,
+              'url': '/r/RedditWarp/',
+              'sr': 'RedditWarp',
+              'created_utc': 1603215693.0,
+              'banner_size': None,
+              'mod_permissions': [],
+              'user_can_crosspost': True,
+              'user_is_subscriber': True},
+              ...,
+              ]}
+
+The `user_is_subscriber` field is not available when there is no user context.
+
+.. csv-table:: HTTP Errors
+   :header: "Status Code","Description"
+   :escape: \
+
+   "404","A user with the specified name was not found."

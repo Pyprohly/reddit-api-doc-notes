@@ -459,8 +459,8 @@ Example return value when the invoking user does not have the `manage` permissio
 .. seealso:: `<https://www.reddit.com/dev/api/#GET_live_{thread}_contributors>`_
 
 
-Invite contributor
-~~~~~~~~~~~~~~~~~~
+Send contributor invite
+~~~~~~~~~~~~~~~~~~~~~~~
 
 .. http:post:: /api/live/{thread}/invite_contributor
 
@@ -481,7 +481,9 @@ Returns ``{"json": {"errors": []}}`` on success.
    "permissions","string","A permission description. E.g., `+update,+edit,-manage`.
    Negated permissions can be obmitted, e.g., `+update,+edit,-manage` is the same as `+update,+edit`.
 
-   Permissions: `all`, `close`, `discussions`, `edit`, `manage`, `settings`, `update`."
+   Permissions: `all`, `close`, `discussions`, `edit`, `manage`, `settings`, `update`.
+
+   Default: empty string. On the interface it'll say 'no permissions'."
 
 |
 
@@ -489,6 +491,7 @@ Returns ``{"json": {"errors": []}}`` on success.
    :header: "Error","Description"
    :escape: \
 
+   "USER_REQUIRED","There is no user context."
    "NO_USER","The `name` parameter was not specified or was empty.
 
    *\"please enter a username\"* -> name"
@@ -551,7 +554,7 @@ Returns ``{"json": {"errors": []}}`` on success.
 .. seealso:: `<https://www.reddit.com/dev/api/#POST_api_live_create>`_
 
 
-Remove contributor invite
+Revoke contributor invite
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. http:post:: /api/live/{thread}/rm_contributor_invite
@@ -668,7 +671,7 @@ Set contributor permissions
 
 *scope: livemanage*
 
-Change a contributor or a contributor invitee's permissions.
+Change a contributor or a contributor invite's permissions.
 
 Requires the `manage` permission.
 

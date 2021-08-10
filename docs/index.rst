@@ -18,6 +18,7 @@ Welcome to reddit-api-docs's documentation!
    api-reference/custom_feed
    api-reference/private_message
    api-reference/live_thread
+   api-reference/moderation
    api-reference/listings
 
 

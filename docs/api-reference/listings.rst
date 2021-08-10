@@ -64,6 +64,8 @@ are detailed in their relevant topic.
 Implementations
 ***************
 
+TODO: Move everything out of here. Putting everything in one place was a bad idea.
+
 Frontpage
 =========
 
@@ -300,9 +302,9 @@ Variants
 .. http:get:: /api/v1/me/friends
 .. http:get:: /prefs/friends
 
-`/prefs/friends` is the same as `/api/v1/me/friends` but it returns a list of two
-'UserList' list structures where the second one is empty. The first list
-structure matches that of `/api/v1/me/friends`.
+`GET /prefs/friends` is the same as `GET /api/v1/me/friends` but it returns an array containing
+two 'UserList' structures. The first structure matches that of `GET /api/v1/me/friends`.
+The second one is always empty, nobody knows what it's for.
 
 .. _account_listings_blocked:
 
@@ -312,7 +314,7 @@ structure matches that of `/api/v1/me/friends`.
 .. http:get:: /prefs/blocked
 
 .. note::
-   Although `/api/v1/me/blocked` is documented requesting against this endpoint returns a 404.
+   Although `/api/v1/me/blocked` is documented the endpoint doesn't exist and requesting against it returns 404.
 
 *Trusted*
 ^^^^^^^^^
@@ -329,9 +331,9 @@ See `/api/add_whitelisted` for adding a user to the trusted users list.
 
 .. http:get:: /prefs/messaging
 
-Returns a list of two 'UserList' list structures. The first list structure is the blocked users
-list (same as returned by `/prefs/blocked`). The second list is the trusted users list
-(same as returned by `/prefs/trusted`).
+Returns a list of two 'UserList' structures.
+The first structure contains a list of blocked users (same as returned by `GET /prefs/blocked`).
+The second structure contains a list of trusted users (same as returned by `GET /prefs/trusted`).
 
 Overview
 ~~~~~~~~
@@ -465,6 +467,13 @@ A listing of submissions and comments.
 
 Available publicly for any user.
 
+*Gildings given*
+^^^^^^^^^^^^^^^^
+
+.. http:get:: /user/{username}/gilded/given
+
+A listing of submissions and comments.
+
 *Upvoted*
 ^^^^^^^^^
 
@@ -510,16 +519,16 @@ User listings.
 
 See :ref:`Additional URL Params <frontpage_listings_additional_url_params>`.
 
-Additional URL params for *Overview*, *Comments*, *Submissions*:
+Additional URL params for *Overview*, *Submitted*, and *Comments*:
 
 .. csv-table:: URL Params
    :header: "Field","Type (hint)","Description"
    :escape: \
 
-   "sort","string","one of `hot`, `new`, `top`, `controversial`)
+   "sort","string","One of: `hot`, `new`, `top`, `controversial`."
 
    For *Overview* and *Comments* listings, `new` is the default.
-   For *Submissions*, `hot` is the default."
+   For *Submitted*, `hot` is the default."
 
 |
 
@@ -556,21 +565,21 @@ Main listings
 Variants
 ~~~~~~~~
 
-*Default*
+*Popular*
 ^^^^^^^^^
 
 .. http:get:: /subreddits
-.. http:get:: /subreddits/default
+.. http:get:: /subreddits/popular
 
 *New*
 ^^^^^
 
 .. http:get:: /subreddits/new
 
-*Popular*
+*Default*
 ^^^^^^^^^
 
-.. http:get:: /subreddits/popular
+.. http:get:: /subreddits/default
 
 *Premium*
 ^^^^^^^^^
@@ -597,15 +606,15 @@ User subreddit listings
 Variants
 ~~~~~~~~
 
-*New*
-^^^^^
-
-.. http:get:: /users/new
-
 *Popular*
 ^^^^^^^^^
 
 .. http:get:: /users/popular
+
+*New*
+^^^^^
+
+.. http:get:: /users/new
 
 Overview
 ~~~~~~~~

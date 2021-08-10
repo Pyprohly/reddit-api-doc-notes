@@ -5,6 +5,23 @@ Submission
 Overview
 --------
 
+There are different post types: `text`, `link`, `image`, `gallery`, `video`, `poll`, `crosspost`.
+
+Post type distinguish logic:
+
+* `text`: ``d['is_self']``
+* `image`: ``d.get('post_hint') == 'image'``
+* `video`: ``d['is_video']``
+* `gallery`: ``d.get('is_gallery', False)``
+* `poll`: ``'poll_data' in d``
+* `crosspost`: ``'crosspost_parent' in d``
+* `link`: (otherwise)
+
+To determine the type of a crosspost you must lookup the post type of the submission in `crosspost_parent`.
+This does not have to be done recursively because when you crosspost a crosspost the `crosspost_parent` will be
+the original post and not the crosspost you've crossposted.
+
+
 .. _submission_schema:
 
 Schema
@@ -17,7 +34,10 @@ Schema
 
    "approved_at_utc","integer?","Unix time when the comment was approved. `null` if not approved or the current user is not a moderator of the subreddit."
    "subreddit","string","The subreddit name. E.g., `IAmA`"
-   "selftext","string","The body text of the submission. Empty string if it is a link post."
+   "selftext","string","The body text of the submission. Empty string if it is not a text or poll post."
+   "selftext_html?","string?","The HTML of the post. This will be null if it is not a text or poll post.
+
+   This key will not exist if the object was returned from `POST /api/editusertext`."
    "author_fullname?","string","The full ID36 of the author.
 
    This attribute is not available if the post was removed or deleted."
@@ -30,9 +50,20 @@ Schema
    "title","string","The title of the post."
    "subreddit_name_prefixed","string","Same as the `subreddit` field but prefixed with `r/`. E.g., `r/IAmA`."
    "hidden","boolean",""
-   "pwls","integer?","Unknown. Possibly stands for \"parent white list status\"?"
    "downs","integer","Always `0`."
-   "thumbnail_height","integer?","Thumbnail height. `null` if text post."
+   "thumbnail","string","The post thumbnail as seen in listings.
+
+   When retrieving posts from a listing, the value can sometimes be `image` instead of a URL.
+
+   Other than a URL, possible values include: (empty string), `self`, `default`, `image`, `nsfw`, `spoiler`.
+
+   It is an empty string when the subreddit's media preferences has thumbnails disabled.
+   "
+   "thumbnail_width","integer?","Thumbnail width.
+
+   It is possible for this field to be non-null while the
+   `thumbnail` field is something like `self` or `default`."
+   "thumbnail_height","integer?","Thumbnail height."
    "hide_score","boolean","Whether the score is currently hidden."
    "name","string","The post's full ID36 (with prefix `t3_`). Also see `id`."
    "quarantine","boolean","Whether the post is in a quarantined subreddit."
@@ -41,12 +72,40 @@ Schema
    "ups","integer","Same as `score`."
    "total_awards_received","integer","Number of rewards on the post."
    "media_embed","unknown object",""
-   "thumbnail_width","integer?","Thumbnail width. `null` if text post."
    "is_original_content","boolean","Whether the post is marked as OC."
    "user_reports","unknown array",""
-   "secure_media","unknown?",""
+   "media","object?","`null` if not a video post.
+
+   Example value for a video post::
+
+      {'reddit_video': {'bitrate_kbps': 2400,
+                     'fallback_url': 'https://v.redd.it/1782h5212t971/DASH_720.mp4?source=fallback',
+                     'height': 720,
+                     'width': 720,
+                     'scrubber_media_url': 'https://v.redd.it/1782h5212t971/DASH_96.mp4',
+                     'dash_url': 'https://v.redd.it/1782h5212t971/DASHPlaylist.mpd?a=1628262163%2CODUxMmVjYTc2NTBiOTYyYTVkZDQ1ODY2NTU4MGUwODQ4MjVhMjIwODY2MTAyNmQ1YjkzZDI2OTZkZWVlMDA3NA%3D%3D&v=1&f=sd',
+                     'duration': 6,
+                     'hls_url': 'https://v.redd.it/1782h5212t971/HLSPlaylist.m3u8?a=1628262163%2CZDQ5MTFjZWM2NGM2Yzk0YmUxNGJkYzUzZDI1OWI5YzZkMGIxYWYyMzgzYTM2ZjlkYTY3OWI1ZTM0MDU4NjJhNQ%3D%3D&v=1&f=sd',
+                     'is_gif': False,
+                     'transcoding_status': 'completed'}}
+
+   Example value for a videogif post::
+
+      {'reddit_video': {'bitrate_kbps': 4800,
+                     'fallback_url': 'https://v.redd.it/o4m3p54mps971/DASH_1080.mp4?source=fallback',
+                     'height': 1080,
+                     'width': 498,
+                     'scrubber_media_url': 'https://v.redd.it/o4m3p54mps971/DASH_96.mp4',
+                     'dash_url': 'https://v.redd.it/o4m3p54mps971/DASHPlaylist.mpd?a=1628262163%2COTZlZjY1MzAzOTlhZjQ5MTZjNDE4NmZlNGQ2NGQ4OTRlYjFkNDc2MGRjMDI4ZDEyNDUyNGIzYTZmZWM3MWY4Mg%3D%3D&v=1&f=sd',
+                     'duration': 2,
+                     'hls_url': 'https://v.redd.it/o4m3p54mps971/HLSPlaylist.m3u8?a=1628262163%2CMDA1ZmVjMDM1MTA0M2EzM2U0MjJhZWYxYWIwMjQyMmI2NzE5ZWE0ODI4ZGI5ZWJlYThhOWNjZjFjNmMwYzkwOQ%3D%3D&v=1&f=sd',
+                     'is_gif': True,
+                     'transcoding_status': 'completed'}}
+
+   "
+   "secure_media","object?","Seems to be the same as the `media` field."
    "is_reddit_media_domain","boolean","Whether media is reddit hosted, that is
-   either i.redd.it for images or v.redd.it for videos. This will always be false for a text post.[needs checking]"
+   either i.redd.it for images or v.redd.it for videos. This will always be false for a text post."
    "is_meta","boolean",""
    "category","unknown?",""
    "secure_media_embed","unknown object",""
@@ -56,16 +115,38 @@ Schema
    "author_premium?","boolean","Whether or not the submitter has Reddit Premium.
 
    This attribute is not available if the post was removed or deleted."
-   "thumbnail","string","The URL of the post thumbnail. Other possible values include
-   `self` (if there is no thumbnail?), or `default` (if the post was removed/deleted?)."
    "edited","boolean | float","`false` if the post wasn't edited, otherwise a Unix timestamp of when it was edited."
    "gildings","unknown object",""
-   "post_hint?","string","E.g., `\"image\"`"
-   "content_categories","unknown?",""
-   "is_self","boolean","`true` if it is a text post. `false` if link post."
+   "post_hint?","string","The type of post.
+
+   Known values: `self`, `link`, `image`, `hosted:video`, `rich:video`.
+
+   Field does not exist if it is a gallery post.
+
+   This field does not exist if the `preview` key does not exist."
+   "is_gallery?","boolean","True if a gallery post.
+
+   This field does not exist if it is not a gallery post. (Hence value should always be true.)
+
+   This is false if the post is a crosspost to a gallery post."
+   "gallery_data?","object","This field does not exist if not a gallery post.
+
+   Contains a bit of information about the gallery content, including captions and URLs.
+   Contains IDs for accessing the `media_metadata` field object."
+   "media_metadata?","object","Information about media items linked in the post.
+
+   Includes information for image URLs, image file types, dimensions.
+
+   This field does not exist if there is no media in the post."
+   "poll_data?","object","This field does not exist if not a poll post."
+   "content_categories","string array?",""
+   "is_self","boolean","True if a text post.
+
+   This is false if the post is a crosspost to a text post."
    "mod_note","string?",""
    "created","float","Legacy. Same as `created_utc` but subtract 28800."
-   "wls","integer","Unknown. Often `6`. Possibly stands for \"white list status\"?"
+   "wls","integer?","Unknown. Often `6`. Possibly stands for \"white list status\"?"
+   "pwls","integer?","Unknown. Possibly stands for \"parent white list status\"?"
    "removed?","boolean","`true` if the submission is removed.
 
    This will not be `true` if the removed post was indicated as spam! It is recommended to check for `null` in
@@ -85,7 +166,6 @@ Schema
    "domain","string","If a link post, the domain of the link. If a text post, it is
    the name of the subreddit prefixed with `self.`, e.g., `self.IAmA`."
    "allow_live_comments","boolean",""
-   "selftext_html","string?","The HTML of the post. This will be null if it is a link post."
    "likes","boolean?","`null` if no user context.
 
    If user context: `null` if not voted on, `true` if upvoted, `false` if downvoted."
@@ -96,8 +176,72 @@ Schema
    "is_crosspostable","boolean","Whether the post can be crossposted. Will be `false` if the post was removed or deleted."
    "pinned","boolean","Whether the post is pinned to the poster's profile."
    "over_18","boolean","Whether the submission has been marked as NSFW."
-   "preview?","unknown object","This attribute is not available if the post was removed or deleted."
-   "all_awardings","unknown object",""
+   "preview?","object","This field is not available if the post was removed or deleted.
+   This field is not available if the post is a text post.
+
+   Example for a link post to www.yahoo.com::
+
+      {'images': [{'source': {'url': 'https://external-preview.redd.it/1O1L_JB_3AH6D6LQ-sG0z4Xw3m5w9giImtFik6wLJs0.jpg?auto=webp&s=09218c9750baa74ba3af4f892ae6b67e30677927',
+                            'width': 500,
+                            'height': 500},
+                 'resolutions': [{'url': 'https://external-preview.redd.it/1O1L_JB_3AH6D6LQ-sG0z4Xw3m5w9giImtFik6wLJs0.jpg?width=108&crop=smart&auto=webp&s=f8f365f35593a8ff5a4345f6ac61b70cfef15e52',
+                                  'width': 108,
+                                  'height': 108},
+                                 {'url': 'https://external-preview.redd.it/1O1L_JB_3AH6D6LQ-sG0z4Xw3m5w9giImtFik6wLJs0.jpg?width=216&crop=smart&auto=webp&s=4db450c618f53c6c33778e43b211fad788e7e62a',
+                                  'width': 216,
+                                  'height': 216},
+                                 {'url': 'https://external-preview.redd.it/1O1L_JB_3AH6D6LQ-sG0z4Xw3m5w9giImtFik6wLJs0.jpg?width=320&crop=smart&auto=webp&s=a3493dedbabed68d15d63888f37945dedec7d2af',
+                                  'width': 320,
+                                  'height': 320}],
+                 'variants': {},
+                 'id': '16jxFHXnGLmDKC4M3Q9uMUZyOARBNVxPEqecC4TMIC0'}],
+     'enabled': False}
+
+   Example for an image post::
+
+      {'images': [{'source': {'url': 'https://preview.redd.it/zz2ief0sqj971.gif?format=png8&s=0813b3075fe7dd364491a91b81dd96f5d003b1e5',
+                               'width': 200,
+                               'height': 136},
+                    'resolutions': [{'url': 'https://preview.redd.it/zz2ief0sqj971.gif?width=108&crop=smart&format=png8&s=f8cd04f4c3810209c3742bc5c3dc0ac2e9105e9f',
+                                     'width': 108,
+                                     'height': 73}],
+                    'variants': {'gif': {'source': {'url': 'https://preview.redd.it/zz2ief0sqj971.gif?s=0be13dfc903efbe51d655a6db6403fc9fd11465b',
+                                                    'width': 200,
+                                                    'height': 136},
+                                         'resolutions': [{'url': 'https://preview.redd.it/zz2ief0sqj971.gif?width=108&crop=smart&s=e57bd0324bd02bcaaf194181ee4aaf1abc7adfc7',
+                                                          'width': 108,
+                                                          'height': 73}]},
+                                 'mp4': {'source': {'url': 'https://preview.redd.it/zz2ief0sqj971.gif?format=mp4&s=d719eac5958b367bc2e99838b8595d36869898de',
+                                                    'width': 200,
+                                                    'height': 136},
+                                         'resolutions': [{'url': 'https://preview.redd.it/zz2ief0sqj971.gif?width=108&format=mp4&s=52fa7201ccad66f04a6ed435405e6f412fb36a20',
+                                                          'width': 108,
+                                                          'height': 73}]}},
+                    'id': 'zPq0TcenApl-k727IqB4zWhcVz5H6JwrszBJ2ClEzAU'}],
+        'enabled': True}
+
+   Example for a video post::
+
+      {'images': [{'source': {'url': 'https://external-preview.redd.it/DEHoxCSwTpIlX-Bzp699jKX2qR-1cdBoucdcs2YEPjY.png?format=pjpg&auto=webp&s=1ac508e374e6cbcab5b7e52f3e045131bf376ac2',
+                               'width': 720,
+                               'height': 720},
+                    'resolutions': [{'url': 'https://external-preview.redd.it/DEHoxCSwTpIlX-Bzp699jKX2qR-1cdBoucdcs2YEPjY.png?width=108&crop=smart&format=pjpg&auto=webp&s=da7df866c43dd7b34f1b39d05eb50ec0065de338',
+                                     'width': 108,
+                                     'height': 108},
+                                    {'url': 'https://external-preview.redd.it/DEHoxCSwTpIlX-Bzp699jKX2qR-1cdBoucdcs2YEPjY.png?width=216&crop=smart&format=pjpg&auto=webp&s=a0a11df22e2e279b675ee3a00ad2cb608d6dce12',
+                                     'width': 216,
+                                     'height': 216},
+                                    {'url': 'https://external-preview.redd.it/DEHoxCSwTpIlX-Bzp699jKX2qR-1cdBoucdcs2YEPjY.png?width=320&crop=smart&format=pjpg&auto=webp&s=db4f66be5c1a32fd2bf9fba9a9162c472b2a7d30',
+                                     'width': 320,
+                                     'height': 320},
+                                    {'url': 'https://external-preview.redd.it/DEHoxCSwTpIlX-Bzp699jKX2qR-1cdBoucdcs2YEPjY.png?width=640&crop=smart&format=pjpg&auto=webp&s=03c092d24defa4290babcd0284ba7bdc3afcbc8e',
+                                     'width': 640,
+                                     'height': 640}],
+                    'variants': {},
+                    'id': 'rSGWbcTwMb_0RzD2Ms9DqNQ6aIF_j5joM9C3fVgPR-I'}],
+        'enabled': False}
+   "
+   "all_awardings","object array",""
    "awarders","unknown array",""
    "media_only","boolean",""
    "can_gild","boolean",""
@@ -105,33 +249,36 @@ Schema
    "locked","boolean","Whether the post has been locked. https://www.reddit.com/r/modnews/comments/3qguqv/moderators_lock_a_post/"
    "visited","boolean",""
    "removed_by","string?","The name of the redditor who removed this post. `null` if not removed or the current user is not a moderator of the subreddit."
-   "num_reports","unknown?",""
+   "num_reports","integer?","`null` if current user is not a mod of the submission's subreddit."
    "distinguished","string?","`null` if not distinguished, otherwise `"moderator"` or `"admin"`."
    "subreddit_id","string","The full ID36 of the subreddit that was posted to. E.g., `t5_2qzb6` for `r/IAmA`."
    "mod_reason_by","unknown?",""
    "removal_reason","unknown?",""
    "id","string","The ID of the submission (without the `t3_` prefix). Also see `name`."
    "is_robot_indexable","boolean","Will be `false` if the post was removed or deleted."
-   "report_reasons","unknown?",""
+   "report_reasons","array?","`null` if current user is not a mod of the submission's subreddit."
    "author","string","The redditor name. Possibly `[removed]` if the post was removed
    or `[deleted]` if the post was removed by the author."
    "discussion_type","unknown?",""
-   "num_comments","integer","The number of comments."
+   "num_comments","integer","The number of comments. May not match the number of visible comments."
    "send_replies","boolean","Whether an inbox message will be sent to you when the submission receives a new top-level comment."
-   "whitelist_status","string",""
+   "whitelist_status","string?","Known values: `no_ads`."
+   "parent_whitelist_status","string?","Known values: `no_ads`."
    "contest_mode","boolean","Whether the post is in contest mode or not."
    "mod_reports","unknown array",""
-   "permalink","string","The uri of the post without the domain.
+   "permalink","string","The URI of the post without the domain.
    E.g., `/r/IAmA/comments/erd8si/i_was_born_with_two_y_chromosomes_ama/`"
-   "parent_whitelist_status","unknown?",""
    "stickied","boolean","Whether the post is a 'stickied' post in the subreddit."
    "url","string","If a text post, it is the url of the submission. If a link post,
-   it is the url of the link. Also see `permalink`."
+   it is the url of the link. If `url_overridden_by_dest` field exists, this will be the same value as it.
+
+   Also see `permalink`, which is the same as this field but the path only."
    "subreddit_subscribers","integer","The number of subscribers in the subreddit."
    "created_utc","float","Unix timestamp of when the post was made. Will always be a whole number."
    "num_crossposts","integer","Crosspost count."
-   "media","unknown?",""
-   "is_video","boolean",""
+   "is_video","boolean","True if is is a video (including video gif) post. Otherwise, false.
+
+   This is false if the post is a crosspost to a video post."
    "spam?","boolean","`true` if the submission was removed as spam else `false`.
 
    This field is not available if the current user is not a moderator of the subreddit
@@ -144,13 +291,21 @@ Schema
 
    This field is not available if the current user is not a moderator of the subreddit
    (or there's no user context)."
-   "rte_mode?","string","The string 'markdown'.
+   "rte_mode?","string","Either `markdown` or `richtext`.
 
-   Field not available if the post is not a text post.
+   Field not available if the post does not belong to the current user.
    Field not available if no user context is available."
-   "url_overridden_by_dest?","string","The url of the linked item for the link post (`is_self` is `true`).
+   "url_overridden_by_dest?","string","The url of the linked item for the link post.
 
-   In rare cases the URL may be a path, for example, see link post `j74mzm`."
+   The URL of the image if an image post.
+
+   The URL of the video if a video post.
+
+   The URL of the gallery for a gallery post. E.g., `https://www.reddit.com/gallery/oexfaq`.
+
+   In rare cases the URL may be a path, for example, see link post `j74mzm`.
+
+   Field does not exist if not a link post."
    "event_start?","float","Unix timestamp of when the post's event time begins. Key does not exist if
    there is no event metadata on the post. The float is always a whole number.
 
@@ -187,6 +342,10 @@ Schema
    Field not available if flair not configured.
 
    Field not available if the post was removed or deleted."
+   "crosspost_parent?","string","The full ID36 of the crosspost parent submission.
+
+   This field does not exist if the post is not a crosspost."
+   "crosspost_parent_list?","array of submission objects",""
 
 Actions
 -------
@@ -230,57 +389,123 @@ and differs each time.
 .. seealso:: https://www.reddit.com/dev/api/#GET_api_info
 
 
-Create
-~~~~~~
+Upload Media
+~~~~~~~~~~~~
 
-.. http:post:: /api/submit
+.. http:post:: /api/media/asset
 
-*scope: submit*
+Upload media for use in submissions.
 
-Compose a new submission to a subreddit.
-
-Specify the target subreddit with `sr` and title `title`.
-
-If `kind` is `"self"`, a text post ("self-post") is created with `text` or `richtext_json`
-used as the body. An `INVALID_SELFPOST` error is returned if both are specified.
-
-If `kind` is `"link"`, a link post is created with `url` as the link.
-
-Return object example::
-
-   {"json": {"errors": [], "data": {"url": "https://www.reddit.com/r/Pyprohly_test3/comments/nxaraz/fifth_cool_website/", "drafts_count": 0, "id": "nxaraz", "name": "t3_nxaraz"}}}
+The upload process is similar to that of flair emoji image uploads
+and the details for that are already documented :ref:`here <emoji_upload>`.
+Th returned object structure is just slightly different.
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
    :escape: \
 
-   "ad","boolean","Setting to `true` appears to post the submission unlisted, accessible only by URL."
-   "app","unknown",""
-   "collection_id","string","(beta) the UUID of a collection"
-   "event_end","string","(beta) a datetime string e.g. `2018-09-11T12:00:00`"
-   "event_start","string","(beta) a datetime string e.g. `2018-09-11T12:00:00`"
-   "event_tz","string","(beta) a pytz timezone e.g. `America/Los_Angeles`"
-   "extension","unknown","used for determining which view-type (e.g. `json`, `compact` etc.) to use for the redirect that is generated if the resubmit error occurs."
-   "flair_id","string","a string no longer than 36 characters"
-   "flair_text","string","a string no longer than 64 characters"
-   "g-recaptcha-response","unknown",""
-   "kind","string","one of `link`, `self`, `image`, `video`, `videogif`"
-   "nsfw","boolean","mark as NSFW"
-   "resubmit","boolean","If the 'Restrict how often the same link can be posted' content control setting is enabled
-   in the subreddit, if a link with the same URL has already been submitted then an error would be returned unless this field is `true`.
-   This doesn't appear to be the case however."
-   "richtext_json","string","a string of RTJSON"
-   "sendreplies","boolean","Receive inbox notifications for replies. `true` if not specified."
-   "spoiler","boolean","mark as spoiler"
-   "sr","string","the subreddit name"
-   "text","string","markdown text, for a text post."
-   "title","string","Title of the submission. Up to 300 characters long."
-   "url","string","a valid URL, for a link post."
-   "video_poster_url","string",""
+   "filepath","string","The file name (base name, not a full path) of the image file to upload.
+   Example: `image.png`."
+   "mimetype","string","The mimetype of the image file to upload. It does not have to match the
+   extension of the `filepath`. Example: `image/png`."
 
 |
 
-.. csv-table:: API Errors
+.. csv-table:: API Errors (variant 2)
+   :header: "Error","Description"
+   :escape: \
+
+   "USER_REQUIRED","A user context is required."
+
+|
+
+.. csv-table:: HTTP Errors
+   :header: "Status Code","Description"
+   :escape: \
+
+   "400","* The `filepath` or `mimetype` form parameter was not specified or the value was empty.
+
+   * Invalid value specified for `mimetype`, or the type is not supported."
+
+
+Create Post
+~~~~~~~~~~~
+
+Text
+^^^^
+
+Link
+^^^^
+
+Image
+^^^^^
+
+Video
+^^^^^
+
+.. _post_api_submit::
+
+.. http:post:: /api/submit
+
+*scope: submit*
+
+Compose a new text or link submission to a subreddit.
+
+Specify the target subreddit with `sr` and title `title`.
+
+To create a text post, use `kind: self`. A text post ("self-post") is created with `text` or `richtext_json`
+used as the text body. An `INVALID_SELFPOST` error is returned if both are specified.
+
+To create a link post, use `kind: link`. A link post is created with `url` as the link.
+
+To create an image post, use `kind: image`. A image post is created using `url` as the image.
+
+Return object example for text, link, and image posts::
+
+   {"json": {"errors": [], "data": {"url": "https://www.reddit.com/r/Pyprohly_test3/comments/om0nwf/my_title/", "drafts_count": 0, "id": "nxaraz", "name": "t3_nxaraz"}}}
+
+Return object example for video posts::
+
+   {"json": {"errors": [], "data": {"websocket_url": "wss://ws-0c2fc51946b39365a.wss.redditmedia.com/i2arnoco52c71?m=AQAASr_0YNe2OENAgcxRDFT6lNowcSPjOboA1bfLsYXZUzts20rI"}}}
+
+.. csv-table:: Form Data
+   :header: "Field","Type (hint)","Description"
+   :escape: \
+
+   "kind","string","Either: `link`, `self`, `image`, `video`, `videogif`. Default: `link`."
+   "sr","string","The subreddit name in which to submit to."
+   "title","string","Title of the submission. Up to 300 characters long."
+   "text","string","The markdown text for a text post."
+   "url","string","A valid URL, for a link post."
+   "sendreplies","boolean","Receive inbox notifications for replies. Default: true."
+   "spoiler","boolean","Mark as spoiler. Default: false."
+   "nsfw","boolean","Mark as NSFW. Default: false."
+   "original_content","boolean","Mark as original content. Default: false."
+   "collection_id","string","The UUID of a collection to add this post to a collection.
+   Parameter ignored if empty string."
+   "video_poster_url","string","The URL of the thumbnail for a video post. Required when `kind: video`."
+   "flair_id","string","A string no longer than 36 characters.
+   Parameter ignored if empty string."
+   "flair_text","string","A string no longer than 64 characters.
+   Parameter ignored if empty string."
+   "event_end","string","A datetime string e.g. `2018-09-11T12:00:00`.
+   Parameter ignored if empty string."
+   "event_start","string","A datetime string e.g. `2018-09-11T12:00:00`.
+   Parameter ignored if empty string."
+   "event_tz","string","A pytz timezone e.g. `America/Los_Angeles`.
+   Parameter ignored if empty string."
+   "ad","boolean","Setting to true appears to post the submission unlisted, accessible only by URL."
+   "extension","string","Used for determining which view-type (e.g. `json`, `compact` etc.) to use for the redirect that is generated if the resubmit error occurs."
+   "resubmit","boolean","When the 'Restrict how often the same link can be posted' content control setting
+   is enabled, if a link with the same URL has already been submitted then an `ALREADY_SUB` API error would
+   be returned unless this field is `true`.
+
+   Default: false."
+   "richtext_json","string","A string of RTJSON."
+
+|
+
+.. csv-table:: API Errors (variant 2)
    :header: "Error","Description"
    :escape: \
 
@@ -296,6 +521,14 @@ Return object example::
    "INVALID_SELFPOST","both `text` and `richtext_json` were specified"
    "TOO_LONG","the `title` or `text` is too long"
    "NO_SELFS","the subreddit doesn't allow text posts"
+   "MISSING_VIDEO_URLS","The `video_poster_url` was empty or not specified when a video post is being made.
+
+   *\"This community requires a video link and a post link\"* -> url"
+   "ALREADY_SUB","The given link has already been submitted to the subreddit.
+
+   *\"This community doesn't allow links to be posted more than once, and this link has already been shared\"* -> url"
+
+|
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
@@ -304,6 +537,174 @@ Return object example::
    "404","The subreddit is private/banned."
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_submit
+
+
+Gallery
+^^^^^^^
+
+.. http:post:: /api/submit_gallery_post
+
+*scope: submit*
+
+Submit a gallery post.
+
+This endpoint expects JSON data, unlike `POST /api/submit`.
+
+Return object example::
+
+   {
+       "json": {
+           "errors": [],
+           "data": {
+               "url": "https://www.reddit.com/r/Pyprohly_test3/comments/oexfaq/my_gallery/",
+               "id": "t3_oexfaq"
+           }
+       }
+   }
+
+.. csv-table:: JSON Data
+   :header: "Field","Type (hint)","Description"
+   :escape: \
+
+   "sr",".","Same as in :link:`POST /api/submit <post_api_submit>`."
+   "title",".","Same as in :link:`POST /api/submit <post_api_submit>`."
+   "items","object array","The gallery items.
+
+   Example::
+      [
+         {
+           "caption": "pepperoonie",
+           "outbound_url": "www.google.com",
+           "media_id": "zpkqrrfo3m971"
+         },
+         {
+           "caption": "nothing you cant do",
+           "outbound_url": "https://www.google.com",
+           "media_id": "qg54xsfo3m971"
+         }
+      ]
+   "
+   "sendreplies",".","Same as in :link:`POST /api/submit <post_api_submit>`."
+   "spoiler",".","Same as in :link:`POST /api/submit <post_api_submit>`."
+   "nsfw",".","Same as in :link:`POST /api/submit <post_api_submit>`."
+   "original_content",".","Same as in :link:`POST /api/submit <post_api_submit>`."
+   "collection_id","string","The UUID of a collection to add this post to a collection.
+   Parameter ignored if empty string."
+   "flair_id","string","A string no longer than 36 characters.
+   Parameter ignored if empty string."
+   "flair_text","string","A string no longer than 64 characters.
+   Parameter ignored if empty string."
+   "event_end","string","A datetime string e.g. `2018-09-11T12:00:00`.
+   Parameter ignored if empty string."
+   "event_start","string","A datetime string e.g. `2018-09-11T12:00:00`.
+   Parameter ignored if empty string."
+   "event_tz","string","A pytz timezone e.g. `America/Los_Angeles`.
+   Parameter ignored if empty string."
+
+|
+
+.. csv-table:: API Errors (variant 2)
+   :header: "Error","Description"
+   :escape: \
+
+   "USER_REQUIRED","you must login"
+   "placeholder","The gallery must contain more than one entry.
+
+   *\"List is too short.\"* -> items"
+
+|
+
+.. csv-table:: HTTP Errors
+   :header: "Status Code","Description"
+   :escape: \
+
+   "500","JSON data was not provided."
+
+
+Poll
+^^^^
+
+.. http:post:: /api/submit_poll_post
+
+*scope: submit*
+
+Submit a poll post.
+
+This endpoint expects JSON data.
+
+Return object example::
+
+   {
+       "json": {
+           "errors": [],
+           "data": {
+               "url": "https://www.reddit.com/r/Pyprohly_test3/comments/of0f7u/poll/",
+               "id": "t3_of0f7u"
+           }
+       }
+   }
+
+.. csv-table:: JSON Data
+   :header: "Field","Type (hint)","Description"
+   :escape: \
+
+   "sr",".","Same as in :link:`POST /api/submit <post_api_submit>`."
+   "title",".","Same as in :link:`POST /api/submit <post_api_submit>`."
+   "text",".","Same as in :link:`POST /api/submit <post_api_submit>`."
+   "options","string array","The poll options.
+
+   Example::
+      [
+        "apple",
+        "orange",
+        "bacon"
+      ]
+   "
+   "duration","integer","The number of days the poll runs for.
+
+   Valid values are 1 to 7. If a number is specified outside this range it is clamped within range.
+
+   This field is required. The UI default is 3 days.
+   "
+   "sendreplies",".","Same as in :link:`POST /api/submit <post_api_submit>`."
+   "spoiler",".","Same as in :link:`POST /api/submit <post_api_submit>`."
+   "nsfw",".","Same as in :link:`POST /api/submit <post_api_submit>`."
+   "original_content",".","Same as in :link:`POST /api/submit <post_api_submit>`."
+   "collection_id","string","The UUID of a collection to add this post to a collection.
+   Parameter ignored if empty string."
+   "flair_id","string","A string no longer than 36 characters.
+   Parameter ignored if empty string."
+   "flair_text","string","A string no longer than 64 characters.
+   Parameter ignored if empty string."
+   "event_end","string","A datetime string e.g. `2018-09-11T12:00:00`.
+   Parameter ignored if empty string."
+   "event_start","string","A datetime string e.g. `2018-09-11T12:00:00`.
+   Parameter ignored if empty string."
+   "event_tz","string","A pytz timezone e.g. `America/Los_Angeles`.
+   Parameter ignored if empty string."
+
+|
+
+.. csv-table:: API Errors (variant 2)
+   :header: "Error","Description"
+   :escape: \
+
+   "USER_REQUIRED","you must login"
+   "JSON_PARSE_ERROR","JSON data was not provided.
+
+   *\"Sorry, something went wrong. Double-check things and try again.\"* -> json"
+   "TOO_FEW_OPTIONS","*\"you need at least 2 poll options\"* -> options"
+   "placeholder","The duration parameter was not specified.
+
+   *\"Missing value\"* -> duration"
+
+|
+
+.. csv-table:: HTTP Errors
+   :header: "Status Code","Description"
+   :escape: \
+
+   "500","The `options` parameter was not specified."
 
 
 .. _post_api_del:

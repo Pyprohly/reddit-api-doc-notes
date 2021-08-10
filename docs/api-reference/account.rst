@@ -304,7 +304,16 @@ Block a user.
 Specify an account full ID36 (with `account_id`) or user name (with `name`) to block.
 If both parameters are specified together then `account_id` will be used.
 
-An empty JSON object is returned on success.
+An object like the following is returned on success::
+
+   {
+      "date": 1627236824.0,
+      "icon_img": "https://www.redditstatic.com/avatars/avatar_default_10_7E53C1.png",
+      "id": "t2_ojpl",
+      "name": "speed"
+   }
+
+If the user is already blocked then an empty JSON object is returned on success.
 
 .. csv-table:: Form data
    :header: "Field","Type (hint)","Description"
@@ -339,43 +348,27 @@ An empty JSON object is returned on success.
 Unblock user
 ~~~~~~~~~~~~
 
+.. http:post:: /api/unfriend
+
 *scope: privatemessages*
 
-Use `POST /api/unfriend` with `type: enemy` form data.
+Unblock a user.
 
-------------
+The user can either be passed in by name (`name`) or by full ID36 (`id`). If both `id` and `name` are
+specified, `id` will take preference and `name` is ignored.
 
-.. http:post:: [/r/{subreddit}]/api/unfriend
+The `container` parameter must be specified and should be the current user's full ID36.
 
-Remove a relationship between a user and another user or subreddit
-
-The user can either be passed in by name (`name`) or by full ID36 (`id`). If both `id` and `name` are specified
-then `id` will take preference and `name` is ignored.
-
-If `type: enemy`, `container` must be the current user's full ID36. For other types, the subreddit must be
-specififed via URL (e.g., `/r/funny/api/unfriend`).
-
-The required scope of this endpoint is based on the type of the relationship:
-
-* moderator: `modothers`
-* moderator_invite: `modothers`
-* contributor: `modcontributors`
-* banned: `modcontributors`
-* muted: `modcontributors`
-* wikibanned: `modcontributors` and `modwiki`
-* wikicontributor: `modcontributors` and `modwiki`
-* enemy: `privatemessages`
-
-Returns an empty JSON object on success. If the target specified by `id` or `name` doesn't exist, it is treated
-as successful.
+Returns an empty JSON object on success.
+If the target specified by `id` or `name` isn't blocked, it is treated as a success.
+If `container` is not specified, or is specified incorrectly, no action is performed, and it is treated as a success.
 
 .. csv-table:: Form data
    :header: "Field","Type (hint)","Description"
    :escape: \
 
-   "type","string","Either: `enemy`, `moderator`, `moderator_invite`, `contributor`, `banned`,
-   `muted`, `wikibanned`, `wikicontributor`."
-   "container","string","If `type: enemy` then this needs to be set to the current user's full ID36."
+   "type","string","`enemy`"
+   "container","string","The current user's full ID36."
    "id","string","Full ID36 of the target."
    "name","string","Name of a target user."
 
@@ -393,9 +386,7 @@ as successful.
    :header: "Status Code","Description"
    :escape: \
 
-   "400","* `type: friend` was specified.
-
-   * The `id` or `name` parameter was not specified.
+   "400","* The `id` or `name` parameter was not specified.
 
    * The the user specified by `id` or `name` doesn't exist."
    "500","An invalid value was specified for `type`."

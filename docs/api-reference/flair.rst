@@ -790,7 +790,7 @@ flair association items that look like::
 
    {"flair_css_class": null, "user": "Pyprohly", "flair_text": "fghj"}
 
-All fields are strings. The `flair_css_class` field can be `null`. For information on when the
+All fields are strings, but the `flair_css_class` field can be `null`. For information on when the
 `flair_css_class` field is `null`, see the `user_flair_css_class` field on the Subreddit schema.
 
 If there are more items in the listing then the root object will contain a `next` field
