@@ -35,5 +35,5 @@ Scopes
    "submit","","Submit Content","Submit links and comments from my account."
    "subscribe","","Edit My Subscriptions","Manage my subreddit subscriptions. Manage "friends" - users whose content I follow."
    "vote","","Vote","Submit and change my votes on comments and submissions."
-   "wikiedit","wiki","Wiki Editing","Edit wiki pages on my behalf"
+   "wikiedit","","Wiki Editing","Edit wiki pages on my behalf"
    "wikiread","","Read Wiki Pages","Read wiki pages through my account"
