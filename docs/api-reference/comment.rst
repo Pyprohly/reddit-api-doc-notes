@@ -55,17 +55,14 @@ Schema
    "mod_note","unknown?",""
    "mod_reason_by","unknown?",""
    "mod_reason_title","unknown?",""
-   "mod_reports","unknown array",""
    "name","string","The comment's full ID (with prefix `t1_`). Also see `id`."
    "no_follow","boolean",""
-   "num_reports","unknown?",""
    "parent_id","string","The full ID of the comment or submission above this one."
    "permalink","string","The uri of the comment without the domain.
    E.g., `/r/ImaginaryLandscapes/comments/iaoshc/floating_eyes_in_the_silent_forest/g1qfxir/`"
    "removal_reason","unknown?",""
    "replies","object | string","A listing object if this object was drawn from a comment tree
    and there are comment replies, otherwise an empty string."
-   "report_reasons","unknown?",""
    "saved","boolean","Whether the authenticated user has saved this comment. For clients with no user context this will always be false."
    "score","integer","The number of upvotes (minus downvotes)."
    "score_hidden","boolean","Whether the score is hidden."
@@ -79,17 +76,12 @@ Schema
    "total_awards_received","integer","Number of rewards on the comment."
    "treatment_tags","unknown array",""
    "ups","integer","Same as `score`."
-   "user_reports","unknown array",""
    "rte_mode?","string","The string 'markdown'.
 
    Field not available if the post is not a text post.
    Field not available if no user context is available."
    "removed?",".","See `removed` field on the Submission schema."
    "approved?",".","See `approved` field on the Submission schema."
-   "ignore_reports?","boolean","`true` if ignoring reports for the comment, else `false`.
-
-   This field is not available if the current user is not a moderator of the subreddit
-   (or there's no user context)."
    "spam?","boolean","`true` if the submission is marked as spam else `false`.
 
    This field is not available if the current user is not a moderator of the subreddit
@@ -113,6 +105,55 @@ Schema
 
    Additionally: value `null` when user flairs are disabled in the subreddit (`user_flair_enabled_in_sr` is false)."
    "author_patreon_flair?","boolean","This attribute is not available if the post was removed or deleted."
+   "ignore_reports?","boolean","`true` if ignoring reports for this item, else `false`.
+
+   This field is not available if the current user is not a moderator of the subreddit
+   or there's no user context."
+   "num_reports","integer?","The number of reports on this item.
+
+   This field is `null` if the current user is not a moderator of the subreddit
+   or there's no user context."
+   "user_reports","array array","An array of user reports.
+
+   Each sub-array contains 4 elements.
+
+   An example of 2 user reports::
+
+      [[\"spam\", 3, False, True], [\"trolling\", 1, False, True]]
+
+   The meaning of the fields are as follows::
+
+      [
+         reportReason: string,
+         numberOfReports: integer,
+         snoozeStatus: boolean,
+         canSnooze: boolean,
+      ]
+
+   (Source: `<https://www.reddit.com/r/redditdev/comments/olqo5s/what_do_the_boolean_values_represent_in_the_user/>`_)
+
+   The array is empty if the current user is not a moderator of the subreddit
+   or there's no user context."
+   "mod_reports","array array","An array of mod reports.
+
+   The sub-arrays contains two elements: the report reason text, and the name of the reporting moderator.
+
+   An example of 3 moderator reports::
+
+      [[\"spam\", \"Pyprohly\"], [\"Looks like spam to me\", \"SomeMod\"], [\"sus\", \"SomeOtherMod\"]]
+
+   The array is empty if the current user is not a moderator of the subreddit
+   or there's no user context."
+   "report_reasons","string array?","This field is deprecated.
+
+   If there are no reports on this item, it is an empty array.
+
+   If there are reports on this item, the value is::
+
+      [\"This attribute is deprecated. Please use mod_reports and user_reports instead.\"]
+
+   This field is `null` if the current user is not a moderator of the subreddit
+   or there's no user context."
 
 
 Actions
@@ -431,3 +472,9 @@ Remove
 ~~~~~~
 
 See :ref:`here <post_api_remove>`.
+
+
+Ignore reports
+~~~~~~~~~~~~~~
+
+See :ref:`here <submission_ignore_reports>`.

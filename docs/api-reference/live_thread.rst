@@ -8,7 +8,7 @@ Overview
 Live Thread Schema
 ~~~~~~~~~~~~~~~~~~
 
-.. csv-table:: Submission Object
+.. csv-table:: Live Thread Schema
    :header: "Field","Type (hint)","Description"
    :escape: \
 
@@ -37,7 +37,7 @@ Live Thread Schema
 Live Thread Update Schema
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. csv-table:: Submission Object
+.. csv-table:: Live Thread Update Schema
    :header: "Field","Type (hint)","Description"
    :escape: \
 

@@ -158,8 +158,8 @@ Subreddit sub-object
    "default_set","boolean",""
    "description","string",""
    "disable_contributor_requests","boolean",""
-   "display_name","The name of the subreddit. This will be your user account name prepended with `u_`. E.g., `u_Pyprohly`.",""
-   "display_name_prefixed","Your user account name prepended with `u/`. E.g., `u/Pyprohly`.",""
+   "display_name","string","The name of the subreddit. This will be your user account name prepended with `u_`. E.g., `u_Pyprohly`.",""
+   "display_name_prefixed","string","Your user account name prepended with `u/`. E.g., `u/Pyprohly`.",""
    "free_form_reports","boolean",""
    "header_img","unknown?",""
    "header_size","unknown?",""
@@ -297,18 +297,20 @@ Report a user. Reporting a user brings it to the attention of a Reddit admin.
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_report_user
 
 
+.. _user_list_trophies:
+
 List trophies
 ~~~~~~~~~~~~~
 
-.. http:post:: /api/v1/user/{username}/trophies
+.. http:get:: /api/v1/user/{username}/trophies
 
 *scope: read*
 
-Return a list of trophies for the a given user.
+Get a list of trophies for the a given user.
 
-Returns a 'TrophyList' listing structure.
+Returns a 'TrophyList' structure.
 
-For a description of the Trophie object schema, see :ref:`here <account_list_trophies>`.
+For a description of the Trophy object schema, see :ref:`here <account_list_trophies>`.
 
 .. seealso:: `<https://www.reddit.com/dev/api/#GET_api_v1_user_{username}_trophies>`_
 

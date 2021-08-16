@@ -73,7 +73,6 @@ Schema
    "total_awards_received","integer","Number of rewards on the post."
    "media_embed","unknown object",""
    "is_original_content","boolean","Whether the post is marked as OC."
-   "user_reports","unknown array",""
    "media","object?","`null` if not a video post.
 
    Example value for a video post::
@@ -249,14 +248,12 @@ Schema
    "locked","boolean","Whether the post has been locked. https://www.reddit.com/r/modnews/comments/3qguqv/moderators_lock_a_post/"
    "visited","boolean",""
    "removed_by","string?","The name of the redditor who removed this post. `null` if not removed or the current user is not a moderator of the subreddit."
-   "num_reports","integer?","`null` if current user is not a mod of the submission's subreddit."
    "distinguished","string?","`null` if not distinguished, otherwise `"moderator"` or `"admin"`."
    "subreddit_id","string","The full ID36 of the subreddit that was posted to. E.g., `t5_2qzb6` for `r/IAmA`."
    "mod_reason_by","unknown?",""
    "removal_reason","unknown?",""
    "id","string","The ID of the submission (without the `t3_` prefix). Also see `name`."
    "is_robot_indexable","boolean","Will be `false` if the post was removed or deleted."
-   "report_reasons","array?","`null` if current user is not a mod of the submission's subreddit."
    "author","string","The redditor name. Possibly `[removed]` if the post was removed
    or `[deleted]` if the post was removed by the author."
    "discussion_type","unknown?",""
@@ -265,7 +262,6 @@ Schema
    "whitelist_status","string?","Known values: `no_ads`."
    "parent_whitelist_status","string?","Known values: `no_ads`."
    "contest_mode","boolean","Whether the post is in contest mode or not."
-   "mod_reports","unknown array",""
    "permalink","string","The URI of the post without the domain.
    E.g., `/r/IAmA/comments/erd8si/i_was_born_with_two_y_chromosomes_ama/`"
    "stickied","boolean","Whether the post is a 'stickied' post in the subreddit."
@@ -280,10 +276,6 @@ Schema
 
    This is false if the post is a crosspost to a video post."
    "spam?","boolean","`true` if the submission was removed as spam else `false`.
-
-   This field is not available if the current user is not a moderator of the subreddit
-   (or there's no user context)."
-   "ignore_reports?","boolean","`true` if ignoring reports for the submission, else `false`.
 
    This field is not available if the current user is not a moderator of the subreddit
    (or there's no user context)."
@@ -346,6 +338,11 @@ Schema
 
    This field does not exist if the post is not a crosspost."
    "crosspost_parent_list?","array of submission objects",""
+   "ignore_reports?",".","See same field on :ref:`Comment Schema <comment_schema>`"
+   "num_reports",".","See same field on :ref:`Comment Schema <comment_schema>`"
+   "user_reports",".","See same field on :ref:`Comment Schema <comment_schema>`"
+   "mod_reports",".","See same field on :ref:`Comment Schema <comment_schema>`"
+   "report_reasons",".","See same field on :ref:`Comment Schema <comment_schema>`"
 
 Actions
 -------
@@ -443,7 +440,7 @@ Image
 Video
 ^^^^^
 
-.. _post_api_submit::
+.. _post_api_submit:
 
 .. http:post:: /api/submit
 
@@ -566,8 +563,8 @@ Return object example::
    :header: "Field","Type (hint)","Description"
    :escape: \
 
-   "sr",".","Same as in :link:`POST /api/submit <post_api_submit>`."
-   "title",".","Same as in :link:`POST /api/submit <post_api_submit>`."
+   "sr",".","Same as in :ref:`POST /api/submit <post_api_submit>`."
+   "title",".","Same as in :ref:`POST /api/submit <post_api_submit>`."
    "items","object array","The gallery items.
 
    Example::
@@ -584,10 +581,10 @@ Return object example::
          }
       ]
    "
-   "sendreplies",".","Same as in :link:`POST /api/submit <post_api_submit>`."
-   "spoiler",".","Same as in :link:`POST /api/submit <post_api_submit>`."
-   "nsfw",".","Same as in :link:`POST /api/submit <post_api_submit>`."
-   "original_content",".","Same as in :link:`POST /api/submit <post_api_submit>`."
+   "sendreplies",".","Same as in :ref:`POST /api/submit <post_api_submit>`."
+   "spoiler",".","Same as in :ref:`POST /api/submit <post_api_submit>`."
+   "nsfw",".","Same as in :ref:`POST /api/submit <post_api_submit>`."
+   "original_content",".","Same as in :ref:`POST /api/submit <post_api_submit>`."
    "collection_id","string","The UUID of a collection to add this post to a collection.
    Parameter ignored if empty string."
    "flair_id","string","A string no longer than 36 characters.
@@ -648,9 +645,9 @@ Return object example::
    :header: "Field","Type (hint)","Description"
    :escape: \
 
-   "sr",".","Same as in :link:`POST /api/submit <post_api_submit>`."
-   "title",".","Same as in :link:`POST /api/submit <post_api_submit>`."
-   "text",".","Same as in :link:`POST /api/submit <post_api_submit>`."
+   "sr",".","Same as in :ref:`POST /api/submit <post_api_submit>`."
+   "title",".","Same as in :ref:`POST /api/submit <post_api_submit>`."
+   "text",".","Same as in :ref:`POST /api/submit <post_api_submit>`."
    "options","string array","The poll options.
 
    Example::
@@ -666,10 +663,10 @@ Return object example::
 
    This field is required. The UI default is 3 days.
    "
-   "sendreplies",".","Same as in :link:`POST /api/submit <post_api_submit>`."
-   "spoiler",".","Same as in :link:`POST /api/submit <post_api_submit>`."
-   "nsfw",".","Same as in :link:`POST /api/submit <post_api_submit>`."
-   "original_content",".","Same as in :link:`POST /api/submit <post_api_submit>`."
+   "sendreplies",".","Same as in :ref:`POST /api/submit <post_api_submit>`."
+   "spoiler",".","Same as in :ref:`POST /api/submit <post_api_submit>`."
+   "nsfw",".","Same as in :ref:`POST /api/submit <post_api_submit>`."
+   "original_content",".","Same as in :ref:`POST /api/submit <post_api_submit>`."
    "collection_id","string","The UUID of a collection to add this post to a collection.
    Parameter ignored if empty string."
    "flair_id","string","A string no longer than 36 characters.
@@ -1530,3 +1527,46 @@ Report award
 \.\.\.
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_report_award
+
+
+.. _submission_ignore_reports:
+
+Ignore reports
+~~~~~~~~~~~~~~
+
+.. http:post:: /api/ignore_reports
+.. http:post:: /api/unignore_reports
+
+*scope: modposts*
+
+Prevent future reports on a post/comment from causing notifications.
+
+Ignoring reports will not cause notifications or make the ignored thing show up in the various moderation listings.
+
+Returns `{}` on success. If the target is already ignored/unignored it is treated as a success.
+
+.. csv-table:: Form data
+   :header: "Field","Type (hint)","Description"
+   :escape: \
+
+   "id","string","The full ID36 of a post or comment (prefixed with `t3_` or `t1_`)."
+
+|
+
+.. csv-table:: API Errors (variant 2)
+   :header: "Error","Description"
+   :escape: \
+
+   "USER_REQUIRED","A user context is required."
+
+|
+
+.. csv-table:: HTTP Errors
+   :header: "Status Code","Description"
+   :escape: \
+
+   "403","* The `id` parameter was not specified.
+
+   * The target specified by `id` was not found, or points to an item you are not a moderator of."
+
+.. seealso:: https://www.reddit.com/dev/api/#POST_api_ignore_reports

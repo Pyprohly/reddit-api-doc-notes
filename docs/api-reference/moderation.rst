@@ -5,24 +5,197 @@ Moderation
 Actions
 -------
 
-Pull subreddit users
-~~~~~~~~~~~~~~~~~~~~
-/api/v1/{subreddit}/banned
+Pull moderation items
+~~~~~~~~~~~~~~~~~~~~~
 
-.. http:get:: [/r/{subreddit}]/about/banned
-.. http:get:: [/r/{subreddit}]/about/muted
-.. http:get:: [/r/{subreddit}]/about/contributors
-.. http:get:: [/r/{subreddit}]/about/wikibanned
-.. http:get:: [/r/{subreddit}]/about/wikicontributors
+.. http:get:: [/r/{subreddit}]/about/modqueue
+.. http:get:: [/r/{subreddit}]/about/reports
+.. http:get:: [/r/{subreddit}]/about/spam
+.. http:get:: [/r/{subreddit}]/about/edited
+.. http:get:: [/r/{subreddit}]/about/unmoderated
 
 *scope: read*
 
-This endpoint is a listing. See :ref:`Listings overview <listings_overview>`.
+Return a paginated listing of submissions/comments relevant to moderators.
+
+Info: `<https://mods.reddithelp.com/hc/en-us/articles/360010090132#h_01FAGH0J7W9H9F7R7BN890P5D7>`_.
+
+These endpoints are paginated listings. See :ref:`Listings Overview <listings_overview>`.
+This paginated listing supports the `sr_detail` parameter.
+
+* modqueue: Items requiring moderator review, such as reported things and items caught by the spam filter.
+* reports: Items that have been reported.
+* spam: Items that have been marked as spam or otherwise removed.
+* edited: Items that have been edited recently.
+* unmoderated: Submissions that have yet to be approved/removed by a mod.
+
+These endpoints return paginated listings (see :ref:`Listings overview <listings_overview>`).
+
+Each listing contains a mix of submissions and comments, except for unmoderated which only contains submissions.
+
+Requires the `posts` moderator permission (otherwise 403 HTTP error).
+
+.. csv-table:: URL Params
+   :header: "Field","Type (hint)","Description"
+   :escape: \
+
+   "r","string","The target subreddit. An alternative to specifying the subreddit name in the URL (`{subreddit}`)."
+   "only","string","Either `links` or `comments`. Use `links` to only see submissions. Use `comments` to only see comments.
+
+   If an invalid option is specified this parameter is ignored."
+
+|
+
+.. csv-table:: HTTP Errors
+   :header: "Status Code","Description"
+   :escape: \
+
+   "200","The specified subreddit name is too long (over 21 characters) or contains invalid characters.
+   A 'page not found' HTML document is returned. (The behaviour is the same using the URL or the `r` parameter.)"
+   "403","* You don't have access to the subreddit.
+
+   * You don't have the 'posts' moderators permission."
+
+.. seealso:: `<https://www.reddit.com/dev/api/#GET_about_{location}>`_
+
+
+Pull subreddit users
+~~~~~~~~~~~~~~~~~~~~
+
+.. http:get:: /api/v1/{subreddit}/moderators
+.. http:get:: /api/v1/{subreddit}/moderators_invited
+.. http:get:: /api/v1/{subreddit}/moderators_editable
+.. http:get:: /api/v1/{subreddit}/contributors
+.. http:get:: /api/v1/{subreddit}/banned
+.. http:get:: /api/v1/{subreddit}/muted
+
+*scope: read*
 
 Get redditors that relate to a subreddit.
 
-If the `user` parameter is specified, the listing will contain at most one entry,
-the user specified. If the user doesn't exist in the regular listing, an empty listing is returned.
+These endpoints are a paginated but they don't follow the regular listing structure.
+
+The wikicontributors and wikibanned variants use GraphQL so you'll need to use the legacy endpoints for those.
+
+If the `username` parameter is specified, only that user will be returned if they exist
+in the result set.
+
+.. _moderator_user_item_schema:
+
+.. csv-table:: Moderator User Item Schema
+   :header: "Field","Type (hint)","Description"
+   :escape: \
+
+   "id","string","The full ID36 (`t2_` prefixed) of the subject."
+   "username","string","The subject's name."
+   "accountIcon","string","URL of the subject's account icon."
+   "iconSize","integer array","An array of two intergers. Usually `[256, 256]`."
+   "moddedAtUTC","integer","UNIX timestamp of when the user was modded."
+   "authorFlairText","string","The flair text of the subject. Empty string if no flair text."
+   "postKarma","integer","The post karama of the subject."
+   "modPermissions","object","A dictionary of strings to booleans.
+   E.g.,::
+
+      {'wiki': True,
+       'all': True,
+       'chat_operator': True,
+       'chat_config': True,
+       'posts': True,
+       'access': True,
+       'mail': True,
+       'config': True,
+       'flair': True}
+   "
+
+.. csv-table:: Contributor User Item Schema
+   :header: "Field","Type (hint)","Description"
+   :escape: \
+
+   "id",".","See :ref:`Moderator User Item Schema <moderator_user_item_schema>`."
+   "username",".","See :ref:`Moderator User Item Schema <moderator_user_item_schema>`."
+   "accountIcon",".","See :ref:`Moderator User Item Schema <moderator_user_item_schema>`."
+   "iconSize",".","See :ref:`Moderator User Item Schema <moderator_user_item_schema>`."
+   "approvedAtUTC","integer","UNIX timestamp of when the user was added."
+
+.. csv-table:: Banned User Item Schema
+   :header: "Field","Type (hint)","Description"
+   :escape: \
+
+   "id",".","See :ref:`Moderator User Item Schema <moderator_user_item_schema>`."
+   "username",".","See :ref:`Moderator User Item Schema <moderator_user_item_schema>`."
+   "accountIcon",".","See :ref:`Moderator User Item Schema <moderator_user_item_schema>`."
+   "iconSize",".","See :ref:`Moderator User Item Schema <moderator_user_item_schema>`."
+   "bannedAtUTC","integer","UNIX timestamp of when the user was banned."
+   "bannedBy","string","The name of the moderator who banned the user."
+   "reason","string?","The ban reason text. `null` if no reason text available."
+   "modNote","string?","A moderator note. `null` if no mod note."
+   "banMessage","string","The moderator note that was sent to the user when they were banned. Empty string if no message."
+   "duration","integer?","The number of days until the ban is lifted. Is `null` if it is a permanent ban."
+   "postId","unknown?",""
+   "commentId","unknown?",""
+   "subredditId","string","The full ID36 (`t5_` prefixed) of the subreddit. Should be the same for all items."
+
+.. csv-table:: Muted User Item Schema
+   :header: "Field","Type (hint)","Description"
+   :escape: \
+
+   "id",".","See :ref:`Moderator User Item Schema <moderator_user_item_schema>`."
+   "username",".","See :ref:`Moderator User Item Schema <moderator_user_item_schema>`."
+   "accountIcon",".","See :ref:`Moderator User Item Schema <moderator_user_item_schema>`."
+   "iconSize",".","See :ref:`Moderator User Item Schema <moderator_user_item_schema>`."
+   "mutedAtUTC","integer","UNIX timestamp of when the user was muted."
+   "mutedBy","string","The name of the moderator who muted the user."
+   "reason","string","A moderator note. Empty string if no note."
+
+Endpoint URL params:
+
+.. csv-table:: URL Params
+   :header: "Field","Type (hint)","Description"
+   :escape: \
+
+   "username","string","A username."
+   "count","integer","The number of items to return. This is equivalent to the `limit` parameter on listing paginators."
+
+|
+
+.. csv-table:: API Errors (variant 1)
+   :header: "Error","Description"
+   :escape: \
+
+   "SUBREDDIT_NOEXIST","The subreddit specified does not exist.
+
+   *\"Hmm, that community doesn't exist. Try checking the spelling.\"* -> subreddit"
+
+|
+
+.. csv-table:: HTTP Errors
+   :header: "Status Code","Description"
+   :escape: \
+
+   "403","You don't have access to the subreddit."
+
+
+(Legacy) Pull subreddit users
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. http:get:: [/r/{subreddit}]/about/moderators
+.. http:get:: [/r/{subreddit}]/about/contributors
+.. http:get:: [/r/{subreddit}]/about/wikicontributors
+.. http:get:: [/r/{subreddit}]/about/banned
+.. http:get:: [/r/{subreddit}]/about/muted
+.. http:get:: [/r/{subreddit}]/about/wikibanned
+
+*scope: read*
+
+Get redditors that relate to a subreddit.
+
+These endpoints return paginated listings (see :ref:`Listings overview <listings_overview>`)
+except for `.../about/moderators` which is non-paginated.
+
+If the `user` parameter is specified, only that user will be returned.
+If the user doesn't exist in the regular listing, an empty listing is returned.
+
+If the specified subreddit doesn't exist an empty listing is returned.
 
 .. csv-table:: User Relationship Item Schema
    :header: "Field","Type (hint)","Description"
@@ -40,7 +213,9 @@ the user specified. If the user doesn't exist in the regular listing, an empty l
    For `banned` and `wikibanned`, this will be the ban reason plus the mod note separated by a colon and space.
    E.g., f'{ban_reason}: {note}'.
 
-   For `muted`, the mod note."
+   For `muted`, the mod note.
+
+   Empty string if no note."
 
 Additional URL params:
 
@@ -48,7 +223,7 @@ Additional URL params:
    :header: "Field","Type (hint)","Description"
    :escape: \
 
-   "r","string","The target subreddit. An alternative to specifying the subreddit name in the URL."
+   "r","string","The target subreddit. An alternative to specifying the subreddit name in the URL (`{subreddit}`)."
    "user","string","A username."
 
 |
@@ -57,30 +232,17 @@ Additional URL params:
    :header: "Status Code","Description"
    :escape: \
 
-   "403","You don't have access to the subreddit you are revoking an invite for."
-   "404","The specified subreddit does not exist, contains invalid characters, is too long. A 'page not found' HTML document may also be returned."
+   "403","You don't have access to the subreddit."
+   "404","The specified subreddit name is too long (over 21 characters) or contains invalid characters.
+   A 'page not found' HTML document is returned. (The behaviour is the same using the URL or the `r` parameter.)"
+
+.. seealso:: `<https://www.reddit.com/dev/api/#GET_about_{where}>`_
 
 
-Get subreddit moderators
-~~~~~~~~~~~~~~~~~~~~~~~~
+Pull moderation log
+~~~~~~~~~~~~~~~~~~~
 
-.. http:get:: [/r/{subreddit}]/about/moderators
-
-*scope: read*
-
-Get a list of subreddit moderators.
-
-If the `user` parameter is specified, the list will contain at most one entry,
-the user specified. If the user doesn't exist in the regular list, an empty list is returned.
-
-Additional URL params:
-
-.. csv-table:: URL Params
-   :header: "Field","Type (hint)","Description"
-   :escape: \
-
-   "r","string","The target subreddit. An alternative to specifying the subreddit name in the URL."
-   "user","string","A username."
+[WIP]
 
 
 Send moderator invite
@@ -196,6 +358,77 @@ If the user is already invited, it is treated as a success.
 
    "r","string","The target subreddit. An alternative to specifying the subreddit name in the URL."
    "type","string","`moderator_invite`"
+   "name","string","Name of a target user."
+
+|
+
+.. csv-table:: API Errors (variant 2)
+   :header: "Error","Description"
+   :escape: \
+
+   "USER_REQUIRED","There is no user context."
+
+|
+
+.. csv-table:: HTTP Errors
+   :header: "Status Code","Description"
+   :escape: \
+
+   "400","The `name` parameter was not specified, was empty, the name contains invalid characters,
+   or the user of the name doesn't exist."
+   "403","You don't have access to the subreddit you are revoking an invite for."
+
+
+Leave moderator
+~~~~~~~~~~~~~~~
+
+.. http:post:: /api/leavemoderator
+
+*scope: modself*
+
+Abdicate moderator status in a subreddit.
+
+Be careful with this endpoint. It's possible for a subreddit to not have any moderators.
+
+Returns `{}` on success.
+If the specified `id` is not valid or the user is already not a moderator
+of the target subreddit, it is treated as a success.
+
+.. csv-table:: Form data
+   :header: "Field","Type (hint)","Description"
+   :escape: \
+
+   "id","string","The full ID36 of a subreddit (prefixed with `t5_`)."
+
+|
+
+.. csv-table:: API Errors (variant 2)
+   :header: "Error","Description"
+   :escape: \
+
+   "USER_REQUIRED","A user context is required."
+
+.. seealso:: https://www.reddit.com/dev/api/#POST_api_leavemoderator
+
+
+Remove moderator
+~~~~~~~~~~~~~~~~
+
+.. http:post:: [/r/{subreddit}]/api/unfriend
+
+*scope: modothers*
+
+Remove a moderator.
+
+Returns empty JSON object on success.
+If the user is already not a moderator of the subreddit, it is treated as a success.
+
+.. csv-table:: Form data
+   :header: "Field","Type (hint)","Description"
+   :escape: \
+
+   "r","string","The target subreddit. An alternative to specifying the subreddit name in the URL."
+   "type","string","`moderator`"
    "name","string","Name of a target user."
 
 |
@@ -433,6 +666,36 @@ Add approved contributor
 Use `POST [/r/{subreddit}]/api/friend` with `type: contributor` form data.
 
 
+Leave approved contributor
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. http:post:: /api/leavecontributor
+
+*scope: modself*
+
+Abdicate approved contributor status in a subreddit.
+
+Returns `{}` on success.
+If the specified `id` is not valid or the user is already not an approved contributor
+of the target subreddit, it is treated as a success.
+
+.. csv-table:: Form data
+   :header: "Field","Type (hint)","Description"
+   :escape: \
+
+   "id","string","The full ID36 of a subreddit (prefixed with `t5_`)."
+
+|
+
+.. csv-table:: API Errors (variant 2)
+   :header: "Error","Description"
+   :escape: \
+
+   "USER_REQUIRED","A user context is required."
+
+.. seealso:: https://www.reddit.com/dev/api/#POST_api_leavecontributor
+
+
 Remove approved contributor
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -461,3 +724,46 @@ Remove approved wiki contributor
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Use `POST [/r/{subreddit}]/api/unfriend` with `type: wikicontributor` form data.
+
+
+Snooze reports
+~~~~~~~~~~~~~~
+
+.. http:post:: /api/snooze_reports
+.. http:post:: /api/unsnooze_reports
+
+*scope: modposts*
+
+Prevent future reports on a post/comment from causing notifications for 7 days.
+
+Specify a report reason text to snooze reports on. For 7 days, any user who submits a report
+reason with the matching snoozed reason text not be escalated to moderators.
+
+Returns `{}` on success. If the target is already snoozed/unsnoozed, it is treated as a success.
+
+.. csv-table:: Form data
+   :header: "Field","Type (hint)","Description"
+   :escape: \
+
+   "id","string","The full ID36 of a post or comment (prefixed with `t3_` or `t1_`)."
+   "reason","string","The report reason text to snooze on."
+
+|
+
+.. csv-table:: API Errors (variant 2)
+   :header: "Error","Description"
+   :escape: \
+
+   "USER_REQUIRED","A user context is required."
+
+|
+
+.. csv-table:: HTTP Errors
+   :header: "Status Code","Description"
+   :escape: \
+
+   "403","* The `id` parameter was not specified.
+
+   * The target specified by `id` was not found, or points to an item you are not a moderator of."
+
+.. seealso:: https://www.reddit.com/dev/api/#POST_api_snooze_reports

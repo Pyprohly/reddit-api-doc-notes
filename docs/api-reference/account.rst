@@ -110,7 +110,7 @@ Return a breakdown of subreddit karma.
 
 |
 
-.. csv-table:: API Errors
+.. csv-table:: API Errors (variant 1)
    :header: "Error","Description"
    :escape: \
 
@@ -136,22 +136,22 @@ Returns a 'TrophyList' listing structure.
    :header: "Field","Type (hint)","Description"
    :escape: \
 
-   "award_id","string?",""
-   "description","string?",""
-   "granted_at","integer?",""
+   "id","string?","An ID36. Not all trophies have a value (`null`)."
+   "award_id","string?","Different from the `id` field. An ID36 with an unknown purpose. Not all trophies have a value (`null`)."
+   "name","string","E.g., `Three-Year Club`."
+   "description","string?","Trophy description. `null` if no description."
+   "granted_at","integer?","Maybe the UNIX timestamp of when the trophy was given? Not all trophies have a value (`null`)."
    "icon_40","string","The URL of a 41x41 px icon for the trophy. E.g., `https://www.redditstatic.com/awards2/3_year_club-40.png`"
    "icon_70","string","The URL of a 71x71 px icon for the trophy. E.g., `https://www.redditstatic.com/awards2/3_year_club-70.png`"
-   "id","string","Trophie ID36."
-   "name","string","E.g., `Three-Year Club`"
-   "url","string?",""
+   "url","unknown?",""
 
-.. csv-table:: API Errors
+.. csv-table:: API Errors (variant 1)
    :header: "Error","Description"
    :escape: \
 
    "USER_REQUIRED","you must login"
 
-See also `/api/v1/user/{username}/trophies`.
+See also :ref:`GET /api/v1/user/{username}/trophies <user_list_trophies>`.
 
 .. seealso:: https://www.reddit.com/dev/api/#GET_api_v1_me_trophies
 
