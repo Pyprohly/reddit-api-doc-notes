@@ -421,7 +421,7 @@ Remove moderator
 Remove a moderator.
 
 Returns empty JSON object on success.
-If the user is already not a moderator of the subreddit, it is treated as a success.
+If the given user is not a moderator of the subreddit, it is treated as a success.
 
 .. csv-table:: Form data
    :header: "Field","Type (hint)","Description"
@@ -767,3 +767,179 @@ Returns `{}` on success. If the target is already snoozed/unsnoozed, it is treat
    * The target specified by `id` was not found, or points to an item you are not a moderator of."
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_snooze_reports
+
+
+Create removal reason
+~~~~~~~~~~~~~~~~~~~~~
+
+.. http:post:: /api/v1/{subreddit}/removal_reasons
+
+*scope: (unknown)*
+
+Create a removal reason.
+
+Info: `<https://mods.reddithelp.com/hc/en-us/articles/360010094892-Removal-Reasons>`_.
+
+Returns a JSON object on success, like the following::
+
+   {"id": "17hx52nzlartd"}
+
+.. csv-table:: Form data
+   :header: "Field","Type (hint)","Description"
+   :escape: \
+
+   "title","string","A title for this removal reason."
+   "message","string","The removal reason message."
+
+|
+
+.. csv-table:: API Errors (variant 1)
+   :header: "Error","Description"
+   :escape: \
+
+   "MOD_REQUIRED","* The current user is not a moderator of the target subreddit.
+
+   * There is no user context.
+
+   *\"You must be a moderator to do that.\"*"
+   "NO_TEXT","* The `title` parameter was not specified or was empty.
+
+   * The `message` parameter was not specified or was empty.
+
+   *\"we need something here\"* -> title"
+   "TOO_LONG","* The value specified for `title` is over 50 characters.
+
+   * The value specified for `message` is over 10000 characters.
+
+   *\"This field must be under 50 characters\"* -> title"
+
+|
+
+.. csv-table:: HTTP Errors
+   :header: "Status Code","Description"
+   :escape: \
+
+   "500","The target subreddit does not exist."
+
+
+Retrieve removal reasons
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. http:get:: /api/v1/{subreddit}/removal_reasons
+
+*scope: (unknown)*
+
+Get a list of removal reasons.
+
+Returns a JSON object on success, like the following::
+
+   {"data": {"17hxgacq8byjh": {"message": "Self promoting posts are prohibited.",
+                            "id": "17hxgacq8byjh",
+                            "title": "Self Promotion"},
+             "17hxexsxbr0ye": {"message": "onions onions yay yay",
+                               "id": "17hxexsxbr0ye",
+                               "title": "Only onions allowed"},
+             "17hxg7deji23d": {"message": "Olives are a no no",
+                               "id": "17hxg7deji23d",
+                               "title": "No olive related content"},
+             "17hxgpamf6jpf": {"message": "Party on dudes!",
+                               "id": "17hxgpamf6jpf",
+                               "title": "Be excellent to each other"}},
+    "order": ["17hxexsxbr0ye", "17hxg7deji23d", "17hxgacq8byjh", "17hxgpamf6jpf"]}
+
+.. csv-table:: API Errors (variant 1)
+   :header: "Error","Description"
+   :escape: \
+
+   "SUBREDDIT_NOEXIST","The target subreddit does not exist.
+
+   *\"Hmm, that community doesn't exist. Try checking the spelling.\"*"
+   "MOD_REQUIRED","* The current user is not a moderator of the target subreddit.
+
+   * There is no user context.
+
+   *\"You must be a moderator to do that.\"*"
+   "NO_TEXT","* The `title` parameter was not specified or was empty.
+
+   * The `message` parameter was not specified or was empty.
+
+   *\"we need something here\"* -> title"
+
+
+Update removal reason
+~~~~~~~~~~~~~~~~~~~~~
+
+.. http:put:: /api/v1/{subreddit}/removal_reasons/{reason_id}
+
+*scope: (unknown)*
+
+Update a removal reason's title and message.
+
+Both parameters title and message must be specified otherwise a `NO_TEXT` API error is returned.
+
+Returns zero bytes on success.
+
+.. csv-table:: Form data
+   :header: "Field","Type (hint)","Description"
+   :escape: \
+
+   "title","string","A title for this removal reason."
+   "message","string","The removal reason message."
+
+|
+
+.. csv-table:: API Errors (variant 1)
+   :header: "Error","Description"
+   :escape: \
+
+   "SUBREDDIT_NOEXIST","The target subreddit does not exist.
+
+   *\"Hmm, that community doesn't exist. Try checking the spelling.\"* -> subreddit"
+   "MOD_REQUIRED","* The current user is not a moderator of the target subreddit.
+
+   * There is no user context.
+
+   *\"You must be a moderator to do that.\"*"
+   "NO_TEXT","* The `title` parameter was not specified or was empty.
+
+   * The `message` parameter was not specified or was empty.
+
+   *\"we need something here\"* -> title"
+   "INVALID_ID","* The specified removal reason ID was not found.
+
+   * The specified removal reason ID contained invalid characters (e.g., it contained uppercase letters).
+
+   *\"The specified id is invalid\"* -> reason_id"
+   "TOO_LONG","* The value specified for `title` is over 50 characters.
+
+   * The value specified for `message` is over 10000 characters.
+
+   *\"This field must be under 50 characters\"* -> title"
+
+
+Delete removal reason
+~~~~~~~~~~~~~~~~~~~~~
+
+.. http:delete:: /api/v1/{subreddit}/removal_reasons/{reason_id}
+
+*scope: (unknown)*
+
+Delete a removal reason.
+
+Returns zero bytes on success. If the specified ID did not exist it is treated as a success.
+
+.. csv-table:: API Errors (variant 1)
+   :header: "Error","Description"
+   :escape: \
+
+   "SUBREDDIT_NOEXIST","The target subreddit does not exist.
+
+   *\"Hmm, that community doesn't exist. Try checking the spelling.\"* -> subreddit"
+   "MOD_REQUIRED","* The current user is not a moderator of the target subreddit.
+
+   * There is no user context.
+
+   *\"You must be a moderator to do that.\"*"
+   "INVALID_ID","* The specified removal reason ID contained invalid characters (e.g., it contained uppercase letters).
+
+   *\"The specified id is invalid\"* -> reason_id"

@@ -34,16 +34,17 @@ Schema
    A new collection will have this field value be `null` which is treated the same as `\"TIMELINE\"`."
    "link_ids","string array","The full ID36s of the submissions contained in the collection."
    "permalink","string","An absolute permalink for this collection."
-   "primary_link_id?","string","The full ID36 of the submission that users see when visiting the collection
-   from a permalink.
+   "primary_link_id?","string","The full ID36 of the first submission listed in the `sorted_links` structure.
 
-   The `primary_link_id` is only available when getting the collection information directly via UUID
+   This field will not exist if the collection is empty.
+
+   This field is only available when getting the collection information directly via UUID
    using `/api/v1/collections/collection`."
-   "sorted_links?","listing object","A listing structure of submission objects for the submissions that are
+   "sorted_links?","listing object","A listing structure of submission objects for the submissions
    contained in this collection.
 
-   This field is only available when fetching a collection directly by UUID. The `include_links` parameter
-   can be set to a falsy value to not include this field in the object."
+   This field is only available when fetching a collection directly by UUID using the
+   `GET /api/v1/collections/collection` endpoint and the `include_links` option is `true`."
 
 
 Actions
@@ -67,7 +68,7 @@ If the given `collection_id` was not found then ``{"json": {"errors": []}}`` is 
    "collection_id","string","The UUID of a collection."
    "include_links","boolean","Whether to include the `sorted_links` field in the collection object.
 
-   Default is true. Any value matching `/^[fF0]/` is falsy."
+   Default: true. (Any value matching `/^[fF0]/` is falsy.)"
 
 |
 
@@ -88,16 +89,16 @@ If the given `collection_id` was not found then ``{"json": {"errors": []}}`` is 
 .. seealso:: https://www.reddit.com/dev/api/#GET_api_v1_collections_collection
 
 
-Get subreddit collections
-~~~~~~~~~~~~~~~~~~~~~~~~~
+Get subreddit collections' details
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. http:get:: /api/v1/collections/subreddit_collections
 
 *scope: read*
 
-Get a list of collections from the subreddit.
+Get a list of collections' details from the subreddit.
 
-Collection objects will not have the `primary_link_id` or `sorted_links` fields.
+Collection objects from this endpoint don't have the `primary_link_id` or `sorted_links` fields.
 
 .. csv-table:: URL Params
    :header: "Field","Type (hint)","Description"

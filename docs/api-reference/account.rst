@@ -137,12 +137,12 @@ Returns a 'TrophyList' listing structure.
    :escape: \
 
    "id","string?","An ID36. Not all trophies have a value (`null`)."
-   "award_id","string?","Different from the `id` field. An ID36 with an unknown purpose. Not all trophies have a value (`null`)."
-   "name","string","E.g., `Three-Year Club`."
    "description","string?","Trophy description. `null` if no description."
-   "granted_at","integer?","Maybe the UNIX timestamp of when the trophy was given? Not all trophies have a value (`null`)."
    "icon_40","string","The URL of a 41x41 px icon for the trophy. E.g., `https://www.redditstatic.com/awards2/3_year_club-40.png`"
    "icon_70","string","The URL of a 71x71 px icon for the trophy. E.g., `https://www.redditstatic.com/awards2/3_year_club-70.png`"
+   "award_id","string?","Different from the `id` field. An ID36 with an unknown purpose. Not all trophies have a value (`null`)."
+   "name","string","E.g., `Three-Year Club`."
+   "granted_at","integer?","Maybe the UNIX timestamp of when the trophy was given? Not all trophies have a value (`null`)."
    "url","unknown?",""
 
 .. csv-table:: API Errors (variant 1)

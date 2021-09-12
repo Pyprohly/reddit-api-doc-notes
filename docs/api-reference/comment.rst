@@ -52,15 +52,25 @@ Schema
    If user context: `null` if not voted on, `true` if upvoted, `false` if downvoted."
    "link_id","string","The full ID of the submission in which this comment belongs."
    "locked","boolean","Whether the post has been locked. https://www.reddit.com/r/modnews/comments/3qguqv/moderators_lock_a_post/"
-   "mod_note","unknown?",""
-   "mod_reason_by","unknown?",""
-   "mod_reason_title","unknown?",""
+   "removal_reason","unknown?","Appears to be unused; always `null`. Perhaps it would have been used for the removal reason message (but removal messages can be sent multiple times)."
+   "mod_reason_by","string?","The name of the moderator who applied the removal reason to this submission.
+
+   Value is `null` if the post does not have a removal reason *or* mod note set.
+   If the post gets re-approved, the value gets reset to `null`."
+   "mod_reason_title","string?","The removal reason title.
+
+   Value is `null` if the post does not have a removal reason set.
+   If the post gets re-approved, the value gets reset to `null`."
+   "mod_note","string?","The removal reason moderator note.
+   Value can be `null` if an empty string was sent as the mod note.
+
+   Value is `null` if the post does not have a mod note set.
+   If the post gets re-approved, the value gets reset to `null`."
    "name","string","The comment's full ID (with prefix `t1_`). Also see `id`."
    "no_follow","boolean",""
    "parent_id","string","The full ID of the comment or submission above this one."
    "permalink","string","The uri of the comment without the domain.
    E.g., `/r/ImaginaryLandscapes/comments/iaoshc/floating_eyes_in_the_silent_forest/g1qfxir/`"
-   "removal_reason","unknown?",""
    "replies","object | string","A listing object if this object was drawn from a comment tree
    and there are comment replies, otherwise an empty string."
    "saved","boolean","Whether the authenticated user has saved this comment. For clients with no user context this will always be false."
@@ -165,201 +175,6 @@ Get
 See :ref:`here <get_api_info>`.
 
 
-Get Submission Comment Tree
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. http:get:: [/r/{subreddit}]/comments/{submission}
-.. http:get:: [/r/{subreddit}]/comments/{submission}/_/{comment}
-
-*scope: read*
-
-Get the comment tree for a submission.
-
-`{subreddit}` can be obmitted. If given it must be correctly match the subreddit for the
-article ID otherwise an empty listing will be returned.
-`{submission}` is the ID36 of the submission to get the comment tree of.
-
-If no `{submission}` is specified then the frontpage or subreddit's new comments will be returned.
-See :ref:`here <front_page_new_comments>` and :ref:`here <subreddit_new_comments>`.
-Clients should check for an empty string input.
-
-This endpoint returns an array of two listings.
-
-The first listing contains one element, the submission object.
-See :ref:`Submission <submission_schema>` schema.
-It contains an extra field: '`num_duplicates`'.
-
-The second listing is a list of the top level comments.
-See :ref:`Comment <comment_schema>` schema.
-Their `replies` field will likely contain a listing structure containing comment replies
-and may also contain a 'More comments' object as the last element.
-If there are no replies then `replies` will be an empty string.
-
-Comment objects contain an extra field: '`depth`'.
-Top-level comments will have a depth of `0`, second level `1`, and so on.
-Be aware, when getting the comment tree of a comment, the comments will start with a `depth` of 0.
-
-In any listing of the tree, a 'More comments' object, if present, will always be the last element.
-
-A 'continue this thread' 'more comment' object:
-
-.. csv-table:: 'continue this thread' More Comments Object
-   :header: "Field","Type (hint)","Description"
-   :escape: \
-
-   "count","integer","Always 0."
-   "name","string","Always `\"t1__\"`."
-   "id","string","Always `\"_\"`."
-   "parent_id","string","Parent submission or comment full ID36."
-   "depth","integer","The depth at which this object's parent occurs.
-   E.g., if this more comment object is attached to a top-level comment, its depth will be 1."
-   "children","string array","Always an empty array."
-
-Example::
-
-   {"kind": "more", "data": {"count": 0, "name": "t1__", "id": "_", "parent_id": "t1_g836nug", "depth": 1, "children": []}}
-
-When found in a listing it will typically be the only element.
-
-To retrieve more comments from this 'more comments' object, use this endpoint again,
-specifying `parent_id` as the `comment` parameter value (or use the `{comment}` variant URL).
-
-A 'load more comments' 'more comment' object:
-
-.. csv-table:: 'load more comments' More Comments Object
-   :header: "Field","Type (hint)","Description"
-   :escape: \
-
-   "count","integer","The number of comments this node is stubbing;
-   the number of comments that are children of `parent_id`."
-   "name","string","The full ID36 of the first item in `children`."
-   "id","string","The ID of this object. It will match the ID36 of the first item in `children`."
-   "parent_id","string","Parent comment full ID36."
-   "depth","integer","The depth at which this object's parent occurs.
-   E.g., if this more comment object is attached to a top-level comment, its depth will be 1."
-   "children","string array","The IDs of some of the comments to expand.
-   This contains only the top-level sub-comments so the number of elements doesn't match `count`."
-
-Example::
-
-   {"kind": "more", "data": {"count": 103, "name": "t1_g83z4le", "id": "g83z4le", "parent_id": "t1_g8343ao", "depth": 4, "children": ["g83z4le", "g83wl0j", "g83nmx0", "g83k77q", "g83butp", "g842b0t", "g842ncg", "g83kmoz", "g83msyh", "g84535q"]}}
-
-.. csv-table:: Form Data
-   :header: "Field","Type (hint)","Description"
-   :escape: \
-
-   "comment","integer","ID36 of a comment. Assume this comment as the root.
-
-   The `/comments/{submission}/_/{comment}` URL can be used instead of this parameter.
-   If both are used together then the parameter will take preference.
-
-   Care must be taken when using this parameter: if the comment does not exist then the parameter
-   will be ignored and the root comments will be returned instead.
-   Clients should assert that the first comment's `parent_id` starts with `t1_` and should reject
-   the data otherwise (i.e., it starts with `t3_`).
-   "
-   "context","integer","If `comment` is specified, the number of parent comments to include.
-   An integer from 0 to 8. Any number higher than 8 is treated the same as 8."
-   "depth","integer","The number of levels deep to retrieve comments for.
-   A value of 0 is ignored.
-   A value of 1 means to only retrieve top-level comments.
-   A value of 2 means to retrieve comments one level deep.
-   And so on.
-   The maximum is 10, which is also the default if the parameter is not specified.
-   Any value higher than 10 is treated the same as 10."
-   "limit","integer","Restrict the number of comments to retrieve."
-   "showedits","boolean",""
-   "showmore","boolean",""
-   "sort","string","One of `confidence` ('best'), `top`, `new`, `controversial`, `old`, `random`, `qa`, `live`.
-
-   If not given or not a valid sort value (including empty string), the default is the 'sort comments by'
-   preference of the logged in user. Otherwise, if there is no user context the default is `confidence`."
-   "threaded","boolean",""
-   "truncate","integer","An integer from 0 to 50. Seems to behave the same as `limit` but won't return
-   a more comment object at the top-level."
-
-|
-
-.. csv-table:: HTTP Errors
-   :header: "Status Code","Description"
-   :escape: \
-
-   "404","The given submission ID could not be found."
-
-
-Get More Comment Tree Comments
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. http:post:: /api/morechildren
-
-Retrieve comments omitted from a comment tree.
-
-When a comment tree is rendered, the most relevant comments are selected for display and the remaining
-comments are stubbed out with more-comment links: either 'load more comments' or 'continue this thread'.
-This endpoint is used to retrieve the comments represented by the 'load more comments' stubs.
-
-Two parameters are required: `link_id` and `children`. `link_id` is the full ID36 of the comments'
-submission. `children` is a comma-delimited list of comment ID36s to be fetched.
-
-If `id` is passed, it should be the ID of the more-comments object the call is replacing. This is needed
-only for the HTML UI's purposes and is optional otherwise.
-
-Comment objects contain an extra field: '`depth`'.
-
-'More comments' objects may appear in various places in the the array.
-
-Elements are ordered in pre-order DFS traversal order, the same as on the site.
-
-.. note::
-   You may only make one request at a time to this API endpoint.
-   Higher concurrency will result in an error being returned.
-
-.. note::
-   This endpoint returns a flat array of comment objects, with potential more-comment objects scattered
-   throughout the array. Comment objects' `replies` field will always be empty (an empty string)
-   and so you have to manually construct the tree using the comments' `parent_id` fields.
-
-.. csv-table:: Form Data
-   :header: "Field","Type (hint)","Description"
-   :escape: \
-
-   "link_id","string","The full ID36 of the comments' submission."
-   "children","string","A comma-delimited list of comment ID36s."
-   "id","string","The ID of the associated 'more children' object."
-   "sort","string","One of `confidence` ('best'), `top`, `new`, `controversial`, `old`, `random`, `qa`, `live`.
-
-   If not given or not a valid sort value (including empty string), the default is the 'sort comments by'
-   preference of the logged in user. Otherwise, if there is no user context the default is `confidence`.
-
-   This should ideally be the same as the sort given in the original `/comments` call."
-   "depth","integer","The number of levels deep to retrieve comments for.
-   A value of 0 is ignored.
-   A value of 1 will return 0 items.
-   A value of 2 means to retrieve comments one level deep.
-   And so on."
-   "limit_children","boolean","If truthy (any string matching `/^[0Ff]/` is falsy),
-   only return the children requested, and not sub-comments.
-
-   This is kind of the same as specifying `depth: 1` but more-comment objects won't be present.
-
-   If this is specified with the `depth` parameter this will take precedence."
-
-|
-
-.. csv-table:: HTTP Errors
-   :header: "Status Code","Description"
-   :escape: \
-
-   "400","There are too many comment ID36s (`children` parameter) for the server to handle.
-
-   For example, see the large thread linked in
-   `this <https://www.reddit.com/r/redditdev/comments/7si641/praw_530_toolarge_received_413_http_response_when/>`_
-   submission."
-   "403","* The submission ID from `link_id` does not exist.
-
-   * The `link_id` parameter was not specified."
-
-
 .. _comment_create:
 
 Create
@@ -426,7 +241,7 @@ Delete
 See :ref:`here <post_api_del>`.
 
 
-Edit Body
+Edit body
 ~~~~~~~~~
 
 See :ref:`here <post_api_editusertext>`.
@@ -456,7 +271,7 @@ Distinguish
 See :ref:`here <post_api_distinguish>`.
 
 
-Set Inbox Replies
+Set inbox replies
 ~~~~~~~~~~~~~~~~~
 
 See :ref:`here <post_api_sendreplies>`.
@@ -478,3 +293,178 @@ Ignore reports
 ~~~~~~~~~~~~~~
 
 See :ref:`here <submission_ignore_reports>`.
+
+
+.. _comment_set_removal_reason:
+
+Set removal reason
+~~~~~~~~~~~~~~~~~~
+
+.. http:post:: /api/v1/modactions/removal_reasons
+
+*scope: (unknown)*
+
+Set a removal reason on a removed submission/comment.
+
+See the `mod_reason_by`, `mod_reason_title`, and `mod_note` fields on the
+:ref:`Comment schema <comment_schema>`.
+
+If the target is not a removed item, this endpoint has no effect.
+
+Any ID that doesn't exist in `item_ids` will be ignored.
+If any of the IDs in `item_ids` don't belong to a subreddit you moderate
+then a HTTP 403 status error is returned and none of the targets will be processed.
+
+The maximum limit for `item_ids` is yet to be discovered.
+It doesn't appear to be possible to perform this operation in bulk through the UI anyway.
+
+This endpoint wants JSON data.
+
+Returns zero bytes on success.
+
+.. csv-table:: JSON Data
+   :header: "Field","Type (hint)","Description"
+   :escape: \
+
+   "item_ids","string array","An array of full ID36s of comments or submissions to process.
+   Alternatively, or additionally, elements can be a comma separated list of ID36s."
+   "reason_id","string?","A removal reason ID.
+
+   If a `null` value or empty string is provided the reason will not be changed.
+   This field is still mandatory however (a `JSON_MISSING_KEY` API error is returned if missing).
+   If not specified, the UI provides a `null` value here."
+   "mod_note","string?","A moderator note.
+
+   If a `null` value or empty string is provided the mod note will not be changed.
+   This field is still mandatory however (a `JSON_MISSING_KEY` API error is returned if missing).
+   If not specified, the UI provides an empty string value here."
+
+|
+
+.. csv-table:: API Errors (variant 1)
+   :header: "Error","Description"
+   :escape: \
+
+   "JSON_MISSING_KEY","* The `item_ids` parameter was not specified.
+
+   * The `reason_id` parameter was not specified.
+
+   * The `mod_note` parameter was not specified.
+
+   * A `null` value or empty stings were given for both `reason_id` and `mod_note`
+     at the same time.
+
+   *\"JSON missing key: \"reason_id\"\"* -> reason_id"
+   "NO_THING_ID","* The `item_ids` array was empty.
+
+   * None of the IDs specified in the `item_ids` array were valid.
+
+   *\"id not specified\"*"
+   "INVALID_ID","The reason ID specified by `reason_id` is invalid or does not exist.
+
+   *\"The specified id is invalid\"* -> reason_id"
+
+|
+
+.. csv-table:: HTTP Errors
+   :header: "Status Code","Description"
+   :escape: \
+
+   "403","An ID specified in the `item_ids` array does not belong to a subreddit you moderate."
+
+
+.. _comment_send_removal_reason:
+
+Send removal reason
+~~~~~~~~~~~~~~~~~~~
+
+.. http:post:: /api/v1/modactions/removal_link_message
+.. http:post:: /api/v1/modactions/removal_comment_message
+
+*scope: (unknown)*
+
+Send a removal reason to a user for a removed submission/comment of theirs.
+
+This action can be performed multiple times. (The UI does not normally let you do this.)
+
+Use `.../removal_link_message` to target a submission.
+Use `.../removal_comment_message` to target a comment.
+
+Example of a modmail message (`type: private`), for `title: "Self Promotion"`,
+`message: "Self promoting posts are prohibited."`:
+
+.. code-block:: text
+
+   Your post from Pyprohly_test3 was removed because of: 'Self Promotion'
+
+   Hi u/Pyprohly, Self promoting posts are prohibited.
+   Original post: /r/Pyprohly_test3/comments/oo4sk4/poll2/
+
+Unlike the `POST /api/v1/modactions/removal_reasons` endpoint, the ID you specify must be a
+removed item otherwise an `INVALID_ID` API error is produced.
+
+Returns the comment object that was created if `type: public` was specified.
+Returns an empty JSON object for `type: private` and `type: private_exposed`.
+
+.. csv-table:: JSON Data
+   :header: "Field","Type (hint)","Description"
+   :escape: \
+
+   "type","string","One of the following:
+
+   * `public`: creates a stickied comment on the post.
+   * `private`: sends a modmail message.
+   * `private_exposed`: sends a modmail message. The invoker's username is revealed."
+   "item_id","string array","An array containing one full ID36 of a submission
+   (if using `removal_link_message`) or comment (if using `removal_comment_message`).
+
+   If more elements are specified they will be ignored."
+   "title","string","A title for the removal reason.
+
+   If `type: public` the title is ultimately unused.
+
+   Can't be empty. A `NO_TEXT` API error is returned if an empty string is specified."
+   "message","string","A message for the comment body for `type: public` or body of the
+   modmail message for `type: private`.
+
+   Can be empty string."
+
+|
+
+.. csv-table:: API Errors (variant 1)
+   :header: "Error","Description"
+   :escape: \
+
+   "JSON_MISSING_KEY","* The `type` parameter was not specified.
+
+   * The `item_id` parameter was not specified.
+
+   * The `title` parameter was not specified.
+
+   * The `message` parameter was not specified.
+
+   *\"JSON missing key: \"message\"\"* -> message"
+   "INVALID_ID","* The ID specified in the `item_id` array is invalid.
+
+   * The ID specified in the `item_id` array is not a removed item."
+   "INVALID_OPTION","The value specified for `type` was invalid.
+
+   *\"that option is not valid\"* -> type"
+   "NO_TEXT","The value for the `title` parameter was empty or `null`.
+
+   *\"we need something here\"* -> title"
+   "NO_THING_ID","The `item_id` array was empty.
+
+   *\"id not specified\"*"
+
+|
+
+.. csv-table:: HTTP Errors
+   :header: "Status Code","Description"
+   :escape: \
+
+   "403","* The target specified by the ID in the `item_id` array does not belong to a subreddit you moderate.
+
+   * The target specified by the ID in the `item_id` array was a comment ID when using the
+     `removal_link_message` endpoint, or vice versa.
+   "

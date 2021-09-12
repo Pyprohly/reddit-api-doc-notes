@@ -32,7 +32,12 @@ Schema
    :widths: 8, 6, 30
    :escape: \
 
+   "approved?","boolean","`true` if the submission is approved.
+
+   This field is not available if the current user is not a moderator of the subreddit
+   (or there's no user context)."
    "approved_at_utc","integer?","Unix time when the comment was approved. `null` if not approved or the current user is not a moderator of the subreddit."
+   "approved_by","string?","The name of the redditor who approved this post. `null` if not approved or the current user is not a moderator of the subreddit."
    "subreddit","string","The subreddit name. E.g., `IAmA`"
    "selftext","string","The body text of the submission. Empty string if it is not a text or poll post."
    "selftext_html?","string?","The HTML of the post. This will be null if it is not a text or poll post.
@@ -44,7 +49,6 @@ Schema
    "saved","boolean","Whether the authenticated user has saved this post.
 
    For clients with no user context this will always be `false`."
-   "mod_reason_title","unknown?",""
    "gilded","integer",""
    "clicked","boolean",""
    "title","string","The title of the post."
@@ -54,6 +58,8 @@ Schema
    "thumbnail","string","The post thumbnail as seen in listings.
 
    When retrieving posts from a listing, the value can sometimes be `image` instead of a URL.
+
+   Value is `default` if the post was removed.
 
    Other than a URL, possible values include: (empty string), `self`, `default`, `image`, `nsfw`, `spoiler`.
 
@@ -110,7 +116,6 @@ Schema
    "secure_media_embed","unknown object",""
    "can_mod_post","boolean",""
    "score","integer","The number of upvotes (minus downvotes). This attribute will work even if `hide_score` is `true`."
-   "approved_by","string?","The name of the redditor who approved this post. `null` if not approved or the current user is not a moderator of the subreddit."
    "author_premium?","boolean","Whether or not the submitter has Reddit Premium.
 
    This attribute is not available if the post was removed or deleted."
@@ -142,7 +147,6 @@ Schema
    "is_self","boolean","True if a text post.
 
    This is false if the post is a crosspost to a text post."
-   "mod_note","string?",""
    "created","float","Legacy. Same as `created_utc` but subtract 28800."
    "wls","integer?","Unknown. Often `6`. Possibly stands for \"white list status\"?"
    "pwls","integer?","Unknown. Possibly stands for \"parent white list status\"?"
@@ -153,13 +157,16 @@ Schema
 
    This field is not available if the current user is not a moderator of the subreddit
    (or there's no user context)."
-   "removed_by_category","string?","`null` if not removed, otherwise possible values: `author`, `anti_evil_ops`, `community_ops`, `legal_operations`, `copyright_takedown`, `reddit`, `user`, `deleted`, `moderator`, `automod_filtered`.
+   "removed_by_category","string?","`null` if not removed, otherwise possible values:
+   `author`, `anti_evil_ops`, `community_ops`, `legal_operations`, `copyright_takedown`,
+   `reddit`, `user`, `deleted`, `moderator`, `automod_filtered`.
 
-   `deleted`: The post author, who is not a moderator of the subreddit, deleted the post.
-   `author`: The post author, who is a moderator of the subreddit, removed the post.
-   `moderator`: A moderator of the subreddit removed the post.
+   See `<https://www.reddit.com/r/redditdev/comments/kypjmk/check_if_submission_has_been_removed_by_a_mod/gjpjyw3/>`_.
    "
-   "banned_by","string?","The name of the redditor who removed this post. `null` if not removed or the current user is not a moderator of the subreddit."
+   "banned_by","string?","The name of the redditor who removed this post. `null` if not removed or the current user is not a moderator of the subreddit.
+
+   This field was named `banned_by` and not `removed_by` probably because there already is a field on the
+   submission schema named `removed_by`."
    "banned_at_utc","integer?","Unix time when the comment was removed. `null` if not removed or the current user is not a moderator of the subreddit."
    "ban_note?","string","The message provided by the moderator when the post was removed. The note will be `spam` if the post was indicated to be spam during removal."
    "domain","string","If a link post, the domain of the link. If a text post, it is
@@ -247,11 +254,13 @@ Schema
    "spoiler","boolean","Whether the post is marked as a spoiler."
    "locked","boolean","Whether the post has been locked. https://www.reddit.com/r/modnews/comments/3qguqv/moderators_lock_a_post/"
    "visited","boolean",""
-   "removed_by","string?","The name of the redditor who removed this post. `null` if not removed or the current user is not a moderator of the subreddit."
+   "removed_by","unknown?",""
    "distinguished","string?","`null` if not distinguished, otherwise `"moderator"` or `"admin"`."
    "subreddit_id","string","The full ID36 of the subreddit that was posted to. E.g., `t5_2qzb6` for `r/IAmA`."
-   "mod_reason_by","unknown?",""
-   "removal_reason","unknown?",""
+   "removal_reason",".","See `removal_reason` field on the :ref:`Comment schema <comment_schema>`."
+   "mod_reason_by",".","See `mod_reason_by` field on the :ref:`Comment schema <comment_schema>`."
+   "mod_reason_title",".","See `mod_reason_title` field on the :ref:`Comment schema <comment_schema>`."
+   "mod_note",".","See `mod_note` field on the :ref:`Comment schema <comment_schema>`."
    "id","string","The ID of the submission (without the `t3_` prefix). Also see `name`."
    "is_robot_indexable","boolean","Will be `false` if the post was removed or deleted."
    "author","string","The redditor name. Possibly `[removed]` if the post was removed
@@ -276,10 +285,6 @@ Schema
 
    This is false if the post is a crosspost to a video post."
    "spam?","boolean","`true` if the submission was removed as spam else `false`.
-
-   This field is not available if the current user is not a moderator of the subreddit
-   (or there's no user context)."
-   "approved?","boolean","`true` if the submission is approved.
 
    This field is not available if the current user is not a moderator of the subreddit
    (or there's no user context)."
@@ -425,6 +430,8 @@ Th returned object structure is just slightly different.
    * Invalid value specified for `mimetype`, or the type is not supported."
 
 
+.. _submission_create_post:
+
 Create Post
 ~~~~~~~~~~~
 
@@ -469,11 +476,13 @@ Return object example for video posts::
    :header: "Field","Type (hint)","Description"
    :escape: \
 
-   "kind","string","Either: `link`, `self`, `image`, `video`, `videogif`. Default: `link`."
+   "kind","string","Either: `link`, `self`, `image`, `video`, `videogif`,
+   `crosspost`. Default: `link`."
    "sr","string","The subreddit name in which to submit to."
    "title","string","Title of the submission. Up to 300 characters long."
    "text","string","The markdown text for a text post."
    "url","string","A valid URL, for a link post."
+   "crosspost_parent","string","For when `type: crosspost`, the full ID36 of a submission."
    "sendreplies","boolean","Receive inbox notifications for replies. Default: true."
    "spoiler","boolean","Mark as spoiler. Default: false."
    "nsfw","boolean","Mark as NSFW. Default: false."
@@ -702,6 +711,12 @@ Return object example::
    :escape: \
 
    "500","The `options` parameter was not specified."
+
+
+Crosspost
+~~~~~~~~~
+
+Use `POST /api/submit` with `type: crosspost` and the `crosspost_parent` parameter.
 
 
 .. _post_api_del:
@@ -1413,6 +1428,9 @@ A removed post's attributes will change as follows:
    "spam","Resets to `false`."
    "is_crosspostable","Resets to `true`."
    "is_robot_indexable","Resets to `true`."
+   "mod_reason_by","Resets to `null`."
+   "mod_reason_title","Resets to `null`."
+   "mod_note","Resets to `null`."
 
 Approving a post/comment affects it's attributes:
 
@@ -1462,6 +1480,7 @@ Removing a post/comment affects its attributes:
    :header: "Field","Description"
    :escape: \
 
+   "removed","Becomes `true`."
    "banned_by","Name of the redditor who removed. (Value start as `null`.)"
    "banned_at_utc","The unix timestamp of when the item was removed. (Value starts as `null`.)"
    "ban_note","Ban note.
@@ -1471,8 +1490,7 @@ Removing a post/comment affects its attributes:
    Value is `remove not spam` if `spam` parameter was `false`.
 
    Value is `confirm spam` if a removal was made with the `spam` parameter as `false` then again with
-   the `spam` parameter as `true`. If the order is reversed then the the note will be `remove not spam`.
-   "
+   the `spam` parameter as `true`. If the order is reversed then the the note will be `remove not spam`."
    "spam","Becomes `true` if `spam` parameter was `true`."
 
 Extra attributes for posts only:
@@ -1543,6 +1561,8 @@ Prevent future reports on a post/comment from causing notifications.
 
 Ignoring reports will not cause notifications or make the ignored thing show up in the various moderation listings.
 
+See the `ignore_reports`, `num_reports`, `user_reports`, `mod_reports`, and `report_reasons` fields on the Submission schema.
+
 Returns `{}` on success. If the target is already ignored/unignored it is treated as a success.
 
 .. csv-table:: Form data
@@ -1570,3 +1590,15 @@ Returns `{}` on success. If the target is already ignored/unignored it is treate
    * The target specified by `id` was not found, or points to an item you are not a moderator of."
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_ignore_reports
+
+
+Set removal reason
+~~~~~~~~~~~~~~~~~~
+
+See :ref:`here <comment_set_removal_reason>`.
+
+
+Send removal reason
+~~~~~~~~~~~~~~~~~~~
+
+See :ref:`here <comment_send_removal_reason>`.

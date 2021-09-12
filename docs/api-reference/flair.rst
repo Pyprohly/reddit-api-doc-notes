@@ -228,7 +228,7 @@ Returns the newly created or updated flair template object. E.g.,::
    "allowable_content","string","One of `all`, `emoji`, `text`.
 
    Default: `all`."
-   "background_color","string","A 6-digit rgb hex color, e.g. `#AABBCC`, with an optional hash at the start.
+   "background_color","string","A 6-digit rgb hex color, e.g. `#aabbcc`, with an optional hash at the start.
 
    If the string is invalid, an empty string is used (background color disabled).
 
@@ -239,7 +239,9 @@ Returns the newly created or updated flair template object. E.g.,::
    "mod_only","boolean","Whether flair is only available for mods to select.
 
    Default: `false`."
-   "override_css","boolean",""
+   "override_css?","boolean","Purpose unknown. Always false, even when passing `override_css: 1` when creating a user flair template.
+
+   Post flair templates do not have this attribute."
 
 |
 
@@ -354,7 +356,7 @@ Returns `{"json": {"errors": []}}` on success.
    If the flair is not editable then this has no effect
    (unless the current user is a moderator with the subreddit flair permission)."
    "css_class","string","This parameter seems to have no effect?"
-   "background_color","string","A 6-digit rgb hex color, e.g. `#AABBCC`, with an optional hash at the start."
+   "background_color","string","A rgb hex color, e.g. `#aabbcc`, with an optional hash at the start."
    "text_color","string","Either `light` or `dark`."
    "return_rtson","string","?"
 

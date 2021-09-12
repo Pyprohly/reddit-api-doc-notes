@@ -196,8 +196,8 @@ Returns ``{"json": {"errors": []}}`` on success.
 
    "name","string","The target emoji name."
    "mod_flair_only","boolean","Whether the emoji can only be used by mods. Default: false."
-   "post_flair_allowed","boolean","Whether the emoji can be used on post flairs. Default: true."
    "user_flair_allowed","boolean","Whether the emoji can be used on user flairs. Default: true."
+   "post_flair_allowed","boolean","Whether the emoji can be used on post flairs. Default: true."
 
 |
 
@@ -257,9 +257,9 @@ Set custom emoji size
 
 *scope: structuredstyles*
 
-Set subreddit custom emoji size.
+Enable subreddit custom emoji sizing on the subreddit.
 
-Omitting either `width` or `height` parameters will disable custom emoji sizing.
+Omit either `width` or `height` parameters to disable custom emoji sizing.
 
 Returns ``{"json": {"errors": []}}`` on success.
 
@@ -267,9 +267,10 @@ Returns ``{"json": {"errors": []}}`` on success.
    :header: "Field","Type (hint)","Description"
    :escape: \
 
-   "width","integer","An integer from 1 to 40, but numbers less than 15 are invalid.
+   "width","integer","An integer from 16 to 40.
+
    Parameter is ignored if a non-number is passed."
-   "height","integer","\" \""
+   "height","integer","Likewise."
 
 |
 

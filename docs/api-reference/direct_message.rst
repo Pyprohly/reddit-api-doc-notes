@@ -1,14 +1,14 @@
 
-Private Message
-===============
+Direct Message
+==============
 
 Overview
 --------
 
 There are two main categories of messages: composed messages and comment messages.
-Composed messages are ones that are composed and sent by users.
-Comment messages are either a notification of a reply to one of your submissions or comments,
-or alternatively, a comment in which you were mentioned. These are automatically generated.
+Composed messages are the direct messages that are composed and sent by users.
+Comment messages are automatically generated notifications of a reply to one of your
+submissions or comments, or a comment in which you were mentioned.
 
 If the message is a user (or subreddit) message, the container object will have ``kind: t4``,
 but if it is a comment message it will have ``kind: t1`` and the `id` field will be a comment ID
@@ -108,7 +108,8 @@ Schema
    The value will usually have `?context=3` appended.
 
    The submission ID36 can be obtained from this value."
-   "distinguished","string?","`null` if not distinguished, otherwise `"moderator"` or `"admin"`, or `"gold-auto"`.
+   "distinguished","string?","`null` if not distinguished, otherwise
+   `\"moderator\"` or `\"admin\"`, or `\"gold-auto\"`.
 
    Is always `moderator` if a subreddit message."
    "link_title?","string","Key does not exist if user or subreddit message.

@@ -117,14 +117,11 @@ Schema
    * There is no user context."
    "user_flair_css_class","string?","The current user's flair CSS class.
 
-   Value starts as `null`.
+   When a flair template is being used, the value of this field will be that of the CSS class designated by the template. If the flair template does not specify a CSS class then the value will be `null`.
 
-   If not using a flair template and a CSS class is not set, the value is `null` if a CSS class was never
-   set on the user before, otherwise it will be an empty string if a CSS class was set and then removed.
+   When no flair template is being used, the value starts as `null`. If a CSS class was ever manually assigned (by a moderator), this field will never be `null` again while a flair template isn’t being used, and clearing the CSS class results in this field being an empty string.
 
-   If using a flair template and a CSS class is not set, the value is `null`.
-
-   Also value `null` when there is no user context."
+   Also, value is `null` when there is no user context."
    "user_flair_position","string","Either `left`, or `right` or empty string. Starts off as `right` in new subreddits.
 
    Can be set to an empty string via API calls (see `POST /r/{subreddit}/api/flairconfig`) but not through the UI.
@@ -346,6 +343,8 @@ Get Trending Subreddit Names
 
 *scope: (any)*
 
+DEPRECATED: This endpoint does not work.
+
 Return a list of trending subreddits, link to the comment in r/trendingsubreddits, and the comment count of that link.
 
 Example output::
@@ -382,7 +381,7 @@ If all subreddits specified by the `sr` or `sr_name` parameters don't exist, a 4
 If any of the subreddits specified cannot be accessed, or is a special subreddit such as `popular`, `all`, or `random`,
 then the entire action is aborted, no subreddits will be subscribe/unsubscribed to. A 403 HTTP error is returned.
 
-The limit of number of subreddits you can specify at once is unknown. This endpoint becomes increasingly unstable
+The limit of the number of subreddits you can specify at once is unknown. This endpoint becomes increasingly unstable
 the more items you specify at a time. Request processing times slow down and various errors begin to occur. If the
 client doesn't timeout first:
 
@@ -606,7 +605,7 @@ Subreddits whose names begin with `query` will be returned.
 
 The GET and POST endpoints are equivalent but POST also accepts form-encoded data.
 
-Subreddits that are banned or private *will* be included.
+Subreddits that are banned or private are included.
 
 Returns an object with one field, `names`, which is an array of subreddit names.
 
@@ -645,11 +644,16 @@ Search subreddits by name (returning partial subreddit objects)
 
 *scope: read*
 
-Same as `Search subreddits by name (returning subreddit names)`_ but returns an object with one field: `subreddits`.
-The value is an array of parial subreddit objects.
+List partial subreddit objects that begin with a query string.
 
-Subreddits that are banned or private will be included. This can be used to determine the subscriber count of
-private subreddits.
+Same as `(GET/POST) /api/search_reddit_names` but returns partial subreddit objects
+instead of strings.
+
+On success, returns an object with one field: `subreddits` whose value is
+an array of partial subreddit objects.
+
+Subreddits that are banned or private are included.
+Interestingly, this endpoint can be used to determine the subscriber count of private subreddits.
 
 .. csv-table:: Partial Subreddit Object
    :header: "Field","Type (hint)","Description"
@@ -663,3 +667,49 @@ private subreddits.
    "allow_images",".","Same as on Subreddit schema."
    "is_chat_post_feature_enabled","boolean",""
    "allow_chat_post_creation","boolean",""
+
+.. csv-table:: URL Params / Form Data
+   :header: "Field","Type (hint)","Description"
+   :escape: \
+
+   "...",".","Same as in `GET /api/search_reddit_names`."
+
+.. csv-table:: HTTP Errors
+   :header: "Status Code","Description"
+   :escape: \
+
+   "...","Same as in `GET /api/search_reddit_names`."
+
+
+.. _subreddit_search_subreddits:
+
+Search subreddits by name and description
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. http:get:: /subreddits/search
+
+*scope: read*
+
+Search subreddits by name or description.
+
+This endpoint returns a :ref:`paginated listing <listings_overview>`.
+
+Matches substrings of `display_name` and `public_description` fields of subreddit objects.
+
+If the parameter `q` is not specified, this endpoint returns `"{}"`
+(i.e., a string of an empty JSON object).
+
+The `sr_detail` parameter is not supported (despite the offical docs saying so).
+
+.. csv-table:: URL Params
+   :header: "Field","Type (hint)","Description"
+   :escape: \
+
+   "...",".",":ref:`Listing common parameters <listings_overview>`."
+   "q","string","A search query. Matches user name beginnings or descriptions."
+   "(sort)","string","Documented parameter but doesn't seem to do anything.
+
+   Either `relevance` or `activity`."
+   "(show_users)","boolean","Documented parameter but doesn't seem to do anything.
+
+   If true, user subreddits are included in the search?"

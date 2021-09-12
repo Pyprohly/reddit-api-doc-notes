@@ -275,6 +275,124 @@ This end point returns an object with the following fields:
    "414","The requested URL length is way too long (over 8216 characters)."
 
 
+.. _user_listings:
+
+Pull user listings
+~~~~~~~~~~~~~~~~~~
+
+* *Overview*:
+
+.. http:get:: /user/{username}
+.. http:get:: /user/{username}/overview
+
+A listing of submissions and comments.
+
+Available publicly for any user.
+
+* *Submitted*:
+
+.. http:get:: /user/{username}/submitted
+
+A listing of submissions.
+
+Available publicly for any user.
+
+* *Comments*:
+
+.. http:get:: /user/{username}/comments
+
+A listing of comments.
+
+Available publicly for any user.
+
+This does not support the `sr_detail` parameter.
+
+Comment objects have extra fields. See :ref:`here <frontpage_new_comments_comment_object>`.
+
+* *Gilded*:
+
+.. http:get:: /user/{username}/gilded
+
+A listing of submissions and comments.
+
+Available publicly for any user.
+
+* *Gildings given*:
+
+.. http:get:: /user/{username}/gilded/given
+
+A listing of submissions and comments.
+
+* *Upvoted*:
+
+.. http:get:: /user/{username}/upvoted
+
+A listing of submissions.
+
+Only available publicly for a given user if their 'make my votes public' privacy option is checked.
+
+* *Downvoted*:
+
+.. http:get:: /user/{username}/downvoted
+
+A listing of submissions.
+
+Only available publicly for a given user if their 'make my votes public' privacy option is checked.
+
+* *Hidden*:
+
+.. http:get:: /user/{username}/hidden
+
+A listing of submissions.
+
+Not available publicly for any user.
+
+* *Saved*:
+
+.. http:get:: /user/{username}/saved
+
+A listing of submissions and comments.
+
+Not available publicly for any user.
+
+|
+|
+
+*scope: history*
+
+User listings.
+
+See :ref:`Additional URL Params <frontpage_listings_additional_url_params>`.
+
+Additional URL params for *Overview*, *Submitted*, and *Comments*:
+
+.. csv-table:: URL Params
+   :header: "Field","Type (hint)","Description"
+   :escape: \
+
+   "sort","string","One of: `hot`, `new`, `top`, `controversial`.
+
+   For *Overview* and *Comments* listings, `new` is the default.
+   For *Submitted*, `hot` is the default."
+
+Additional URL params for *Saved*:
+
+.. csv-table:: URL Params
+   :header: "Field","Type (hint)","Description"
+   :escape: \
+
+   "type","string","Filter for either `links` or `comments`."
+
+|
+
+.. csv-table:: HTTP Errors
+   :header: "Status Code","Description"
+   :escape: \
+
+   "404","The user name was not found."
+   "403","You don't have permission to view this listing."
+
+
 Report
 ~~~~~~
 
@@ -306,23 +424,62 @@ List trophies
 
 *scope: read*
 
-Get a list of trophies for the a given user.
+Get a list of trophies for a user.
 
 Returns a 'TrophyList' structure.
 
 For a description of the Trophy object schema, see :ref:`here <account_list_trophies>`.
 
+.. csv-table:: API Errors (variant 1)
+   :header: "Error","Description"
+   :escape: \
+
+   "USER_DOESNT_EXIST","The user name specified by `user` does not exist.
+
+   *\"that user doesn't exist\"* -> id"
+
 .. seealso:: `<https://www.reddit.com/dev/api/#GET_api_v1_user_{username}_trophies>`_
 
 
-Check username registered
-~~~~~~~~~~~~~~~~~~~~~~~~~
+.. _user_search_users:
+
+Search users
+~~~~~~~~~~~~
+
+.. http:get:: /users/search
+
+*scope: read*
+
+Search users by name or description.
+
+This endpoint returns a :ref:`paginated listing <listings_overview>`.
+
+The listing contains **partial** user objects.
+
+If the parameter `q` is not specified, this endpoint returns `"{}"`
+(i.e., a string of an empty JSON object).
+
+The `sr_detail` parameter is not supported (despite the offical docs saying so).
+
+.. csv-table:: URL Params
+   :header: "Field","Type (hint)","Description"
+   :escape: \
+
+   "...",":ref:`Listing common parameters <listings_overview>`."
+   "q","string","A search query. Matches user name beginnings or descriptions."
+   "(sort)","string","Documented parameter but doesn't seem to do anything.
+
+   Either `relevance` or `activity`."
+
+
+Check user exists
+~~~~~~~~~~~~~~~~~
 
 .. http:get:: /api/username_available
 
 *scope: (any)*
 
-Check whether a username is available for registration.
+Check whether a user name exists.
 
 Valid usernames match `/[A-Za-z0-9_-]{3,20}/`.
 
