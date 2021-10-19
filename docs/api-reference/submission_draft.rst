@@ -74,8 +74,8 @@ Returns an object like the following::
    "send_replies",".","Similar to the `sendreplies` parameter on `POST /api/submit` endpoint,
    but the default value is false instead of true."
    "spoiler",".","Same as `spoiler` parameter on `POST /api/submit` endpoint."
-   "nsfw",".","Same as `spoiler` parameter on `POST /api/submit` endpoint."
-   "original_content",".","Same as `spoiler` parameter on `POST /api/submit` endpoint."
+   "nsfw",".","Same as `nsfw` parameter on `POST /api/submit` endpoint."
+   "original_content",".","Same as `original_content` parameter on `POST /api/submit` endpoint."
    "flair_id",".","Same as `flair_id` parameter on `POST /api/submit` endpoint."
    "flair_text","string","A flair text override."
    "flair_text_color","string","The value of this parameter has no effect.
@@ -208,6 +208,8 @@ Delete a draft.
 Returns an object like the following::
 
    {"json": {"errors": [], "data": {"drafts_count": 6, "id": "3f15e9c4-08f2-11ec-9be4-0ac9176c85f9"}}}
+
+The ID returned is that of the deleted draft.
 
 .. csv-table:: URL Params
    :header: "Field","Type (hint)","Description"

@@ -1,4 +1,16 @@
 
+..
+   #####
+   *****
+   +++++
+   =====
+   -----
+   ~~~~~
+   ^^^^^
+   """""
+   '''''
+   `````
+
 Welcome to reddit-api-docs's documentation!
 ===========================================
 
@@ -23,6 +35,7 @@ Welcome to reddit-api-docs's documentation!
    api-reference/listings
    api-reference/submission_draft
    api-reference/miscellaneous
+   api-reference/modmail
 
 
 Indices and tables

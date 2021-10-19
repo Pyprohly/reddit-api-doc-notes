@@ -26,7 +26,7 @@ Message modes:
    self sub > user
    self > sub
 
-Note that subreddits cannot private message subreddits.
+Note that subreddits cannot direct message subreddits.
 
 Other than checking the name of `author` and `dest` there's little information that provides an indication
 of whether a message is incoming or outgoing, except if the message is an outgoing message to a subreddit.
@@ -144,7 +144,7 @@ Listing collection type:
 
 * `GET /message/inbox`: composed | comment
 * `GET /message/unread`: composed | comment
-* `GET /message/messages`: composed | comment
+* `GET /message/messages`: composed
 * `GET /message/sent`: composed
 * `GET /message/comments`: comment
 * `GET /message/selfreply`: comment
@@ -161,14 +161,14 @@ Additional URL params:
 .. seealso:: `<https://www.reddit.com/dev/api/#GET_message_{where}>`_
 
 
-Send message
-~~~~~~~~~~~~
+Send
+~~~~
 
 .. http:post:: /api/compose
 
 *scope: privatemessages*
 
-Send a private message to a user.
+Send a direct message to a user.
 
 Using the `from_sr` parameter will cause a subreddit message to be sent.
 The authenticated user must be a moderator of the subreddit that has the `mail` permission.
@@ -227,14 +227,16 @@ Returns ``{"json": {"errors": []}}`` on success.
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_compose
 
 
-Reply to message
-~~~~~~~~~~~~~~~~
+Reply
+~~~~~
 
-See :ref:`Comment Create <comment_create>`.
+Reply to a message.
+
+See :ref:`Comment Create <comment_create>`. Use a `t4_` ID for `thing_id`.
 
 
-Delete message
-~~~~~~~~~~~~~~
+Delete
+~~~~~~
 
 .. http:post:: /api/del_msg
 
@@ -324,8 +326,8 @@ Returns empty JSON object on success.
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_read_all_messages
 
 
-Collapse message
-~~~~~~~~~~~~~~~~
+Collapse
+~~~~~~~~
 
 .. http:post:: /api/collapse_message
 .. http:post:: /api/uncollapse_message

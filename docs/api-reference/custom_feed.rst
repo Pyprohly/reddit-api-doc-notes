@@ -421,7 +421,7 @@ Returns an object like ``{"name": "pics"}`` on success. (The value is the `{sr_n
 
 The endpoint takes a `model` parameter that requires a `name` key with a value that is supposedly meant to be
 the target subreddit name, but the subreddit name is already specified in the URL and this `model` parameter
-seems to otherwise be ignored. Just always send ``{"name": "aa"}``.
+seems to otherwise be ignored. You can just always send ``{"name": "abc"}``.
 
 .. csv-table:: Form Data or URL Params
    :header: "Field","Type (hint)","Description"
@@ -450,6 +450,54 @@ seems to otherwise be ignored. Just always send ``{"name": "aa"}``.
      *that name isn't going to work* -> *name*"
 
 .. seealso:: `<https://www.reddit.com/dev/api/#PUT_api_multi_{multipath}_r_{srname}>`_
+
+
+Bulk add to custom feed
+~~~~~~~~~~~~~~~~~~~~~~~
+
+.. http:post:: /api/multi/add_srs_bulk
+
+*scope: subscribe*
+
+Bulk add subreddits to a custom feed.
+
+Returns the custom feed object.
+
+If any of the subreddit names in `sr_names` doesn't exist, the request will fail with a 500 HTTP
+(and none of the subreddits will be added).
+
+The `sr_names` limit is unknown. Clients should assume a limit of 100 subreddit names.
+
+.. csv-table:: Form Data
+   :header: "Field","Type (hint)","Description"
+   :escape: \
+
+   "path","string","A string of the form `/user/{user}/m/{feed}`."
+   "sr_names","string","A comma delimited list of subreddit names to add."
+
+|
+
+.. csv-table:: API Errors (variant 2)
+   :header: "Error","Description"
+   :escape: \
+
+   "USER_REQUIRED","   *Please log in to do that.*"
+
+|
+
+.. csv-table:: HTTP Errors
+   :header: "Status Code","Description"
+   :escape: \
+
+   "500","* The `path` parameter was not specified or was empty.
+
+   * The `sr_names` parameter was not specified or was empty.
+
+   * The custom feed doesn't exist.
+
+   * The username specified does not exist.
+
+   * One of the subreddits specified in the `sr_names` list does not exist."
 
 
 Remove from custom feed

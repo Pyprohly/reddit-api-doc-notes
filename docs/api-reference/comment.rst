@@ -78,7 +78,7 @@ Schema
    "score_hidden","boolean","Whether the score is hidden."
    "send_replies","boolean","Whether an inbox message will be sent to you when the comment receives a reply."
    "stickied","boolean","Whether the comment is 'stickied' in the thread. If `true` then the `distinguished` should also be not `null`."
-   "subreddit","string","The subreddit name. E.g., `IAmA`"
+   "subreddit","string","The subreddit name. E.g., `IAmA`."
    "subreddit_id","string","The full ID of the subreddit that was posted to. E.g., `t5_2qzb6` for `r/IAmA`."
    "subreddit_name_prefixed","string","Same as the `subreddit` field but prefixed with `r/`. E.g., `r/IAmA`."
    "subreddit_type","string","One of `public`, `private`, `restricted`, `archived`, `employees_only`, `gold_only`, `gold_restricted`, or `user`."

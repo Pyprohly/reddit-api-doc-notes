@@ -7,14 +7,14 @@ Overview
 
 There are different post types: `text`, `link`, `image`, `gallery`, `video`, `poll`, `crosspost`.
 
-Post type distinguish logic:
+Use the following checks to distinguish the post type. The order of the checks is important.
 
-* `text`: ``d['is_self']``
 * `image`: ``d.get('post_hint') == 'image'``
 * `video`: ``d['is_video']``
 * `gallery`: ``d.get('is_gallery', False)``
 * `poll`: ``'poll_data' in d``
 * `crosspost`: ``'crosspost_parent' in d``
+* `text`: ``d['is_self']``
 * `link`: (otherwise)
 
 To determine the type of a crosspost you must lookup the post type of the submission in `crosspost_parent`.
@@ -144,9 +144,9 @@ Schema
    This field does not exist if there is no media in the post."
    "poll_data?","object","This field does not exist if not a poll post."
    "content_categories","string array?",""
-   "is_self","boolean","True if a text post.
+   "is_self","boolean","True if a text post or poll post.
 
-   This is false if the post is a crosspost to a text post."
+   This field will be false if the post is a crosspost to a text post."
    "created","float","Legacy. Same as `created_utc` but subtract 28800."
    "wls","integer?","Unknown. Often `6`. Possibly stands for \"white list status\"?"
    "pwls","integer?","Unknown. Possibly stands for \"parent white list status\"?"
@@ -275,7 +275,7 @@ Schema
    E.g., `/r/IAmA/comments/erd8si/i_was_born_with_two_y_chromosomes_ama/`"
    "stickied","boolean","Whether the post is a 'stickied' post in the subreddit."
    "url","string","If a text post, it is the url of the submission. If a link post,
-   it is the url of the link. If `url_overridden_by_dest` field exists, this will be the same value as it.
+   it is the url of the link. If the `url_overridden_by_dest` field exists, this will be the same value as it.
 
    Also see `permalink`, which is the same as this field but the path only."
    "subreddit_subscribers","integer","The number of subscribers in the subreddit."
@@ -300,7 +300,7 @@ Schema
 
    The URL of the gallery for a gallery post. E.g., `https://www.reddit.com/gallery/oexfaq`.
 
-   In rare cases the URL may be a path, for example, see link post `j74mzm`.
+   In rare cases the value may not be a full URL, it can be a path, for example see post ID `j74mzm`.
 
    Field does not exist if not a link post."
    "event_start?","float","Unix timestamp of when the post's event time begins. Key does not exist if

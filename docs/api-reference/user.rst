@@ -546,6 +546,9 @@ Example output::
 
 The `user_is_subscriber` field is not available when there is no user context.
 
+The `created` and `created_utc` fields aren't available if the subreddit is
+a user subreddit (i.e., `subreddit_type: user`).
+
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
    :escape: \

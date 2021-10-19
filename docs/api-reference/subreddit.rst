@@ -5,6 +5,8 @@ Subreddit
 Overview
 --------
 
+.. _subreddit_schema:
+
 Schema
 ~~~~~~
 
@@ -37,7 +39,8 @@ Schema
    "description_html","string","Same as `description` but HTML formatted."
    "disable_contributor_requests","boolean",""
    "display_name","string","The name of the subreddit. E.g., `AskReddit`"
-   "display_name_prefixed","string","The name of the subreddit prefixed with `r/`. E.g., `r/AskReddit`"
+   "display_name_prefixed","string","The name of the subreddit prefixed with `r/`. E.g., `r/AskReddit`.
+   For user subreddits the `u/` prefix is used. E.g., `r/Pyprohly`."
    "emojis_custom_size","unknown?",""
    "emojis_enabled","boolean",""
    "free_form_reports","boolean",""
@@ -51,14 +54,14 @@ Schema
    "id","string","The ID36 of the subreddit (without the `t5_` prefix)."
    "is_crosspostable_subreddit","boolean",""
    "is_enrolled_in_new_modmail","unknown?",""
-   "key_color","string",""
+   "key_color","string","E.g., `#ddbd37`. Can be an empty string."
+   "primary_color","string","E.g., `#223a55`. Can be an empty string."
    "lang","string","E.g., `en`"
    "mobile_banner_image","string",""
-   "name","string","The subreddit's full ID (with prefix `t5_`). Also see `id`."
+   "name","string","The subreddit's full ID36 (with prefix `t5_`). Also see `id`."
    "notification_level","string","E.g., `low`"
    "original_content_tag_enabled","boolean",""
    "over18","boolean","Whether the subreddit is marked as NSFW."
-   "primary_color","string","E.g., `#223a55`"
    "public_description","string",""
    "public_description_html","string",""
    "public_traffic","boolean",""
@@ -101,7 +104,7 @@ Schema
    In old Reddit this is the flair option that says \"allow users to assign their own flair\"."
    "link_flair_enabled","boolean","True if link flairs are enabled. This field is tied to the 'link flair position' flair setting: this field is false when set to `none`."
    "link_flair_position","string","Either `left`, or `right`, or empty string if `link_flair_enabled` is false (the 'none' option in the old Reddit UI)."
-   "user_can_flair_in_sr","boolean?","Whether or not the current user is allowed to set their user flair in this subreddit. This will be true if the 'allow users to assign their own' user flair option is enabled, or if the current user is a moderator of the subreddit with the 'flair' permission. If neither of these conditions are satisfied, this field value will be `null`.
+   "user_can_flair_in_sr","boolean?","Whether or not the current user is allowed to set their user flair in this subreddit. This will be true if the 'allow users to assign their own' user flair option is enabled, or if the current user is a moderator of the subreddit with the 'flair' permission. If neither of these conditions are true, this field value will be `null`.
 
    Can also be `null` if there is no user context."
    "user_flair_background_color","string?","Current user's flair background color hex string. E.g., `#46d160`.
@@ -189,7 +192,7 @@ If the subreddit is not found then the endpoint returns an empty listing (strang
    "403","You don't have permission to access this subreddit."
    "404","* You specified the name of a special subreddit: `all`, `popular`, `friends`, `mod`.
 
-   * The subreddit name specified contains invalid characters. This will return a 'page not found' HTML document."
+   * The subreddit name specified was too long or contained invalid characters. This will return a 'page not found' HTML document."
 
 .. seealso:: `<https://www.reddit.com/dev/api/#GET_r_{subreddit}_about>`_
 
@@ -429,7 +432,7 @@ Returns an empty JSON object on success.
 
    * All subreddits specified by the `sr` or `sr_name` parameter do not exist.
 
-   * Attempted to unsubsribe to a subreddit you are not subscribed to and only one subreddit was specified
+   * Attempted to unsubscribe to a subreddit you are not subscribed to and only one subreddit was specified
      (for `sr` or `sr_name`)."
    "503","Sends *\"Our CDN was unable to reach our servers\"* HTML document. When over approximately 250 items are specified at once."
 
@@ -629,6 +632,8 @@ Returns an object with one field, `names`, which is an array of subreddit names.
    the `anti_ads_subreddits` list will be filtered. Default: ??? [needs checking]"
    "search_query_id","string","unknown"
    "typeahead_active","boolean?","unknown"
+
+|
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"

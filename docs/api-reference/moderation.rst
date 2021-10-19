@@ -239,10 +239,66 @@ Additional URL params:
 .. seealso:: `<https://www.reddit.com/dev/api/#GET_about_{where}>`_
 
 
-Pull moderation log
-~~~~~~~~~~~~~~~~~~~
+Pull moderation actions
+~~~~~~~~~~~~~~~~~~~~~~~
 
-[WIP]
+.. http:get:: /r/{subreddit}/about/log
+
+*scope: modlog*
+
+Retrieve recent moderation actions.
+
+This endpoint is a paginated listing. See :ref:`Listings Overview <listings_overview>`.
+The `limit` parameter has a max value of 500.
+
+Moderator actions taken within a subreddit are logged. Entries in the mod log last for 3 months before
+they become inaccessible.
+
+The optional `type` parameter limits the log entries returned to only those of the specified action type.
+The optional `mod` parameter can be a comma-delimited list of moderator names to restrict the results to,
+or the string `a` to restrict the results to admin actions taken within the subreddit.
+
+.. csv-table:: Mod action object
+   :header: "Field","Type (hint)","Description"
+   :escape: \
+
+   "id","string","Mod action ID. E.g., `ModAction_727b75b0-2214-11ec-99b4-05a9ad5c4e6c`."
+   "action","string","The mod action name."
+   "mod","string","The name of the moderator who initiated the action."
+   "mod_id36","string","The full ID36 of the moderator who initiated the action."
+   "created_utc","float","Unix timestamp of when the action was done. Always a whole number."
+   "subreddit","string","Name of the subreddit the action was performed in. Since you get the actions
+   by subreddit, all actions should have the same value."
+   "subreddit_name_prefixed","string","Same as `subreddit` field but prefixed with `r/`."
+   "sr_id36","string","The ID36 of the subreddit."
+   "description","string","Content depends on the action. This field is always an empty string on some action types."
+   "details","string","Content depends on the action. This field is always an empty string on some action types."
+   "target_author","string","Content depends on the action. This field is always an empty string on some action types."
+   "target_body","string?","Content depends on the action. Value `null` on action types that don't use this field."
+   "target_fullname","string?","Content depends on the action. Value `null` on action types that don't use this field."
+   "target_permalink","string?","Content depends on the action. Value `null` on action types that don't use this field."
+   "target_title","string?","Content depends on the action. Value `null` on action types that don't use this field."
+
+|
+
+.. csv-table:: Form data
+   :header: "Field","Type (hint)","Description"
+   :escape: \
+
+   "...","...","Common listing parameters. See :ref:`Listings overview <listings_overview>`.
+
+   The `limit` can be up to 500. (Numbers outside the range of 1-500 will be clamped within range.)"
+   "type","string","The action type to filter on."
+   "mod","string","A comma separated list of moderator names to filter on. The special name '`a`'
+   filters on admin actions."
+
+|
+
+.. csv-table:: HTTP Errors
+   :header: "Status Code","Description"
+   :escape: \
+
+   "404","You do not have permission to view the mod log of the specified subreddit."
 
 
 Send moderator invite
