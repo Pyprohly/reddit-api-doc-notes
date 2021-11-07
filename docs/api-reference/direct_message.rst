@@ -80,18 +80,18 @@ Schema
    Is `null` if a user message."
    "likes","boolean?","Always `null` if a user message or subreddit message.
 
-   If a comment message, determines upvote direction. Same as the `likes` field on the :ref:`comment schema <comment_schema>`."
+   If a comment message, determines upvote direction. Same as the `likes` field on the :ref:`comment schema <comment-schema>`."
    "replies","string | object","A listing of replies to this message, or an empty string if there are no replies."
-   "score","integer","If a comment object, same as the `score` field on the :ref:`comment schema <comment_schema>`,
+   "score","integer","If a comment object, same as the `score` field on the :ref:`comment schema <comment-schema>`,
    otherwise if a user or subreddit message the value is `0`."
-   "num_comments","integer?","If a comment message, same as the `num_comments` field on the :ref:`submission schema <submission_schema>`.
+   "num_comments","integer?","If a comment message, same as the `num_comments` field on the :ref:`submission schema <submission-schema>`.
 
    If a user message or subreddit message, value is `null`."
    "parent_id","string?","If a user or subreddit message, contains the full ID36 (prefixed with `t4_`) of
    the user or subreddit message in which this message was a reply to. If this message is not a reply to another
    message, the value is `null`.
 
-   If a comment message, same as the `parent_id` field on the :ref:`comment schema <comment_schema>`."
+   If a comment message, same as the `parent_id` field on the :ref:`comment schema <comment-schema>`."
    "subreddit_name_prefixed","string?","Is `null` if the `subreddit` field is `null`, else contains the value of
    the `subreddit` field prepended with `r/`."
    "new","boolean","Unread indicator. False if the message has been seen by the user."
@@ -114,7 +114,7 @@ Schema
    Is always `moderator` if a subreddit message."
    "link_title?","string","Key does not exist if user or subreddit message.
 
-   If a comment message, same as `title` in the :ref:`submission schema <submission_schema>`."
+   If a comment message, same as `title` in the :ref:`submission schema <submission-schema>`."
    "first_message","integer?","The integer ID of the first message in the thread of messages.
    Value is `null` if this is a top-level message."
    "first_message_name","string?","The full ID36 (prefixed with `t4_`) of first message in the thread of messages.
@@ -138,7 +138,7 @@ Get messages
 
 *scope: privatemessages*
 
-This endpoint is a listing. See :ref:`Listings overview <listings_overview>`.
+This endpoint is a listing. See :ref:`Listings overview <listings-overview>`.
 
 Listing collection type:
 
@@ -232,7 +232,7 @@ Reply
 
 Reply to a message.
 
-See :ref:`Comment Create <comment_create>`. Use a `t4_` ID for `thing_id`.
+See :ref:`Comment Create <comment-create>`. Use a `t4_` ID for `thing_id`.
 
 
 Delete
@@ -373,7 +373,7 @@ Block
 Block the author of a Submission, Comment, or Message.
 This endpoint can also block messages from Subreddits.
 
-To block a user directly by ID or name, see :ref:`here <account_block_user>` instead.
+To block a user directly by ID or name, see :ref:`here <account-block-user>` instead.
 
 If the ID specified by `id` is invalid, the action is treated as a success.
 

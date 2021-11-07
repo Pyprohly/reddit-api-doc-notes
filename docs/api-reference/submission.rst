@@ -22,7 +22,7 @@ This does not have to be done recursively because when you crosspost a crosspost
 the original post and not the crosspost you've crossposted.
 
 
-.. _submission_schema:
+.. _submission-schema:
 
 Schema
 ~~~~~~
@@ -180,7 +180,8 @@ Schema
    "archived","boolean","Whether the post is archived. Archived posts cannot be commented on, but the author can still edit the OP."
    "no_follow","boolean",""
    "is_crosspostable","boolean","Whether the post can be crossposted. Will be `false` if the post was removed or deleted."
-   "pinned","boolean","Whether the post is pinned to the poster's profile."
+   "pinned","boolean","Whether the post is pinned to the poster's profile.
+   This attribute will only be true if the submission object was obtained through a user listing."
    "over_18","boolean","Whether the submission has been marked as NSFW."
    "preview?","object","This field is not available if the post was removed or deleted.
    This field is not available if the post is a text post.
@@ -257,10 +258,10 @@ Schema
    "removed_by","unknown?",""
    "distinguished","string?","`null` if not distinguished, otherwise `"moderator"` or `"admin"`."
    "subreddit_id","string","The full ID36 of the subreddit that was posted to. E.g., `t5_2qzb6` for `r/IAmA`."
-   "removal_reason",".","See `removal_reason` field on the :ref:`Comment schema <comment_schema>`."
-   "mod_reason_by",".","See `mod_reason_by` field on the :ref:`Comment schema <comment_schema>`."
-   "mod_reason_title",".","See `mod_reason_title` field on the :ref:`Comment schema <comment_schema>`."
-   "mod_note",".","See `mod_note` field on the :ref:`Comment schema <comment_schema>`."
+   "removal_reason",".","See `removal_reason` field on the :ref:`Comment schema <comment-schema>`."
+   "mod_reason_by",".","See `mod_reason_by` field on the :ref:`Comment schema <comment-schema>`."
+   "mod_reason_title",".","See `mod_reason_title` field on the :ref:`Comment schema <comment-schema>`."
+   "mod_note",".","See `mod_note` field on the :ref:`Comment schema <comment-schema>`."
    "id","string","The ID of the submission (without the `t3_` prefix). Also see `name`."
    "is_robot_indexable","boolean","Will be `false` if the post was removed or deleted."
    "author","string","The redditor name. Possibly `[removed]` if the post was removed
@@ -343,16 +344,16 @@ Schema
 
    This field does not exist if the post is not a crosspost."
    "crosspost_parent_list?","array of submission objects",""
-   "ignore_reports?",".","See same field on :ref:`Comment Schema <comment_schema>`"
-   "num_reports",".","See same field on :ref:`Comment Schema <comment_schema>`"
-   "user_reports",".","See same field on :ref:`Comment Schema <comment_schema>`"
-   "mod_reports",".","See same field on :ref:`Comment Schema <comment_schema>`"
-   "report_reasons",".","See same field on :ref:`Comment Schema <comment_schema>`"
+   "ignore_reports?",".","See same field on :ref:`Comment Schema <comment-schema>`"
+   "num_reports",".","See same field on :ref:`Comment Schema <comment-schema>`"
+   "user_reports",".","See same field on :ref:`Comment Schema <comment-schema>`"
+   "mod_reports",".","See same field on :ref:`Comment Schema <comment-schema>`"
+   "report_reasons",".","See same field on :ref:`Comment Schema <comment-schema>`"
 
 Actions
 -------
 
-.. _get_api_info:
+.. _get-api-info:
 
 Get
 ~~~
@@ -391,20 +392,36 @@ and differs each time.
 .. seealso:: https://www.reddit.com/dev/api/#GET_api_info
 
 
-Upload Media
+Upload media
 ~~~~~~~~~~~~
 
 .. http:post:: /api/media/asset
 
 Upload media for use in submissions.
 
-The upload process is similar to that of flair emoji image uploads
-and the details for that are already documented :ref:`here <emoji_upload>`.
-Th returned object structure is just slightly different.
+The upload process involves obtaining an upload lease then uploading the
+media to the Amazon Simple Storage Service bucket specified in the lease.
+
+Use `POST /api/media/asset` to obtain an upload lease for your media image.
+In the response data there will be a field called `action` whose value is a URL but is
+missing the `https:` prefix. Prepend `https:` to this URL and add your media image to a field
+named `file` in a multipart request, along with the parameters in the `fields` array from the
+upload lease as form data in the multipart request.
+
+The `action` is typically `//reddit-uploaded-media.s3-accelerate.amazonaws.com` for this endpoint.
+The action endpoint will return XML data. Remember to check for a bad status in the response.
+If the media was too large, this endpoint returns 400 Bad Request, and a message indicating this
+is included in the XML data.
+
+The media ID is found in `d['asset']['asset_id']` of the lease data.
+After uploading your image you can use this ID in submission markdown text as `![img](<media_id> "title")`.
+
+The file name specified by `filepath` doesn't appear to have any significance.
+The name of the file when you download it from the site will always be the media ID,
+plus the file extension.
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "filepath","string","The file name (base name, not a full path) of the image file to upload.
    Example: `image.png`."
@@ -413,26 +430,26 @@ Th returned object structure is just slightly different.
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","A user context is required."
+   "USER_REQUIRED","200","A user context is required.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "400","* The `filepath` or `mimetype` form parameter was not specified or the value was empty.
 
    * Invalid value specified for `mimetype`, or the type is not supported."
 
 
-.. _submission_create_post:
+.. _submission-create-post:
 
-Create Post
+Create post
 ~~~~~~~~~~~
 
 Text
@@ -447,7 +464,7 @@ Image
 Video
 ^^^^^
 
-.. _post_api_submit:
+.. _post-api-submit:
 
 .. http:post:: /api/submit
 
@@ -464,9 +481,13 @@ To create a link post, use `kind: link`. A link post is created with `url` as th
 
 To create an image post, use `kind: image`. A image post is created using `url` as the image.
 
-Return object example for text, link, and image posts::
+Return object example for text and link posts::
 
    {"json": {"errors": [], "data": {"url": "https://www.reddit.com/r/Pyprohly_test3/comments/om0nwf/my_title/", "drafts_count": 0, "id": "nxaraz", "name": "t3_nxaraz"}}}
+
+Return object example for image posts::
+
+   {"json": {"errors": [], "data": {"user_submitted_page": "https://www.reddit.com/user/Pyprohly/submitted/", "websocket_url": "wss://ws-078822fa467f2f8bb.wss.redditmedia.com/rte_images/a0lp5306pmv71?m=AQAA1-Z2Ye5o9vuN_PHYTUdavycbStw62tNSLLjnbqypaYKHuW3G"}}}
 
 Return object example for video posts::
 
@@ -527,7 +548,8 @@ Return object example for video posts::
    "INVALID_SELFPOST","both `text` and `richtext_json` were specified"
    "TOO_LONG","the `title` or `text` is too long"
    "NO_SELFS","the subreddit doesn't allow text posts"
-   "MISSING_VIDEO_URLS","The `video_poster_url` was empty or not specified when a video post is being made.
+   "MISSING_VIDEO_URLS","The `video_poster_url` was not specified, empty, or was an invalid value
+   when a video post is being made.
 
    *\"This community requires a video link and a post link\"* -> url"
    "ALREADY_SUB","The given link has already been submitted to the subreddit.
@@ -572,8 +594,8 @@ Return object example::
    :header: "Field","Type (hint)","Description"
    :escape: \
 
-   "sr",".","Same as in :ref:`POST /api/submit <post_api_submit>`."
-   "title",".","Same as in :ref:`POST /api/submit <post_api_submit>`."
+   "sr",".","Same as in :ref:`POST /api/submit <post-api-submit>`."
+   "title",".","Same as in :ref:`POST /api/submit <post-api-submit>`."
    "items","object array","The gallery items.
 
    Example::
@@ -590,10 +612,10 @@ Return object example::
          }
       ]
    "
-   "sendreplies",".","Same as in :ref:`POST /api/submit <post_api_submit>`."
-   "spoiler",".","Same as in :ref:`POST /api/submit <post_api_submit>`."
-   "nsfw",".","Same as in :ref:`POST /api/submit <post_api_submit>`."
-   "original_content",".","Same as in :ref:`POST /api/submit <post_api_submit>`."
+   "sendreplies",".","Same as in :ref:`POST /api/submit <post-api-submit>`."
+   "spoiler",".","Same as in :ref:`POST /api/submit <post-api-submit>`."
+   "nsfw",".","Same as in :ref:`POST /api/submit <post-api-submit>`."
+   "original_content",".","Same as in :ref:`POST /api/submit <post-api-submit>`."
    "collection_id","string","The UUID of a collection to add this post to a collection.
    Parameter ignored if empty string."
    "flair_id","string","A string no longer than 36 characters.
@@ -654,9 +676,9 @@ Return object example::
    :header: "Field","Type (hint)","Description"
    :escape: \
 
-   "sr",".","Same as in :ref:`POST /api/submit <post_api_submit>`."
-   "title",".","Same as in :ref:`POST /api/submit <post_api_submit>`."
-   "text",".","Same as in :ref:`POST /api/submit <post_api_submit>`."
+   "sr",".","Same as in :ref:`POST /api/submit <post-api-submit>`."
+   "title",".","Same as in :ref:`POST /api/submit <post-api-submit>`."
+   "text",".","Same as in :ref:`POST /api/submit <post-api-submit>`."
    "options","string array","The poll options.
 
    Example::
@@ -672,10 +694,10 @@ Return object example::
 
    This field is required. The UI default is 3 days.
    "
-   "sendreplies",".","Same as in :ref:`POST /api/submit <post_api_submit>`."
-   "spoiler",".","Same as in :ref:`POST /api/submit <post_api_submit>`."
-   "nsfw",".","Same as in :ref:`POST /api/submit <post_api_submit>`."
-   "original_content",".","Same as in :ref:`POST /api/submit <post_api_submit>`."
+   "sendreplies",".","Same as in :ref:`POST /api/submit <post-api-submit>`."
+   "spoiler",".","Same as in :ref:`POST /api/submit <post-api-submit>`."
+   "nsfw",".","Same as in :ref:`POST /api/submit <post-api-submit>`."
+   "original_content",".","Same as in :ref:`POST /api/submit <post-api-submit>`."
    "collection_id","string","The UUID of a collection to add this post to a collection.
    Parameter ignored if empty string."
    "flair_id","string","A string no longer than 36 characters.
@@ -719,7 +741,7 @@ Crosspost
 Use `POST /api/submit` with `type: crosspost` and the `crosspost_parent` parameter.
 
 
-.. _post_api_del:
+.. _post-api-del:
 
 Delete
 ~~~~~~
@@ -750,9 +772,9 @@ nothing happens.
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_del
 
 
-.. _post_api_editusertext:
+.. _post-api-editusertext:
 
-Edit Body
+Edit body
 ~~~~~~~~~
 
 .. http:post:: /api/editusertext
@@ -795,7 +817,7 @@ I don't know what the criteria is :P.
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_editusertext
 
 
-.. _post_api_lock:
+.. _post-api-lock:
 
 Lock
 ~~~~
@@ -838,7 +860,7 @@ moderators_you_may_now_lock_individual_comments/
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_lock
 
 
-.. _post_api_vote:
+.. _post-api-vote:
 
 Vote
 ~~~~
@@ -885,7 +907,7 @@ Cast a vote on a Submission or Comment.
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_vote
 
 
-.. _post_api_save:
+.. _post-api-save:
 
 Save
 ~~~~
@@ -973,7 +995,7 @@ Returns an empty JSON object.
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_hide
 
 
-.. _post_api_marknsfw:
+.. _post-api-marknsfw:
 
 Mark NSFW
 ~~~~~~~~~
@@ -1010,9 +1032,9 @@ Mark a Submission as NSFW.
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_marknsfw
 
 
-.. _post_api_spoiler:
+.. _post-api-spoiler:
 
-Mark Spoiler
+Mark spoiler
 ~~~~~~~~~~~~
 
 .. http:post:: /api/spoiler
@@ -1047,7 +1069,7 @@ Mark a Submission as spolier.
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_spoiler
 
 
-.. _post_api_distinguish:
+.. _post-api-distinguish:
 
 Distinguish
 ~~~~~~~~~~~
@@ -1112,32 +1134,37 @@ The target entity is returned in a listing structure.
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_distinguish
 
 
-Set Sticky
+.. _submission-set-sticky:
+
+Set sticky
 ~~~~~~~~~~
 
 .. http:post:: /api/set_subreddit_sticky
 
 *scope: modposts*
 
-Set or unset a Submission as sticky, either in its subreddit or to your user profile.
+Set or unset a Submission as sticky in its subreddit.
 
-Stickied posts are pinned to the top of the subreddit in the default 'hot' listing.
-On a user profile, they show as a pinned post at the top of the listing.
+Stickied posts are shown at the top of the subreddit in the default 'Hot' listing.
 
-The `num` argument is used when stickying (i.e., `state` is true). It specifies
-which position the post is to be placed in the existing list of stickied posts.
-If a stickied post is already occupying that position, it will be **replaced** (the post
+In a subreddit, there can be at most 2 sticked posts at a time.
+
+When stickying (i.e., `state` parameter is true), the `num` parameter indicates which of the
+two positions the new post should occupy. If there is a sticked post in the slot specified by
+`num`, it will be replaced. Otherwise the post will be placed in the bottom-most slot.
+If the number specified by `num` is outside the valid range it will be clamped within range.
+
+To be more specific, when `num` is specified, if there are fewer sticked posts than the value
+specified for `num`, or the parameter is not specified, the new post is placed in the bottom-most
+slot. If there is a post already occupying the specified position, it will be replaced (the post
 in that position will be unsticked).
-In a subreddit, there can be 2 sticked posts at a time, `num` can be either `1` or `2`.
-On a user profile, there can be 4 sticked posts at a time, `num` can be from `1` to `4`.
-If a number is specified outside a range, it will be clamped.
 
-When stickying and `num` is not specified:
+If `num` is not specified, the bottom-most slot will be used if available.
+If the list is at maximum length, the bottom-most slot will be replaced with the new post.
 
-* When subreddit stickying, the post will be appended to the **bottom** of the sticky list.
-  If the list is full then the bottom-most post will be **replaced**.
-* When user profile stickying, the post will be added to the **top** of the sticky list.
-  If the list is full then the bottom-most post will be **evicted**, like a queue.
+.. note::
+   This behaviour is different for profile pinning which prepends the new post to the top of the list
+   and evicts the least recently added post (which is at the bottom of the list).
 
 Stickying a post that is already stickied causes a 409 (Conflict) HTTP error.
 Unstickying a post that isn't stickied does nothing.
@@ -1150,20 +1177,19 @@ Returns ``{"json": {"errors": []}}`` on success.
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
-   "id","string","Full ID36 of a Submission."
-   "state","boolean","True to sticky, false to unsticky. Default false."
-   "num","integer","An integer position. Ignored if `state` is false."
-   "to_profile","boolean","If true, sticky the post to your user profile instead of its subreddit."
+   "id","string","The full ID36 of a Submission."
+   "state","boolean","True to sticky, false to unsticky. Default: false."
+   "num","integer","An integer position. Ignored when `state` is false."
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","you must login"
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
 
 |
 
@@ -1172,12 +1198,83 @@ Returns ``{"json": {"errors": []}}`` on success.
    :escape: \
 
    "403","You do not have permission to sticky that post."
-   "409","You are trying to sticky a post that is already stickied."
+   "409","The post is already stickied."
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_set_subreddit_sticky
 
 
-Set Contest Mode
+Pin to profile
+~~~~~~~~~~~~~~
+
+.. http:post:: /api/set_subreddit_sticky
+
+*scope: modposts*
+
+Pin or unpin a post you created to your user profile.
+
+Pinned posts show up at the start of the 'Overview',
+or 'Submitted' (old UI) / 'POSTS' (redesign UI) user profile listings.
+
+A user can have at most 4 pinned posts at a time.
+
+The rules for the `num` parameter are the same as in :ref:`subreddit stickying <submission-set-sticky>`.
+
+If `num` is not specified, the new post is inserted at the top of the list.
+If the list is at maximum length, least recently pinned post will be evicted.
+It acts like a queue.
+
+.. note::
+   This feature uses the same endpoint as :ref:`subreddit stickying <submission-set-sticky>`
+   but there are stark differences in insertion behaviour when `num` is not specified.
+   To summarise these differences:
+
+   * When subreddit stickying: the post will be placed at the **bottom** of the list.
+     If the list is full then the bottom-most post will be **replaced**.
+   * When user profile pinning: the post will be placed at the **top** of the list.
+     If the list is full then the bottom-most post will be **evicted**.
+
+Pinning a post that is already pinned causes a 409 (Conflict) HTTP error.
+Unpinning a post that isn't pinned does nothing.
+
+If `state` is not specified then it is assumed to be false and the post will be unpinned.
+
+You cannot reorder pinned posts directly. You must unpin and re-pin them.
+
+This endpoint is the same as for stickying a post in a subreddit.
+When `to_profile` is true, the `num` has not effect.
+
+Returns ``{"json": {"errors": []}}`` on success.
+
+.. csv-table:: Form Data
+   :header: "Field","Type (hint)","Description"
+
+   "id","string","The full ID36 of a Submission."
+   "to_profile","boolean","Specify a truthy value."
+   "state","boolean","True to sticky, false to unsticky. Default: false."
+   "num","integer","An integer position. Ignored when `state` is false."
+
+|
+
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
+
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
+
+|
+
+.. csv-table:: HTTP Errors
+   :header: "Status Code","Description"
+   :escape: \
+
+   "403","You do not have permission to pin that post."
+   "409","The post is already pinned."
+
+.. seealso:: https://www.reddit.com/dev/api/#POST_api_set_subreddit_sticky
+
+
+Set contest mode
 ~~~~~~~~~~~~~~~~
 
 .. http:post:: /api/set_contest_mode
@@ -1218,7 +1315,7 @@ Returns ``{"json": {"errors": []}}`` on success.
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_set_contest_mode
 
 
-Set Suggested Sort
+Set suggested sort
 ~~~~~~~~~~~~~~~~~~
 
 .. http:post:: /api/set_suggested_sort
@@ -1258,9 +1355,9 @@ If `sort` is `blank`, not given, or an unknown value, the suggested sort will be
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_set_suggested_sort
 
 
-.. _post_api_sendreplies:
+.. _post-api-sendreplies:
 
-Set Inbox Replies
+Set inbox replies
 ~~~~~~~~~~~~~~~~~
 
 .. http:post:: /api/sendreplies
@@ -1289,7 +1386,7 @@ If `state` is not provided, `true` (enable) is assumed.
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_sendreplies
 
 
-Set Event Time
+Set event time
 ~~~~~~~~~~~~~~
 
 .. http:post:: /api/event_post_time
@@ -1400,7 +1497,7 @@ Returns an empty JSON object on success.
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_follow_post
 
 
-.. _post_api_approve:
+.. _post-api-approve:
 
 Approve
 ~~~~~~~
@@ -1461,7 +1558,7 @@ Returns an empty JSON object on success.
    * The `id` parameter was not specified."
 
 
-.. _post_api_remove:
+.. _post-api-remove:
 
 Remove
 ~~~~~~
@@ -1547,7 +1644,7 @@ Report award
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_report_award
 
 
-.. _submission_ignore_reports:
+.. _submission-ignore-reports:
 
 Ignore reports
 ~~~~~~~~~~~~~~
@@ -1595,10 +1692,10 @@ Returns `{}` on success. If the target is already ignored/unignored it is treate
 Set removal reason
 ~~~~~~~~~~~~~~~~~~
 
-See :ref:`here <comment_set_removal_reason>`.
+See :ref:`here <comment-set-removal-reason>`.
 
 
 Send removal reason
 ~~~~~~~~~~~~~~~~~~~
 
-See :ref:`here <comment_send_removal_reason>`.
+See :ref:`here <comment-send-removal-reason>`.

@@ -36,6 +36,7 @@ Welcome to reddit-api-docs's documentation!
    api-reference/submission_draft
    api-reference/miscellaneous
    api-reference/modmail
+   api-reference/widget
 
 
 Indices and tables

@@ -17,7 +17,7 @@ Search for submissions and/or subreddits on Reddit.
 Use `GET /search` to search all of Reddit.
 Use `GET [/r/{subreddit}]/search` and pass `restrict_sr: 1` to search within a subreddit.
 
-This endpoint returns a :ref:`paginated listing <listings_overview>`.
+This endpoint returns a :ref:`paginated listing <listings-overview>`.
 
 The `sr_detail` parameter is not supported (despite the offical docs saying so).
 
@@ -33,7 +33,7 @@ This might only happen when `type: sr`, not sure.
    :header: "Field","Type (hint)","Description"
    :escape: \
 
-   "...",".",":ref:`Listing common parameters <listings_overview>`."
+   "...",".",":ref:`Listing common parameters <listings-overview>`."
    "q","string","A search query."
    "restrict_sr","boolean","If truthy, results are limited to the subreddit
    specified in the URL. If no subreddit is specified in the URL, this parameter

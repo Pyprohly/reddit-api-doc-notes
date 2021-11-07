@@ -288,18 +288,18 @@ E.g.,::
 
    "id","string","The subreddit's full ID36 (with prefix `t5_`).
 
-   Same as the `name` field on the :ref:`Subreddit schema <subreddit_schema>`."
+   Same as the `name` field on the :ref:`Subreddit schema <subreddit-schema>`."
    "name","string","The name of the subreddit.
 
-   Same as the `display_name` field on the :ref:`Subreddit schema <subreddit_schema>`."
+   Same as the `display_name` field on the :ref:`Subreddit schema <subreddit-schema>`."
    "display_name","string","Same as `name` if a regular subreddit. If a user subreddit then the name is prefixed
    with `u/`."
-   "keyColor","string","Same as the `key_color` field on the :ref:`Subreddit schema <subreddit_schema>`."
-   "primaryColor","string","Same as the `primary_color` field on the :ref:`Subreddit schema <subreddit_schema>`."
-   "subscribers","string","Same as the `subscribers` field on the :ref:`Subreddit schema <subreddit_schema>`."
+   "keyColor","string","Same as the `key_color` field on the :ref:`Subreddit schema <subreddit-schema>`."
+   "primaryColor","string","Same as the `primary_color` field on the :ref:`Subreddit schema <subreddit-schema>`."
+   "subscribers","string","Same as the `subscribers` field on the :ref:`Subreddit schema <subreddit-schema>`."
    "lastUpdated","string?","An ISO8601 date string."
    "icon","string?",""
-   "communityIcon","string","Same as the `community_icon` field on the :ref:`Subreddit schema <subreddit_schema>`. Can be empty string."
+   "communityIcon","string","Same as the `community_icon` field on the :ref:`Subreddit schema <subreddit-schema>`. Can be empty string."
 
 |
 
@@ -414,7 +414,7 @@ Returns a JSON object with 4 keys:
 .. seealso:: https://www.reddit.com/dev/api/#GET_api_mod_conversations_:conversation_id
 
 
-.. _modmail_create_user_conversation:
+.. _modmail-create-user-conversation:
 
 Create user conversation
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -490,7 +490,7 @@ Returned object fields:
 Create moderator conversation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-See :ref:`Create moderator conversation <modmail_create_user_conversation>`.
+See :ref:`Create moderator conversation <modmail-create-user-conversation>`.
 Don't specify the `to` parameter to create a moderator conversation.
 
 
@@ -543,7 +543,7 @@ for some odd reason.
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_mod_conversations_:conversation_id
 
 
-.. _modmail_mark_as_read:
+.. _modmail-mark-as-read:
 
 Mark as read/unread
 ~~~~~~~~~~~~~~~~~~~

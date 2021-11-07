@@ -5,7 +5,7 @@ Comment
 Overview
 --------
 
-.. _comment_schema:
+.. _comment-schema:
 
 Schema
 ~~~~~~
@@ -172,10 +172,10 @@ Actions
 Get
 ~~~
 
-See :ref:`here <get_api_info>`.
+See :ref:`here <get-api-info>`.
 
 
-.. _comment_create:
+.. _comment-create:
 
 Create
 ~~~~~~
@@ -238,64 +238,64 @@ Sending a message requires the `privatemessages` scope.
 Delete
 ~~~~~~
 
-See :ref:`here <post_api_del>`.
+See :ref:`here <post-api-del>`.
 
 
 Edit body
 ~~~~~~~~~
 
-See :ref:`here <post_api_editusertext>`.
+See :ref:`here <post-api-editusertext>`.
 
 
 Lock
 ~~~~
 
-See :ref:`here <post_api_lock>`.
+See :ref:`here <post-api-lock>`.
 
 
 Vote
 ~~~~
 
-See :ref:`here <post_api_vote>`.
+See :ref:`here <post-api-vote>`.
 
 
 Save
 ~~~~
 
-See :ref:`here <post_api_save>`.
+See :ref:`here <post-api-save>`.
 
 
 Distinguish
 ~~~~~~~~~~~
 
-See :ref:`here <post_api_distinguish>`.
+See :ref:`here <post-api-distinguish>`.
 
 
 Set inbox replies
 ~~~~~~~~~~~~~~~~~
 
-See :ref:`here <post_api_sendreplies>`.
+See :ref:`here <post-api-sendreplies>`.
 
 
 Approve
 ~~~~~~~
 
-See :ref:`here <post_api_approve>`.
+See :ref:`here <post-api-approve>`.
 
 
 Remove
 ~~~~~~
 
-See :ref:`here <post_api_remove>`.
+See :ref:`here <post-api-remove>`.
 
 
 Ignore reports
 ~~~~~~~~~~~~~~
 
-See :ref:`here <submission_ignore_reports>`.
+See :ref:`here <submission-ignore-reports>`.
 
 
-.. _comment_set_removal_reason:
+.. _comment-set-removal-reason:
 
 Set removal reason
 ~~~~~~~~~~~~~~~~~~
@@ -307,7 +307,7 @@ Set removal reason
 Set a removal reason on a removed submission/comment.
 
 See the `mod_reason_by`, `mod_reason_title`, and `mod_note` fields on the
-:ref:`Comment schema <comment_schema>`.
+:ref:`Comment schema <comment-schema>`.
 
 If the target is not a removed item, this endpoint has no effect.
 
@@ -373,7 +373,7 @@ Returns zero bytes on success.
    "403","An ID specified in the `item_ids` array does not belong to a subreddit you moderate."
 
 
-.. _comment_send_removal_reason:
+.. _comment-send-removal-reason:
 
 Send removal reason
 ~~~~~~~~~~~~~~~~~~~

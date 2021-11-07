@@ -804,9 +804,9 @@ to go backwards in the listing.
    :header: "Field","Type (hint)","Description"
    :escape: \
 
-   "before","...","See :ref:`Listings overview <listings_overview>`."
-   "after","...","See :ref:`Listings overview <listings_overview>`."
-   "limit","integer","See :ref:`Listings overview <listings_overview>`.
+   "before","...","See :ref:`Listings overview <listings-overview>`."
+   "after","...","See :ref:`Listings overview <listings-overview>`."
+   "limit","integer","See :ref:`Listings overview <listings-overview>`.
 
    The max is 1000."
    "name","string","A username. If the given name doesn't have a flair association then the parameter is ignored

@@ -7,7 +7,7 @@ Overview
 
 Put little images in your flairs with flair emojis.
 
-See `<https://mods.reddithelp.com/hc/en-us/articles/360010560371-Emojis>`_.
+Reddit help article: `<https://mods.reddithelp.com/hc/en-us/articles/360010560371-Emojis>`_.
 
 
 Schema
@@ -57,7 +57,7 @@ subreddit specified in the request URL.
 .. seealso:: `<https://www.reddit.com/dev/api/#GET_api_v1_{subreddit}_emojis_all>`_
 
 
-.. _emoji_upload:
+.. _emoji-upload:
 
 Upload
 ~~~~~~
@@ -72,26 +72,25 @@ Uploading and adding an emoji to a subreddit is two separate steps. The uploadin
 can further be broken down into two steps: obtaining an upload lease and then uploading the
 emoji image to the Amazon Simple Storage Service bucket specified in the lease.
 
-Use the `POST /api/v1/{subreddit}/emoji_asset_upload_s3` endpoint to obtain an upload lease for the
-emoji image. In the response data there will be a field called `action` whose value is a URL but
-missing the `https:` prefix. Prepend `https:` to the URL and add your emoji image to a field
+Use `POST /api/v1/{subreddit}/emoji_asset_upload_s3` to obtain an upload lease for your emoji
+image. In the response data there will be a field called `action` whose value is a URL but is
+missing the `https:` prefix. Prepend `https:` to this URL and add your emoji image to a field
 named `file` in a multipart request, along with the parameters in the `fields` array from the
 upload lease as form data in the multipart request.
 
-The `action` value is typically `//reddit-uploaded-emoji.s3-accelerate.amazonaws.com`.
-This endpoint returns XML data. Check for a bad status value here.
-If the image was too large, this endpoint returns 400 Bad Request, and a message indicating this
+The `action` is typically `//reddit-uploaded-emoji.s3-accelerate.amazonaws.com` for this endpoint.
+The action endpoint will return XML data. Remember to check for a bad status in the response.
+If the media was too large, this endpoint returns 400 Bad Request, and a message indicating this
 is included in the XML data.
 
 The `s3_key` for use in the adding stage is the value of `s3UploadLease.fields.key` in the lease.
 
-The file name specified by `filepath` doesn't appear to have any actual significance.
+The file name specified by `filepath` doesn't appear to have any significance.
 The name of the file when you download it from the site will always be the name of the emoji,
 plus the file extension.
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "filepath","string","The file name (base name, not a full path) of the image file to upload.
    Example: `image.png`."
@@ -100,17 +99,17 @@ plus the file extension.
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","   *Please log in to do that.*"
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "400","* The `filepath` or `mimetype` form parameter was not specified or the value was empty.
 

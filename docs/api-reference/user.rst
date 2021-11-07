@@ -33,10 +33,10 @@ Schema
    "is_mod","boolean","Is a moderator of any subreddit."
    "name","string","The user account name. E.g., `"spez"`"
    "verified","boolean",""
-   "subreddit","object","See :ref:`Subreddit sub-object <user_subreddit>`."
+   "subreddit","object","See :ref:`Subreddit sub-object <user-subreddit>`."
    "pref_show_snoovatar","boolean",""
 
-.. _my_user_schema:
+.. _my-user-schema:
 
 Additional fields for when the client has a user context and the user object matches that user.
 
@@ -47,7 +47,7 @@ Additional fields for when the client has a user context and the user object mat
    "can_create_subreddit","boolean",""
    "can_edit_name","boolean",""
    "coins","integer","The number of coins you have."
-   "features","object","See :ref:`here <user_features>`."
+   "features","object","See :ref:`here <user-features>`."
    "force_password_reset","boolean",""
    "gold_creddits","integer",""
    "gold_expiration","unknown?",""
@@ -93,7 +93,7 @@ Additional fields for when the client has a user context and the object does not
    "accept_pms","boolean","Whether the user is accepting private messages."
 
 
-.. _user_features:
+.. _user-features:
 
 Features sub-object
 ~~~~~~~~~~~~~~~~~~~
@@ -142,7 +142,7 @@ Features sub-object
    "spez_modal","boolean"
 
 
-.. _user_subreddit:
+.. _user-subreddit:
 
 Subreddit sub-object
 ~~~~~~~~~~~~~~~~~~~~
@@ -275,7 +275,7 @@ This end point returns an object with the following fields:
    "414","The requested URL length is way too long (over 8216 characters)."
 
 
-.. _user_listings:
+.. _user-listings:
 
 Pull user listings
 ~~~~~~~~~~~~~~~~~~
@@ -307,7 +307,7 @@ Available publicly for any user.
 
 This does not support the `sr_detail` parameter.
 
-Comment objects have extra fields. See :ref:`here <frontpage_new_comments_comment_object>`.
+Comment objects have extra fields. See :ref:`here <frontpage-new-comments-comment-object>`.
 
 * *Gilded*:
 
@@ -362,7 +362,7 @@ Not available publicly for any user.
 
 User listings.
 
-See :ref:`Additional URL Params <frontpage_listings_additional_url_params>`.
+See :ref:`Additional URL Params <frontpage-listings-additional-url-params>`.
 
 Additional URL params for *Overview*, *Submitted*, and *Comments*:
 
@@ -415,7 +415,7 @@ Report a user. Reporting a user brings it to the attention of a Reddit admin.
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_report_user
 
 
-.. _user_list_trophies:
+.. _user-list-trophies:
 
 List trophies
 ~~~~~~~~~~~~~
@@ -428,7 +428,7 @@ Get a list of trophies for a user.
 
 Returns a 'TrophyList' structure.
 
-For a description of the Trophy object schema, see :ref:`here <account_list_trophies>`.
+For a description of the Trophy object schema, see :ref:`here <account-list-trophies>`.
 
 .. csv-table:: API Errors (variant 1)
    :header: "Error","Description"
@@ -441,7 +441,7 @@ For a description of the Trophy object schema, see :ref:`here <account_list_trop
 .. seealso:: `<https://www.reddit.com/dev/api/#GET_api_v1_user_{username}_trophies>`_
 
 
-.. _user_search_users:
+.. _user-search-users:
 
 Search users
 ~~~~~~~~~~~~
@@ -452,7 +452,7 @@ Search users
 
 Search users by name or description.
 
-This endpoint returns a :ref:`paginated listing <listings_overview>`.
+This endpoint returns a :ref:`paginated listing <listings-overview>`.
 
 The listing contains **partial** user objects.
 
@@ -465,7 +465,7 @@ The `sr_detail` parameter is not supported (despite the offical docs saying so).
    :header: "Field","Type (hint)","Description"
    :escape: \
 
-   "...",":ref:`Listing common parameters <listings_overview>`."
+   "...",":ref:`Listing common parameters <listings-overview>`."
    "q","string","A search query. Matches user name beginnings or descriptions."
    "(sort)","string","Documented parameter but doesn't seem to do anything.
 

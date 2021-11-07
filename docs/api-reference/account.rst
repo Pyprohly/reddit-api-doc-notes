@@ -9,7 +9,7 @@ Schema
 ~~~~~~
 
 When the client has a user context then,
-in addition to the attributes listed in the table :ref:`here <my_user_schema>`:
+in addition to the attributes listed in the table :ref:`here <my-user-schema>`:
 
 .. csv-table:: Account Object
    :header: "Field","Type (hint)","Description"
@@ -30,7 +30,7 @@ When the client is not in a user context:
    :header: "Field","Type (hint)","Description"
    :escape: \
 
-   "features","object","Note, this object has some keys that differ from the one described in the table :ref:`here <user_features>`."
+   "features","object","Note, this object has some keys that differ from the one described in the table :ref:`here <user-features>`."
 
 
 Actions
@@ -119,7 +119,7 @@ Return a breakdown of subreddit karma.
 .. seealso:: https://www.reddit.com/dev/api/#GET_api_v1_me_karma
 
 
-.. _account_list_trophies:
+.. _account-list-trophies:
 
 List trophies
 ~~~~~~~~~~~~~
@@ -151,7 +151,7 @@ Returns a 'TrophyList' listing structure.
 
    "USER_REQUIRED","you must login"
 
-See also :ref:`GET /api/v1/user/{username}/trophies <user_list_trophies>`.
+See also :ref:`GET /api/v1/user/{username}/trophies <user-list-trophies>`.
 
 .. seealso:: https://www.reddit.com/dev/api/#GET_api_v1_me_trophies
 
@@ -169,7 +169,7 @@ Replace `{username}` with the (case-insensitive) name of a user.
 
 Returns an object with the following fields:
 
-.. _user_item_object_table:
+.. _user-item-object-table:
 
 .. csv-table:: User Item Object
    :header: "Field","Type (hint)","Description"
@@ -203,7 +203,7 @@ Returns an object with the following fields:
 List friends
 ~~~~~~~~~~~~
 
-See :ref:`Friends Account listing <account_listings_friends>`.
+See :ref:`Friends Account listing <account-listings-friends>`.
 
 
 Add friend
@@ -218,7 +218,7 @@ Create or update a "friend" relationship.
 This endpoint can add/change a note on a friend.
 Making a note requires Reddit Premium.
 
-Returns the user object on success. See the table :ref:`here <user_item_object_table>`.
+Returns the user object on success. See the table :ref:`here <user-item-object-table>`.
 
 Adding a friend who is already a friend does nothing but get the user item object
 (i.e., without updating the 'date' field).
@@ -287,10 +287,10 @@ Returns zero data on success.
 List blocked
 ~~~~~~~~~~~~
 
-See :ref:`Blocked Account listing <account_listings_blocked>`.
+See :ref:`Blocked Account listing <account-listings-blocked>`.
 
 
-.. _account_block_user:
+.. _account-block-user:
 
 Block user
 ~~~~~~~~~~

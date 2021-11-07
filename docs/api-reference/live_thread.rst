@@ -258,7 +258,7 @@ Get thread live updates
 
 Get a listing of live updates in a live thread.
 
-This endpoint is a listing. See :ref:`Listings overview <listings_overview>`.
+This endpoint is a listing. See :ref:`Listings overview <listings-overview>`.
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
@@ -740,7 +740,7 @@ List discussions
 
 Get a listing of Submissions linking to this thread.
 
-This endpoint is a listing. See :ref:`Listings overview <listings_overview>`.
+This endpoint is a listing. See :ref:`Listings overview <listings-overview>`.
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"

@@ -38,7 +38,7 @@ Schema
 Actions
 -------
 
-.. _custom_feed_get:
+.. _custom-feed-get:
 
 Get
 ~~~
@@ -55,7 +55,7 @@ and `data` which contains the properties for the custom feed information.
 One of the keys in data is `subreddits` which is an array of objects containing one key named `name` which is
 the name of a subreddit in the custom feed. If `expand_srs` parameter is set then a `data` key will also be present
 that holds some attributes of the subreddit. These attributes differ from what you get by
-:ref:`fetching a subreddit <get_api_info>` object directly (it contains roughly half the attributes). It also slightly
+:ref:`fetching a subreddit <get-api-info>` object directly (it contains roughly half the attributes). It also slightly
 differs from the attributes given by the `sr_detail` parameter in some listing endpoints.
 
 Example output::
@@ -105,7 +105,7 @@ Fetch a list of custom feeds belonging to the current user.
    :header: "Field","Type (hint)","Description"
    :escape: \
 
-   "expand_srs","boolean","See same parameter in :ref:`Get <custom_feed_get>`."
+   "expand_srs","boolean","See same parameter in :ref:`Get <custom-feed-get>`."
 
 |
 
@@ -131,7 +131,7 @@ Fetch a list of custom feeds belonging to a given user.
    :header: "Field","Type (hint)","Description"
    :escape: \
 
-   "expand_srs","boolean","See same parameter in :ref:`Get <custom_feed_get>`."
+   "expand_srs","boolean","See same parameter in :ref:`Get <custom-feed-get>`."
 
 |
 
@@ -145,7 +145,7 @@ Fetch a list of custom feeds belonging to a given user.
 .. seealso:: https://www.reddit.com/dev/api/#GET_api_multi_mine
 
 
-.. _custom_feed_create:
+.. _custom-feed-create:
 
 Create
 ~~~~~~
@@ -166,14 +166,13 @@ The `expand_srs` parameter only works with `PUT` requests.
 Custom feed attributes are specified using the `model` parameter which takes JSON data.
 A desciption of the valid JSON keys as follows:
 
-.. csv-table:: `model` parameter JSON fields
+.. csv-table:: JSON fields for `model` parameter
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "display_name?","string","No longer than 50 characters. Defaults to name."
    "description_md?","string","Raw markdown description text. Defaults to empty string."
    "icon_img?","string","One of `png`, `jpg`, `jpeg`?"
-   "key_color?","string","6-digit rgb hex color with optional leading hash. E.g., `#AABBCC`. Default: `null`.".
+   "key_color?","string","6-digit rgb hex color with optional leading hash. E.g., `#AABBCC`. Default: `null`."
    "subreddits?","object array","An array of objects containing a `name` key whose value is a subreddit name."
    "visibility?","string","One of `private`, `public`, `hidden`. Default: `private`."
 
@@ -181,7 +180,6 @@ The newly created custom feed object is returned, with a 201 HTTP status code.
 
 .. csv-table:: Form Data or URL Params
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "model","string","A string of JSON data."
    "expand_srs","boolean","This parameter only works with `PUT` not `POST` requests."
@@ -222,7 +220,7 @@ The newly created custom feed object is returned, with a 201 HTTP status code.
 Update
 ~~~~~~
 
-See :ref:`Create <custom_feed_create>`.
+See :ref:`Create <custom-feed-create>`.
 
 Use a PUT request to update.
 
@@ -279,7 +277,7 @@ Returns the newly created custom feed object.
    If not specified, the feed name is used."
    "description_md","string","New description text for the copied custom feed. If not specified, the description
    will be like `copied from u/spez`."
-   "expand_srs","boolean","See same parameter in :ref:`Get <custom_feed_get>`."
+   "expand_srs","boolean","See same parameter in :ref:`Get <custom-feed-get>`."
 
 |
 
@@ -487,7 +485,6 @@ The `sr_names` limit is unknown. Clients should assume a limit of 100 subreddit 
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "500","* The `path` parameter was not specified or was empty.
 

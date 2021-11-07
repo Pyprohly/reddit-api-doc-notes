@@ -5,7 +5,7 @@ Subreddit
 Overview
 --------
 
-.. _subreddit_schema:
+.. _subreddit-schema:
 
 Schema
 ~~~~~~
@@ -166,7 +166,7 @@ Actions
 Get by ID
 ~~~~~~~~~
 
-See :ref:`here <get_api_info>`.
+See :ref:`here <get-api-info>`.
 
 
 Get by name
@@ -437,6 +437,8 @@ Returns an empty JSON object on success.
    "503","Sends *\"Our CDN was unable to reach our servers\"* HTML document. When over approximately 250 items are specified at once."
 
 
+.. _subreddit-get-rules:
+
 Get rules
 ~~~~~~~~~
 
@@ -458,7 +460,6 @@ Rule objects have the following attributes:
 
 .. csv-table:: Rules Object
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "priority","integer","Value matches its index in the array."
    "kind","string","One of `all`, `link`, or `comment`.
@@ -476,13 +477,12 @@ Rule objects have the following attributes:
 
    Matches `short_name` if left empty in the UI. It's unfortunately not possible to tell if this field is
    empty through the API."
-   "created_utc","float","Unix timestamp of when the rule was created. Will always be a whole number."
+   "created_utc","float","Unix timestamp of when the rule was created. Always a whole number."
 
 |
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "404","The subreddit specified could not be accessed."
 
@@ -686,7 +686,7 @@ Interestingly, this endpoint can be used to determine the subscriber count of pr
    "...","Same as in `GET /api/search_reddit_names`."
 
 
-.. _subreddit_search_subreddits:
+.. _subreddit-search-subreddits:
 
 Search subreddits by name and description
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -697,7 +697,7 @@ Search subreddits by name and description
 
 Search subreddits by name or description.
 
-This endpoint returns a :ref:`paginated listing <listings_overview>`.
+This endpoint returns a :ref:`paginated listing <listings-overview>`.
 
 Matches substrings of `display_name` and `public_description` fields of subreddit objects.
 
@@ -710,7 +710,7 @@ The `sr_detail` parameter is not supported (despite the offical docs saying so).
    :header: "Field","Type (hint)","Description"
    :escape: \
 
-   "...",".",":ref:`Listing common parameters <listings_overview>`."
+   "...",".",":ref:`Listing common parameters <listings-overview>`."
    "q","string","A search query. Matches user name beginnings or descriptions."
    "(sort)","string","Documented parameter but doesn't seem to do anything.
 

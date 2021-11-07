@@ -20,17 +20,17 @@ article ID otherwise an empty listing will be returned.
 `{submission}` is the ID36 of the submission to get the comment tree of.
 
 If no `{submission}` is specified then the frontpage or subreddit's new comments will be returned.
-See :ref:`here <front_page_new_comments>` and :ref:`here <subreddit_new_comments>`.
+See :ref:`here <front-page-new-comments>` and :ref:`here <subreddit-new-comments>`.
 Clients should check for an empty string input.
 
 This endpoint returns an array of two listings.
 
 The first listing contains one element, the submission object.
-See :ref:`Submission <submission_schema>` schema.
+See :ref:`Submission <submission-schema>` schema.
 It contains an extra field: '`num_duplicates`'.
 
 The second listing is a list of the top level comments.
-See :ref:`Comment <comment_schema>` schema.
+See :ref:`Comment <comment-schema>` schema.
 Their `replies` field will likely contain a listing structure containing comment replies
 and may also contain a 'More comments' object as the last element.
 If there are no replies then `replies` will be an empty string.

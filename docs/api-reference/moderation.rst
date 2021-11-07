@@ -20,7 +20,7 @@ Return a paginated listing of submissions/comments relevant to moderators.
 
 Info: `<https://mods.reddithelp.com/hc/en-us/articles/360010090132#h_01FAGH0J7W9H9F7R7BN890P5D7>`_.
 
-These endpoints are paginated listings. See :ref:`Listings Overview <listings_overview>`.
+These endpoints are paginated listings. See :ref:`Listings Overview <listings-overview>`.
 This paginated listing supports the `sr_detail` parameter.
 
 * modqueue: Items requiring moderator review, such as reported things and items caught by the spam filter.
@@ -29,7 +29,7 @@ This paginated listing supports the `sr_detail` parameter.
 * edited: Items that have been edited recently.
 * unmoderated: Submissions that have yet to be approved/removed by a mod.
 
-These endpoints return paginated listings (see :ref:`Listings overview <listings_overview>`).
+These endpoints return paginated listings (see :ref:`Listings overview <listings-overview>`).
 
 Each listing contains a mix of submissions and comments, except for unmoderated which only contains submissions.
 
@@ -80,7 +80,7 @@ The wikicontributors and wikibanned variants use GraphQL so you'll need to use t
 If the `username` parameter is specified, only that user will be returned if they exist
 in the result set.
 
-.. _moderator_user_item_schema:
+.. _moderator-user-item-schema:
 
 .. csv-table:: Moderator User Item Schema
    :header: "Field","Type (hint)","Description"
@@ -111,20 +111,20 @@ in the result set.
    :header: "Field","Type (hint)","Description"
    :escape: \
 
-   "id",".","See :ref:`Moderator User Item Schema <moderator_user_item_schema>`."
-   "username",".","See :ref:`Moderator User Item Schema <moderator_user_item_schema>`."
-   "accountIcon",".","See :ref:`Moderator User Item Schema <moderator_user_item_schema>`."
-   "iconSize",".","See :ref:`Moderator User Item Schema <moderator_user_item_schema>`."
+   "id",".","See :ref:`Moderator User Item Schema <moderator-user-item-schema>`."
+   "username",".","See :ref:`Moderator User Item Schema <moderator-user-item-schema>`."
+   "accountIcon",".","See :ref:`Moderator User Item Schema <moderator-user-item-schema>`."
+   "iconSize",".","See :ref:`Moderator User Item Schema <moderator-user-item-schema>`."
    "approvedAtUTC","integer","UNIX timestamp of when the user was added."
 
 .. csv-table:: Banned User Item Schema
    :header: "Field","Type (hint)","Description"
    :escape: \
 
-   "id",".","See :ref:`Moderator User Item Schema <moderator_user_item_schema>`."
-   "username",".","See :ref:`Moderator User Item Schema <moderator_user_item_schema>`."
-   "accountIcon",".","See :ref:`Moderator User Item Schema <moderator_user_item_schema>`."
-   "iconSize",".","See :ref:`Moderator User Item Schema <moderator_user_item_schema>`."
+   "id",".","See :ref:`Moderator User Item Schema <moderator-user-item-schema>`."
+   "username",".","See :ref:`Moderator User Item Schema <moderator-user-item-schema>`."
+   "accountIcon",".","See :ref:`Moderator User Item Schema <moderator-user-item-schema>`."
+   "iconSize",".","See :ref:`Moderator User Item Schema <moderator-user-item-schema>`."
    "bannedAtUTC","integer","UNIX timestamp of when the user was banned."
    "bannedBy","string","The name of the moderator who banned the user."
    "reason","string?","The ban reason text. `null` if no reason text available."
@@ -139,10 +139,10 @@ in the result set.
    :header: "Field","Type (hint)","Description"
    :escape: \
 
-   "id",".","See :ref:`Moderator User Item Schema <moderator_user_item_schema>`."
-   "username",".","See :ref:`Moderator User Item Schema <moderator_user_item_schema>`."
-   "accountIcon",".","See :ref:`Moderator User Item Schema <moderator_user_item_schema>`."
-   "iconSize",".","See :ref:`Moderator User Item Schema <moderator_user_item_schema>`."
+   "id",".","See :ref:`Moderator User Item Schema <moderator-user-item-schema>`."
+   "username",".","See :ref:`Moderator User Item Schema <moderator-user-item-schema>`."
+   "accountIcon",".","See :ref:`Moderator User Item Schema <moderator-user-item-schema>`."
+   "iconSize",".","See :ref:`Moderator User Item Schema <moderator-user-item-schema>`."
    "mutedAtUTC","integer","UNIX timestamp of when the user was muted."
    "mutedBy","string","The name of the moderator who muted the user."
    "reason","string","A moderator note. Empty string if no note."
@@ -189,7 +189,7 @@ Endpoint URL params:
 
 Get redditors that relate to a subreddit.
 
-These endpoints return paginated listings (see :ref:`Listings overview <listings_overview>`)
+These endpoints return paginated listings (see :ref:`Listings overview <listings-overview>`)
 except for `.../about/moderators` which is non-paginated.
 
 If the `user` parameter is specified, only that user will be returned.
@@ -248,7 +248,7 @@ Pull moderation actions
 
 Retrieve recent moderation actions.
 
-This endpoint is a paginated listing. See :ref:`Listings Overview <listings_overview>`.
+This endpoint is a paginated listing. See :ref:`Listings Overview <listings-overview>`.
 The `limit` parameter has a max value of 500.
 
 Moderator actions taken within a subreddit are logged. Entries in the mod log last for 3 months before
@@ -285,7 +285,7 @@ or the string `a` to restrict the results to admin actions taken within the subr
    :header: "Field","Type (hint)","Description"
    :escape: \
 
-   "...","...","Common listing parameters. See :ref:`Listings overview <listings_overview>`.
+   "...","...","Common listing parameters. See :ref:`Listings overview <listings-overview>`.
 
    The `limit` can be up to 500. (Numbers outside the range of 1-500 will be clamped within range.)"
    "type","string","The action type to filter on."

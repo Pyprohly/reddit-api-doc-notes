@@ -2,7 +2,7 @@
 Listings
 ########
 
-.. _listings_overview:
+.. _listings-overview:
 
 Overview
 ********
@@ -113,7 +113,7 @@ Variants
 
 A listing of comments and submissions.
 
-.. _frontpage_overview:
+.. _frontpage-overview:
 
 Overview
 ~~~~~~~~
@@ -126,7 +126,7 @@ retrieve submissions from to populate the listing.
 
 The listings contain only submission objects, except as indicated otherwise.
 
-.. _frontpage_listings_additional_url_params:
+.. _frontpage-listings-additional-url-params:
 
 Additional URL params:
 
@@ -181,7 +181,7 @@ Additional URL params for *Top* and *Controversial*:
 
 .. seealso:: https://www.reddit.com/dev/api/#section_listings
 
-.. _front_page_new_comments:
+.. _front-page-new-comments:
 
 *New comments*
 --------------
@@ -194,7 +194,7 @@ This listing does not support the `sr_detail` parameter.
 
 Comment objects have the following extra fields:
 
-.. _frontpage_new_comments_comment_object:
+.. _frontpage-new-comments-comment-object:
 
 .. csv-table:: Comment Object extra fields
    :header: "Field","Type (hint)","Description"
@@ -269,11 +269,11 @@ The hot listing may include pinned posts at the start of the listing.
 
 The listings contain only submission objects, except as indicated otherwise.
 
-All 'additional URL param' tables in the :ref:`frontpage listings section <frontpage_overview>` apply.
+All 'additional URL param' tables in the :ref:`frontpage listings section <frontpage-overview>` apply.
 
 .. seealso:: https://www.reddit.com/dev/api/#section_listings
 
-.. _subreddit_new_comments:
+.. _subreddit-new-comments:
 
 *New comments*
 --------------
@@ -282,7 +282,7 @@ All 'additional URL param' tables in the :ref:`frontpage listings section <front
 
 A listing of comments. This listing does not support the `sr_detail` parameter.
 
-Comment objects have extra fields. See :ref:`here <frontpage_new_comments_comment_object>`.
+Comment objects have extra fields. See :ref:`here <frontpage-new-comments-comment-object>`.
 
 
 Account
@@ -294,7 +294,7 @@ User listings
 Variants
 ~~~~~~~~
 
-.. _account_listings_friends:
+.. _account-listings-friends:
 
 *Friends*
 ^^^^^^^^^
@@ -306,7 +306,7 @@ Variants
 two 'UserList' structures. The first structure matches that of `GET /api/v1/me/friends`.
 The second one is always empty, nobody knows what it's for.
 
-.. _account_listings_blocked:
+.. _account-listings-blocked:
 
 *Blocked*
 ^^^^^^^^^
@@ -363,7 +363,7 @@ Listings contain user objects that have the following fields:
 If the client is not logged in then the endpoints return the string `"{}"`.
 Notice this is a string of an empty JSON object.
 
-Also see :ref:`User listings <user_listings>` for more relevant listings.
+Also see :ref:`User listings <user-listings>` for more relevant listings.
 
 .. seealso:: `<https://www.reddit.com/dev/api/#GET_prefs_{where}>`_
 
@@ -412,7 +412,7 @@ Listings return Subreddit objects.
 If the client is not logged in then the endpoints return the string `"{}"`.
 Notice this is a string of an empty JSON object.
 
-See :ref:`Additional URL Params <frontpage_listings_additional_url_params>`.
+See :ref:`Additional URL Params <frontpage-listings-additional-url-params>`.
 
 
 Subreddit
@@ -502,7 +502,7 @@ Return a listing of 'other discussions' for the submission.
 article ID otherwise an empty listing will be returned.
 `{article}` is a submission ID36.
 
-See :ref:`Additional URL Params <frontpage_listings_additional_url_params>`.
+See :ref:`Additional URL Params <frontpage-listings-additional-url-params>`.
 
 More additional URL params:
 
