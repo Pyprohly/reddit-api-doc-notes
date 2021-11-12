@@ -37,6 +37,7 @@ Welcome to reddit-api-docs's documentation!
    api-reference/miscellaneous
    api-reference/modmail
    api-reference/widget
+   api-reference/wiki
 
 
 Indices and tables

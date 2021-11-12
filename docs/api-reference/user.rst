@@ -5,6 +5,8 @@ User
 Overview
 --------
 
+.. _user-schema:
+
 Schema
 ~~~~~~
 
