@@ -12,7 +12,6 @@ Schema
 
 .. csv-table:: Comment Object
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "all_awardings","unknown array",""
    "approved_at_utc",".","See `approved_at_utc` field on the Submission schema."
@@ -28,8 +27,8 @@ Schema
 
    This attribute is not available if the post was removed or deleted."
    "awarders","unknown array",""
-   "banned_at_utc",".","See `banned_at_utc` field on the Submission schema.""
-   "banned_by",".","See `banned_by` field on the Submission schema.""
+   "banned_at_utc",".","See `banned_at_utc` field on the Submission schema."
+   "banned_by",".","See `banned_by` field on the Submission schema."
    "body","string","The body text of the comment."
    "body_html","string","The HTML of the comment."
    "can_gild","boolean",""
@@ -40,7 +39,7 @@ Schema
    "controversiality","integer",""
    "created","float","Legacy. Same as `created_utc` but subtract 28800. Will always be a whole number."
    "created_utc","float","Unix timestamp of when the post was made."
-   "distinguished","string?","`null` if not distinguished, otherwise `"moderator"` or `"admin"`."
+   "distinguished","string?","`null` if not distinguished, otherwise `""moderator""` or `""admin""`."
    "downs","integer","Always `0`."
    "edited","boolean | float","`false` if the post wasn't edited, otherwise a Unix timestamp of when it was edited. Always a whole number."
    "gilded","integer",""
@@ -129,7 +128,7 @@ Schema
 
    An example of 2 user reports::
 
-      [[\"spam\", 3, False, True], [\"trolling\", 1, False, True]]
+      [[""spam"", 3, False, True], [""trolling"", 1, False, True]]
 
    The meaning of the fields are as follows::
 
@@ -150,7 +149,7 @@ Schema
 
    An example of 3 moderator reports::
 
-      [[\"spam\", \"Pyprohly\"], [\"Looks like spam to me\", \"SomeMod\"], [\"sus\", \"SomeOtherMod\"]]
+      [[""spam"", ""Pyprohly""], [""Looks like spam to me"", ""SomeMod""], [""sus"", ""SomeOtherMod""]]
 
    The array is empty if the current user is not a moderator of the subreddit
    or there's no user context."
@@ -160,7 +159,7 @@ Schema
 
    If there are reports on this item, the value is::
 
-      [\"This attribute is deprecated. Please use mod_reports and user_reports instead.\"]
+      [""This attribute is deprecated. Please use mod_reports and user_reports instead.""]
 
    This field is `null` if the current user is not a moderator of the subreddit
    or there's no user context."
@@ -205,7 +204,6 @@ Sending a message requires the `privatemessages` scope.
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "thing_id","string","The full ID36 of a comment, submission, or message."
    "text","string","Markdown text."
@@ -217,20 +215,27 @@ Sending a message requires the `privatemessages` scope.
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","you must login"
-   "NO_THING_ID","`thing_id` field wasn't given or the ID doesn't exist"
-   "NO_TEXT","* Neither `text` nor `richtext_json` was specified.
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
+   "NO_TEXT","200","Neither `text` nor `richtext_json` was specified, or they were empty.","
+   ``{""json"": {""errors"": [[""NO_TEXT"", ""we need something here"", ""text""]]}}``
+   "
+   "TOO_OLD","200","The target is older than 6 months and the subreddit has archiving enabled.","
+   ``{""json"": {""errors"": [[""TOO_OLD"", ""that's a piece of history now; it's too late to reply to it"", ""parent""]]}}``
+   "
 
-   * `text` was specified but was empty.
+|
 
-   \"*NO_TEXT: we need something here -> text*\""
-   "TOO_OLD","The target is older than 6 months and cannot be replied to.
+.. csv-table:: HTTP Errors
+   :header: "Status Code","Description"
 
-   \"that's a piece of history now; it's too late to reply to it -> parent\""
+   "403","The `thing_id` parameter wasn't given or the ID doesn't exist.","
+   ``{""message"": ""Forbidden"", ""error"": 403}``
+   "
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_comment
 
@@ -309,8 +314,6 @@ Set a removal reason on a removed submission/comment.
 See the `mod_reason_by`, `mod_reason_title`, and `mod_note` fields on the
 :ref:`Comment schema <comment-schema>`.
 
-If the target is not a removed item, this endpoint has no effect.
-
 Any ID that doesn't exist in `item_ids` will be ignored.
 If any of the IDs in `item_ids` don't belong to a subreddit you moderate
 then a HTTP 403 status error is returned and none of the targets will be processed.
@@ -318,13 +321,12 @@ then a HTTP 403 status error is returned and none of the targets will be process
 The maximum limit for `item_ids` is yet to be discovered.
 It doesn't appear to be possible to perform this operation in bulk through the UI anyway.
 
-This endpoint wants JSON data.
+This endpoint expects JSON data.
 
-Returns zero bytes on success.
+Returns zero bytes on success. If the target is not a removed item, it is treated as a success.
 
 .. csv-table:: JSON Data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "item_ids","string array","An array of full ID36s of comments or submissions to process.
    Alternatively, or additionally, elements can be a comma separated list of ID36s."
@@ -341,36 +343,45 @@ Returns zero bytes on success.
 
 |
 
-.. csv-table:: API Errors (variant 1)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "JSON_MISSING_KEY","* The `item_ids` parameter was not specified.
+   "USER_REQUIRED","403","There is no user context.","
+   ``{""fields"": [""item_ids""], ""explanation"": ""Please log in to do that."", ""message"": ""Forbidden"", ""reason"": ""USER_REQUIRED""}``
+   "
+   "JSON_PARSE_ERROR","400","No JSON data was provided or the JSON was badly formatted.","
+   ``{""fields"": [""json""], ""explanation"": ""Sorry, something went wrong. Double-check things and try again."", ""message"": ""Bad Request"", ""reason"": ""JSON_PARSE_ERROR""}``
+   "
+   "JSON_MISSING_KEY","400","* The `item_ids` field was not specified.
 
-   * The `reason_id` parameter was not specified.
+   * The `reason_id` field was not specified.
 
-   * The `mod_note` parameter was not specified.
+   * The `mod_note` field was not specified.
 
-   * A `null` value or empty stings were given for both `reason_id` and `mod_note`
-     at the same time.
+   * Empty stings or `null`s were specified for both `reason_id` and `mod_note` at the same time.
+   ","
+   ``{""fields"": [""mod_note""], ""explanation"": ""JSON missing key: \""mod_note\"""", ""message"": ""Bad Request"", ""reason"": ""JSON_MISSING_KEY""}``
+   "
+   "NO_THING_ID","400","* The `item_ids` array was empty.
 
-   *\"JSON missing key: \"reason_id\"\"* -> reason_id"
-   "NO_THING_ID","* The `item_ids` array was empty.
-
-   * None of the IDs specified in the `item_ids` array were valid.
-
-   *\"id not specified\"*"
-   "INVALID_ID","The reason ID specified by `reason_id` is invalid or does not exist.
-
-   *\"The specified id is invalid\"* -> reason_id"
+   * None of the IDs specified in the `item_ids` array were valid.","
+   ``{""explanation"": ""id not specified"", ""message"": ""Bad Request"", ""reason"": ""NO_THING_ID""}``
+   "
+   "INVALID_ID","400","The reason ID specified by `reason_id` is invalid or does not exist.","
+   ``{""explanation"": ""The specified id is invalid"", ""message"": ""Bad Request"", ""reason"": ""INVALID_ID""}``
+   "
+   "MUST_BE_PRESENT","400","The subreddit specified by `item_ids` does not exist.","
+   ``{""explanation"": ""None"", ""message"": ""Bad Request"", ""reason"": ""MUST_BE_PRESENT""}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
-   :header: "Status Code","Description"
-   :escape: \
+   :header: "Status Code","Description","Example"
 
-   "403","An ID specified in the `item_ids` array does not belong to a subreddit you moderate."
+   "403","An ID specified in the `item_ids` array does not belong to a subreddit you moderate.","
+   ``{""message"": ""Forbidden"", ""error"": 403}``
+   "
 
 
 .. _comment-send-removal-reason:
@@ -408,7 +419,6 @@ Returns an empty JSON object for `type: private` and `type: private_exposed`.
 
 .. csv-table:: JSON Data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "type","string","One of the following:
 
@@ -431,40 +441,49 @@ Returns an empty JSON object for `type: private` and `type: private_exposed`.
 
 |
 
-.. csv-table:: API Errors (variant 1)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "JSON_MISSING_KEY","* The `type` parameter was not specified.
+   "USER_REQUIRED","403","There is no user context.","
+   ``{""fields"": [""item_id""], ""explanation"": ""Please log in to do that."", ""message"": ""Forbidden"", ""reason"": ""USER_REQUIRED""}``
+   "
+   "JSON_PARSE_ERROR","400","No JSON data was provided or the JSON was badly formatted.","
+   ``{""fields"": [""json""], ""explanation"": ""Sorry, something went wrong. Double-check things and try again."", ""message"": ""Bad Request"", ""reason"": ""JSON_PARSE_ERROR""}``
+   "
+   "JSON_MISSING_KEY","400","* The `type` field was not specified.
 
-   * The `item_id` parameter was not specified.
+   * The `item_id` field was not specified.
 
-   * The `title` parameter was not specified.
+   * The `title` field was not specified.
 
-   * The `message` parameter was not specified.
+   * The `message` field was not specified.
+   ","
+   ``{""fields"": [""item_id""], ""explanation"": ""JSON missing key: \""item_id\"""", ""message"": ""Bad Request"", ""reason"": ""JSON_MISSING_KEY""}``
+   "
+   "NO_TEXT","400","The value for the `title` parameter was empty or `null`.","
+   ``{""fields"": [""title""], ""explanation"": ""we need something here"", ""message"": ""Bad Request"", ""reason"": ""NO_TEXT""}``
+   "
+   "INVALID_OPTION","400","The value specified for `type` was invalid.","
+   ``{""fields"": [""type""], ""explanation"": ""that option is not valid"", ""message"": ""Bad Request"", ""reason"": ""INVALID_OPTION""}``
+   "
+   "INVALID_ID","400","* The ID specified in the `item_id` array is invalid.
 
-   *\"JSON missing key: \"message\"\"* -> message"
-   "INVALID_ID","* The ID specified in the `item_id` array is invalid.
-
-   * The ID specified in the `item_id` array is not a removed item."
-   "INVALID_OPTION","The value specified for `type` was invalid.
-
-   *\"that option is not valid\"* -> type"
-   "NO_TEXT","The value for the `title` parameter was empty or `null`.
-
-   *\"we need something here\"* -> title"
-   "NO_THING_ID","The `item_id` array was empty.
-
-   *\"id not specified\"*"
+   * The ID specified in the `item_id` array is not a removed item.","
+   ``{""explanation"": ""The specified id is invalid"", ""message"": ""Bad Request"", ""reason"": ""INVALID_ID""}``
+   "
+   "NO_THING_ID","400","The `item_id` array was empty.","
+   ``{""explanation"": ""id not specified"", ""message"": ""Bad Request"", ""reason"": ""NO_THING_ID""}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
-   :header: "Status Code","Description"
-   :escape: \
+   :header: "Status Code","Description","Example"
 
    "403","* The target specified by the ID in the `item_id` array does not belong to a subreddit you moderate.
 
    * The target specified by the ID in the `item_id` array was a comment ID when using the
      `removal_link_message` endpoint, or vice versa.
+   ","
+   ``{""message"": ""Forbidden"", ""error"": 403}``
    "

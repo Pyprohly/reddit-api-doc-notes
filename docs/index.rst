@@ -38,6 +38,8 @@ Welcome to reddit-api-docs's documentation!
    api-reference/modmail
    api-reference/widget
    api-reference/wiki
+   api-reference/legacy_reddit_subreddit_style
+   api-reference/redesign_reddit_subreddit_style
 
 
 Indices and tables

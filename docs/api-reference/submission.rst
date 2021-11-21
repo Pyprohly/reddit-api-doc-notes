@@ -5,17 +5,15 @@ Submission
 Overview
 --------
 
-There are different post types: `text`, `link`, `image`, `gallery`, `video`, `poll`, `crosspost`.
+There are different post types: `text`, `link`, `gallery`, `poll`, `crosspost`.
 
-Use the following checks to distinguish the post type. The order of the checks is important.
+Use the following checks to distinguish the post type. The order of the checks is significant.
 
-* `image`: ``d.get('post_hint') == 'image'``
-* `video`: ``d['is_video']``
 * `gallery`: ``d.get('is_gallery', False)``
 * `poll`: ``'poll_data' in d``
 * `crosspost`: ``'crosspost_parent' in d``
 * `text`: ``d['is_self']``
-* `link`: (otherwise)
+* `link`: ``'url_overridden_by_dest' in d``
 
 To determine the type of a crosspost you must lookup the post type of the submission in `crosspost_parent`.
 This does not have to be done recursively because when you crosspost a crosspost the `crosspost_parent` will be
@@ -30,7 +28,6 @@ Schema
 .. csv-table:: Submission Object
    :header: "Field","Type (hint)","Description"
    :widths: 8, 6, 30
-   :escape: \
 
    "approved?","boolean","`true` if the submission is approved.
 
@@ -76,7 +73,6 @@ Schema
    "upvote_ratio","float","Upvote ratio."
    "subreddit_type","string","One of `public`, `private`, `restricted`, `archived`, `employees_only`, `gold_only`, `gold_restricted`, or `user`."
    "ups","integer","Same as `score`."
-   "total_awards_received","integer","Number of rewards on the post."
    "media_embed","unknown object",""
    "is_original_content","boolean","Whether the post is marked as OC."
    "media","object?","`null` if not a video post.
@@ -125,31 +121,84 @@ Schema
 
    Known values: `self`, `link`, `image`, `hosted:video`, `rich:video`.
 
-   Field does not exist if it is a gallery post.
+   Field does not exist if it is a gallery post. Use the `is_gallery` field instead to determine a gallery post.
 
-   This field does not exist if the `preview` key does not exist."
+   This field does not exist if the `preview` field does not exist. This means this field is not available if
+   the post was removed or deleted."
    "is_gallery?","boolean","True if a gallery post.
 
-   This field does not exist if it is not a gallery post. (Hence value should always be true.)
+   This field does not exist if it is not a gallery post. (Hence value should always be true.)"
+   "gallery_data?","object","
+   Contains information about the gallery items, including captions and link URLs.
+   Use the `media_id` in the `media_metadata` field object to get more information about the media items.
 
-   This is false if the post is a crosspost to a gallery post."
-   "gallery_data?","object","This field does not exist if not a gallery post.
+   This field does not exist if not a gallery post.
 
-   Contains a bit of information about the gallery content, including captions and URLs.
-   Contains IDs for accessing the `media_metadata` field object."
+   The object will have one key, `items`, whose value is an array of gallery item objects.
+
+   Gallery item fields:
+
+   * `id` (integer): Gallery item ID.
+   * `media_id` (string): The media ID. Use this to look up more information about the media using the
+     `media_metadata` field on the submission object.
+   * `caption` (?string): The gallery item caption. Field will not exist if image has no caption.
+   * `outbound_url` (?string): An outbound link for the gallery item. Field will not exist if image has no outbound link.
+   "
    "media_metadata?","object","Information about media items linked in the post.
 
-   Includes information for image URLs, image file types, dimensions.
+   Includes information for image URLs, image file types, and their dimensions.
 
-   This field does not exist if there is no media in the post."
+   This field is only available if the post type is a text post or gallery post.
+   If a text post this field will not be present if there is no media in the post.
+
+   Schema:
+
+   * *`(root)`* (object (mapping[string, string])): The keys are media IDs and the values are objects.
+
+     Value sub-object fields:
+
+     - If `status: failed`:
+
+       * `status` (string): `failed`.
+
+     - If `status: valid`:
+
+       * `status` (string): `valid`.
+       * `e` (string): `Image` (when `m: image/jpg` or `m: image/png`) or `AnimatedImage` (when `m: image/gif`).
+       * `m` (string): Either: `image/jpg`, `image/png`, or `image/gif`.
+       * `p` (object array): Array of image previews at different sizes.
+
+         Sub-object fields:
+
+         * `x` (integer): Width of the image.
+         * `y` (integer): Height of the image.
+         * `u` (string): URL of the image.
+
+       * `s` (object): 'Source'.
+
+         - If `e: Image`:
+
+           * `x` (integer): Width of the image.
+           * `y` (integer): Height of the image.
+           * `u` (string): URL of the image.
+
+         - If `e: AnimatedImage`:
+
+           * `x` (integer): Width of the image.
+           * `y` (integer): Height of the image.
+           * `gif` (string): URL to the original image.
+           * `mp4` (string): URL to an mp4 version of the original image.
+
+       * `id` (string): The media ID.
+   "
    "poll_data?","object","This field does not exist if not a poll post."
    "content_categories","string array?",""
    "is_self","boolean","True if a text post or poll post.
 
    This field will be false if the post is a crosspost to a text post."
    "created","float","Legacy. Same as `created_utc` but subtract 28800."
-   "wls","integer?","Unknown. Often `6`. Possibly stands for \"white list status\"?"
-   "pwls","integer?","Unknown. Possibly stands for \"parent white list status\"?"
+   "wls","integer?","Unknown. Often `6`. Possibly stands for ""white list status""?"
+   "pwls","integer?","Unknown. Possibly stands for ""parent white list status""?"
    "removed?","boolean","`true` if the submission is removed.
 
    This will not be `true` if the removed post was indicated as spam! It is recommended to check for `null` in
@@ -179,12 +228,54 @@ Schema
    "view_count","unknown?",""
    "archived","boolean","Whether the post is archived. Archived posts cannot be commented on, but the author can still edit the OP."
    "no_follow","boolean",""
-   "is_crosspostable","boolean","Whether the post can be crossposted. Will be `false` if the post was removed or deleted."
    "pinned","boolean","Whether the post is pinned to the poster's profile.
    This attribute will only be true if the submission object was obtained through a user listing."
    "over_18","boolean","Whether the submission has been marked as NSFW."
    "preview?","object","This field is not available if the post was removed or deleted.
-   This field is not available if the post is a text post.
+
+   Object structure:
+
+   * `images` (object array):
+
+     * `id` (string): E.g., `FS-vv_FIA3NcZdqmmxMt_xNXUowdvP3AvuTB3_TUH4o`.
+     * `source` (object):
+
+       * `url` (string): A link to the original image.
+       * `width` (integer): The original image width.
+       * `height` (integer): The original image height.
+
+     * `resolutions` (object array): The same image as in `source` but at different resolutions.
+
+       * `url` (string): A link to the image.
+       * `width` (integer): The image width.
+       * `height` (integer): The image height.
+
+     * `variants` (object mapping): Mapping of string to objects.
+
+   * `enabled` (boolean)
+   * `reddit_video_preview` (?object): Not all video posts have this field.
+
+     Example of a post that has this field:
+     `https://www.reddit.com/r/gifsthatkeepongiving/comments/qsdg9f/behold_the_mother_of_all_nerf_guns/`.
+
+     Example from post `#qsdg9f`:
+
+     .. code-block:: text
+
+        {'bitrate_kbps': 800,
+         'fallback_url': 'https://v.redd.it/abl95wmjm6z71/DASH_360.mp4',
+         'height': 360,
+         'width': 640,
+         'scrubber_media_url': 'https://v.redd.it/abl95wmjm6z71/DASH_96.mp4',
+         'dash_url': 'https://v.redd.it/abl95wmjm6z71/DASHPlaylist.mpd',
+         'duration': 30,
+         'hls_url': 'https://v.redd.it/abl95wmjm6z71/HLSPlaylist.m3u8',
+         'is_gif': True,
+         'transcoding_status': 'completed'}
+
+   More info: https://www.reddit.com/r/redditdev/comments/39yr53/reddit_change_new_preview_images_available_for/.
+
+   More info: https://www.reddit.com/r/redditdev/comments/5jfk02/api_change_return_image_previews_for_nsfw_posts/.
 
    Example for a link post to www.yahoo.com::
 
@@ -250,13 +341,15 @@ Schema
    "
    "all_awardings","object array",""
    "awarders","unknown array",""
+   "total_awards_received","integer","Number of rewards on the post."
+   "top_awarded_type","unknown?",""
    "media_only","boolean",""
    "can_gild","boolean",""
    "spoiler","boolean","Whether the post is marked as a spoiler."
    "locked","boolean","Whether the post has been locked. https://www.reddit.com/r/modnews/comments/3qguqv/moderators_lock_a_post/"
    "visited","boolean",""
    "removed_by","unknown?",""
-   "distinguished","string?","`null` if not distinguished, otherwise `"moderator"` or `"admin"`."
+   "distinguished","string?","`null` if not distinguished, otherwise `""moderator""` or `""admin""`."
    "subreddit_id","string","The full ID36 of the subreddit that was posted to. E.g., `t5_2qzb6` for `r/IAmA`."
    "removal_reason",".","See `removal_reason` field on the :ref:`Comment schema <comment-schema>`."
    "mod_reason_by",".","See `mod_reason_by` field on the :ref:`Comment schema <comment-schema>`."
@@ -281,7 +374,6 @@ Schema
    Also see `permalink`, which is the same as this field but the path only."
    "subreddit_subscribers","integer","The number of subscribers in the subreddit."
    "created_utc","float","Unix timestamp of when the post was made. Will always be a whole number."
-   "num_crossposts","integer","Crosspost count."
    "is_video","boolean","True if is is a video (including video gif) post. Otherwise, false.
 
    This is false if the post is a crosspost to a video post."
@@ -293,7 +385,7 @@ Schema
 
    Field not available if the post does not belong to the current user.
    Field not available if no user context is available."
-   "url_overridden_by_dest?","string","The url of the linked item for the link post.
+   "url_overridden_by_dest?","string","The url of the linked item for a link post.
 
    The URL of the image if an image post.
 
@@ -340,10 +432,15 @@ Schema
    Field not available if flair not configured.
 
    Field not available if the post was removed or deleted."
-   "crosspost_parent?","string","The full ID36 of the crosspost parent submission.
+   "is_crosspostable","boolean","Whether the post can be crossposted. Will be `false` if the post was removed or deleted."
+   "num_crossposts","integer","Crosspost count."
+   "crosspost_parent?","string","The full ID36 of the crosspost original post.
 
    This field does not exist if the post is not a crosspost."
-   "crosspost_parent_list?","array of submission objects",""
+   "crosspost_parent_list?","object array","If the submission is a crosspost, the array contains one object
+   which is the submission of the original post.
+
+   This field does not exist if the post is not a crosspost."
    "ignore_reports?",".","See same field on :ref:`Comment Schema <comment-schema>`"
    "num_reports",".","See same field on :ref:`Comment Schema <comment-schema>`"
    "user_reports",".","See same field on :ref:`Comment Schema <comment-schema>`"
@@ -383,7 +480,6 @@ and differs each time.
 
 .. csv-table:: URL Params
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "id","string","A comma-separated list of full ID36s."
    "sr_name","string","A comma-separated list of subreddit names."
@@ -495,7 +591,6 @@ Return object example for video posts::
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "kind","string","Either: `link`, `self`, `image`, `video`, `videogif`,
    `crosspost`. Default: `link`."
@@ -532,35 +627,60 @@ Return object example for video posts::
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","you must login"
-   "BAD_SR_NAME","the `sr` field, subreddit name, isn't given"
-   "SUBREDDIT_NOEXIST","the specified subreddit doesn't exist"
-   "SUBREDDIT_NOTALLOWED","you don't have permission to post to the subreddit.
-   Quarantined subreddits can be posted to, even if you haven't yet opt-ed in to viewing its content."
-   "INVALID_OPTION","the option specified in the `kind` field isn't valid."
-   "NO_TEXT","no `title` was specified, is blank, or contains only whitespace"
-   "NO_URL","the `url` field isn't given or is too garbled"
-   "JSON_PARSE_ERROR","the `richtext_json` value is not in the correct JSON format"
-   "INVALID_SELFPOST","both `text` and `richtext_json` were specified"
-   "TOO_LONG","the `title` or `text` is too long"
-   "NO_SELFS","the subreddit doesn't allow text posts"
-   "MISSING_VIDEO_URLS","The `video_poster_url` was not specified, empty, or was an invalid value
-   when a video post is being made.
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
+   "BAD_SR_NAME","200","The `sr` parameter was not specified.","
+   ``{""json"": {""errors"": [[""BAD_SR_NAME"", ""This community name isn't recognizable. Check the spelling and try again."", ""sr""]]}}``
+   "
+   "SUBREDDIT_NOEXIST","200","The specified subreddit does not exist.","
+   ``{""json"": {""errors"": [[""SUBREDDIT_NOEXIST"", ""Hmm, that community doesn't exist. Try checking the spelling."", ""sr""]]}}``
+   "
+   "SUBREDDIT_NOTALLOWED","200","You don't have permission to post to the subreddit.
 
-   *\"This community requires a video link and a post link\"* -> url"
-   "ALREADY_SUB","The given link has already been submitted to the subreddit.
+   Quarantined subreddits can be posted to, even if you haven't yet opt-ed in to viewing its content.","
+   ``{""json"": {""errors"": [[""SUBREDDIT_NOTALLOWED"", ""This community only allows trusted members to post here"", ""sr""]]}}``
+   "
+   "INVALID_OPTION","200","The option specified in the `kind` field isn't valid.","
+   ``{""json"": {""errors"": [[""INVALID_OPTION"", ""that option is not valid"", ""sr""]]}}``
+   "
+   "NO_TEXT","200","The `title` parameter was not specified, was blank, or contained only whitespace.","
+   ``{""json"": {""errors"": [[""NO_TEXT"", ""we need something here"", ""title""]]}}``
+   "
+   "NO_URL","200","`kind: link` and the `url` parameter was not specified, or the URL is invalid.","
+   ``{""json"": {""errors"": [[""NO_URL"", ""a url is required"", ""url""]]}}``
+   "
+   "JSON_PARSE_ERROR","200","`kind: richtext` and the `richtext_json` field was not in the correct JSON format","
+   ``{""json"": {""errors"": [[""JSON_PARSE_ERROR"", ""Sorry, something went wrong. Double-check things and try again."", ""richtext_json""]]}}``
+   "
+   "INVALID_SELFPOST","200","Both the `text` and `richtext_json` parameters were specified.","
+   ``{""json"": {""errors"": [[""INVALID_SELFPOST"", ""This request to self-post is invalid"", ""text""]]}}``
+   "
+   "TOO_LONG","200","* The `title` parameter must be under 300 characters.
 
-   *\"This community doesn't allow links to be posted more than once, and this link has already been shared\"* -> url"
+   * The `text` parameter must be under 40000 characters.","
+   (1): ``{""json"": {""errors"": [[""TOO_LONG"", ""This field must be under 300 characters"", ""title""]]}}``
+
+   (2): ``{""json"": {""errors"": [[""TOO_LONG"", ""This field must be under 40000 characters"", ""text""]]}}``
+   "
+   "NO_SELFS","200","The subreddit doesn't allow text posts.","
+   ``{""json"": {""errors"": [[""NO_SELFS"", ""This community doesn't allow text posts"", ""sr""]]}}``
+   "
+   "MISSING_VIDEO_URLS","200","The `video_poster_url` was not specified, empty, or was an invalid value
+   when a video post is being made.","
+   ``{""json"": {""errors"": [[""MISSING_VIDEO_URLS"", ""This community requires a video link and a post link"", ""url""]]}}``
+   "
+   "ALREADY_SUB","200","The given link has already been submitted to the subreddit.","
+   ``{""json"": {""errors"": [[""ALREADY_SUB"", ""This community doesn't allow links to be posted more than once, and this link has already been shared"", ""url""]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "404","The subreddit is private/banned."
 
@@ -592,25 +712,38 @@ Return object example::
 
 .. csv-table:: JSON Data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "sr",".","Same as in :ref:`POST /api/submit <post-api-submit>`."
    "title",".","Same as in :ref:`POST /api/submit <post-api-submit>`."
    "items","object array","The gallery items.
 
+   Sub-object fields:
+
+   * `media_id` (string): The media ID.
+   * `caption` (?string): A caption.
+   * `outbound_url` (?string): An outbound link for the gallery item.
+
+   Empty strings are treated as if the field was not specified. The UI sends empty strings for `caption` and `outbound_url`
+   if no value is specified.
+
    Example::
+
       [
          {
-           "caption": "pepperoonie",
-           "outbound_url": "www.google.com",
-           "media_id": "zpkqrrfo3m971"
+           ""caption"": ""pepperoonie"",
+           ""outbound_url"": ""www.google.com"",
+           ""media_id"": ""zpkqrrfo3m971""
          },
          {
-           "caption": "nothing you cant do",
-           "outbound_url": "https://www.google.com",
-           "media_id": "qg54xsfo3m971"
+           ""caption"": ""nothing you cant do"",
+           ""outbound_url"": ""https://www.google.com"",
+           ""media_id"": ""qg54xsfo3m971""
          }
       ]
+
+   The array must have more than one item otherwise an API error will occur.
+
+   The `media_id` on each gallery item must be unique otherwise a 500 HTTP error will occur.
    "
    "sendreplies",".","Same as in :ref:`POST /api/submit <post-api-submit>`."
    "spoiler",".","Same as in :ref:`POST /api/submit <post-api-submit>`."
@@ -631,22 +764,28 @@ Return object example::
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","you must login"
-   "placeholder","The gallery must contain more than one entry.
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
+   "placeholder","200","* The `title` parameter was not specified.
 
-   *\"List is too short.\"* -> items"
+   * The gallery must contain more than one entry.","
+   ``{""json"": {""errors"": [[""placeholder"", ""This field cannot be empty."", ""post_metadata.title""], [""placeholder"", ""List is too short."", ""items""]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
-   "500","JSON data was not provided."
+   "500","* JSON data was not provided.
+
+   * The `sr` parameter was not specified.
+
+   * The same `media_id` was used multiple times."
 
 
 Poll
@@ -674,7 +813,6 @@ Return object example::
 
 .. csv-table:: JSON Data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "sr",".","Same as in :ref:`POST /api/submit <post-api-submit>`."
    "title",".","Same as in :ref:`POST /api/submit <post-api-submit>`."
@@ -682,10 +820,11 @@ Return object example::
    "options","string array","The poll options.
 
    Example::
+
       [
-        "apple",
-        "orange",
-        "bacon"
+        ""apple"",
+        ""orange"",
+        ""bacon""
       ]
    "
    "duration","integer","The number of days the poll runs for.
@@ -713,26 +852,32 @@ Return object example::
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","you must login"
-   "JSON_PARSE_ERROR","JSON data was not provided.
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
+   "JSON_PARSE_ERROR","200","JSON data was not provided.","
+   ``{""json"": {""errors"": [[""JSON_PARSE_ERROR"", ""Sorry, something went wrong. Double-check things and try again."", ""json""]]}}``
+   "
+   "placeholder","200","* The `title` parameter was not specified.
 
-   *\"Sorry, something went wrong. Double-check things and try again.\"* -> json"
-   "TOO_FEW_OPTIONS","*\"you need at least 2 poll options\"* -> options"
-   "placeholder","The duration parameter was not specified.
-
-   *\"Missing value\"* -> duration"
+   * The `duration` parameter was not specified.","
+   ``{""json"": {""errors"": [[""placeholder"", ""This field cannot be empty."", ""post_metadata.title""], [""placeholder"", ""Missing value"", ""duration""]]}}``
+   "
+   "TOO_FEW_OPTIONS","200","Need at least 2 poll options.","
+   ``{""json"": {""errors"": [[""TOO_FEW_OPTIONS"", ""you need at least 2 poll options"", ""options""]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
-   "500","The `options` parameter was not specified."
+   "500","* The `sr` parameter was not specified.
+
+   * The `options` parameter was not specified."
 
 
 Crosspost
@@ -757,17 +902,17 @@ nothing happens.
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "id","string","The full ID36 of a comment or submission."
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","you must login"
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_del
 
@@ -794,7 +939,6 @@ I don't know what the criteria is :P.
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "thing_id","string","Full ID36 of a comment or text post"
    "text","string","Markdown text"
@@ -804,15 +948,22 @@ I don't know what the criteria is :P.
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","you must login"
-   "NO_THING_ID","`thing_id` field wasn't given or the ID doesn't exist"
-   "placeholder","The submission specified by `thing_id` isn't a text post and can't be edited.
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
+   "NO_THING_ID","200","The `thing_id` parameter wasn't given or the ID doesn't exist.","
+   ``{""json"": {""errors"": [[""NO_THING_ID"", ""ID not specified"", ""thing_id""]]}}``
+   "
 
-   *\"placeholder: This post can't be edited\"* -> text"
+|
+
+.. csv-table:: HTTP Errors
+   :header: "Status Code","Description"
+
+   "500","The submission specified by `thing_id` isn't a text post and can't be edited."
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_editusertext
 
@@ -837,23 +988,22 @@ moderators_you_may_now_lock_individual_comments/
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "id","string","the full ID36 of a comment or submission"
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","you must login"
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "403","Something went wrong. The full ID36 doesn't exist, you don't have permission to lock the target, etc."
 
@@ -879,7 +1029,6 @@ Cast a vote on a Submission or Comment.
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "id","string","full ID36 of a Submission or Comment"
    "dir","integer or string","vote direction. one of `1`, `0`, or `-1`"
@@ -887,17 +1036,17 @@ Cast a vote on a Submission or Comment.
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","you must login"
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "404","No `id` was given or the target could not be found."
    "500","* `dir` was not specified.
@@ -923,24 +1072,23 @@ Returns an empty JSON object.
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "id","string","The full ID36 of a submission or comment."
    "category","string","A category name. Requires Reddit Premium. Ignored if no Reddit Premium."
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","   *Please log in to do that.*"
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "403","The category name specified was invalid."
 
@@ -968,23 +1116,22 @@ Returns an empty JSON object.
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "id","string","A comma-separated string of submission full ID36s."
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","   *Please log in to do that.*"
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "400","* The `id` parameter was not specified.
 
@@ -1009,25 +1156,26 @@ Mark a Submission as NSFW.
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "id","string","Full ID36 of a Submission."
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","you must login"
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
-   "403","you do not have mod privileges to mark the target"
+   "403","* The `id` parameter was not specified.
+
+   * You do not have mod privileges to mark the target"
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_marknsfw
 
@@ -1046,25 +1194,26 @@ Mark a Submission as spolier.
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "id","string","Full ID36 of a Submission."
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","you must login"
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
-   "403","you do not have mod privileges to mark the target"
+   "403","* The `id` parameter was not specified.
+
+   * You do not have mod privileges to mark the target"
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_spoiler
 
@@ -1104,7 +1253,6 @@ The target entity is returned in a listing structure.
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "id","string","Full ID36 of a Submission or Comment."
    "how","string","One of `yes`, `admin`, `no`, `special`. Error if not specified."
@@ -1113,22 +1261,21 @@ The target entity is returned in a listing structure.
 |
 
 .. csv-table:: API Errors
-   :header: "Error","Variant","Description"
-   :escape: \
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","2","you must login"
-   "COMMENT_NOT_STICKYABLE","1","The target comment can't be stickied because it is not a top-level comment.
-
-   *\"This comment is not stickyable. Ensure that it is a top level comment.\"*"
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "400","If `sticky` was specified and is `true` (or a truthy value) and `id` refers to submission rather than a comment."
-   "403","The `how` parameter was not given, was of an invalid value, or you do not have the right mod privileges."
+   "403","* The `how` parameter was not specified or was of an invalid value.
+
+   * You do not have permission to modify the target."
    "404","No `id` was given or the target could not be found."
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_distinguish
@@ -1195,7 +1342,6 @@ Returns ``{"json": {"errors": []}}`` on success.
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "403","You do not have permission to sticky that post."
    "409","The post is already stickied."
@@ -1266,7 +1412,6 @@ Returns ``{"json": {"errors": []}}`` on success.
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "403","You do not have permission to pin that post."
    "409","The post is already pinned."
@@ -1291,24 +1436,23 @@ Returns ``{"json": {"errors": []}}`` on success.
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "id","string","Full ID36 of a Submission."
    "state","boolean","Whether to enable (true) or disable (false) contest mode."
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","you must login"
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "403","ID not found, or you do not have permission to enable/disable contest mode for this post."
 
@@ -1331,24 +1475,23 @@ If `sort` is `blank`, not given, or an unknown value, the suggested sort will be
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "id","string","full ID36 of a Submission"
    "sort","string","one of `confidence`, `top`, `new`, `controversial`, `old`, `random`, `qa`, `live`, `blank`"
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","you must login"
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "403","ID not found, or you do not have permission to set the suggestd sort for this post"
 
@@ -1370,18 +1513,18 @@ If `state` is not provided, `true` (enable) is assumed.
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "id","string","A full ID36 of a Submission or Comment."
    "state","boolean","Whether to enable or disable inbox replies."
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","you must login"
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_sendreplies
 
@@ -1416,7 +1559,6 @@ Returned object example::
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "id","string","Full ID36 of a post."
    "event_start","string","A datetime in ISO 8601 format. E.g., `2018-09-11T12:00:00`.
@@ -1431,27 +1573,35 @@ Returned object example::
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "BAD_TIME","* The value specified for `event_start` or `event_end` is in a bad format.
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
+   "BAD_TIME","200","* The value specified for `event_start` or `event_end` is in a bad format.
 
    * The date string specified for `event_start` or `event_end` is in the past.
 
-   Note that this error will always indicate `event_start` is wrong even if its `event_end` that needs fixing.
-
-   \"This time is invalid\" -> event_start"
-   "INVALID_TIMEZONE","*\"This timezone is invalid\"* -> *event_tz*"
-   "MAX_EVENT_TIME","*\"This event can't be longer than 7 days\"* -> *event_end*"
-   "MIN_EVENT_TIME","*\"This event must last at least 30 minutes\"* -> *event_end*"
+   Note that this error will always indicate `event_start` is wrong even if it's `event_end` that needs fixing.","
+   ``{""json"": {""errors"": [[""BAD_TIME"", ""This time is invalid"", ""event_start""]]}}``
+   "
+   "INVALID_TIMEZONE","200","The value specified for `event_tz` is invalid.","
+   ``{""json"": {""errors"": [[""INVALID_TIMEZONE"", ""This timezone is invalid"", ""event_tz""]]}}``
+   "
+   "MAX_EVENT_TIME","200","The event can't be longer than 7 days.","
+   ``{""json"": {""errors"": [[""MAX_EVENT_TIME"", ""This event can't be longer than 7 days"", ""event_end""]]}}``
+   "
+   "MIN_EVENT_TIME","200","The event must last at least 30 minutes","
+   ``{""json"": {""errors"": [[""MIN_EVENT_TIME"", ""This event must last at least 30 minutes"", ""event_end""]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
+   "403","The `id` parameter was not specified."
    "500","The `event_start` parameter was not specified."
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_event_post_time
@@ -1472,24 +1622,23 @@ Returns an empty JSON object on success.
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "fullname","string","The full ID36 of a submission."
    "follow","boolean","True to follow, false to unfollow. Default: false."
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","   *Please log in to do that.*"
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "403","The submission specified by the `fullname` parameter is not an event."
    "404","The submission specified by the `fullname` parameter does not exist."
@@ -1515,7 +1664,6 @@ A removed post's attributes will change as follows:
 
 .. csv-table:: Object attribute changes
    :header: "Field","Description"
-   :escape: \
 
    "removed","Resets to `false`."
    "removed_by_category","Resets to `null`."
@@ -1533,7 +1681,6 @@ Approving a post/comment affects it's attributes:
 
 .. csv-table:: Object attribute changes
    :header: "Field","Description"
-   :escape: \
 
    "approved","Becomes `true`. (Value starts as `false`.)"
    "approved_by","Name of the redditor who approved. (Value starts as `null`.)"
@@ -1543,7 +1690,6 @@ Returns an empty JSON object on success.
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "id","string","Full ID36 of a post or comment."
 
@@ -1551,7 +1697,6 @@ Returns an empty JSON object on success.
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "404","* The target specified by the `id` parameter does not belong to a subreddit you have permission to approve.
 
@@ -1575,7 +1720,6 @@ Removing a post/comment affects its attributes:
 
 .. csv-table:: Object attribute changes
    :header: "Field","Description"
-   :escape: \
 
    "removed","Becomes `true`."
    "banned_by","Name of the redditor who removed. (Value start as `null`.)"
@@ -1594,7 +1738,6 @@ Extra attributes for posts only:
 
 .. csv-table:: Object attribute changes
    :header: "Field","Description"
-   :escape: \
 
    "removed_by_category","The removed by category. It will be `author` even if the remover is a moderator. (Value starts as `null`.)"
    "is_crosspostable","Becomes `false`. (Value starts as `true`.)"
@@ -1604,7 +1747,6 @@ Extra attributes for posts only:
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "id","string","Full ID36 of a post or comment."
    "spam","boolean","Indicate whether the post should be removed as spam. Default: true."
@@ -1613,7 +1755,6 @@ Extra attributes for posts only:
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "404","* The target specified by the `id` parameter does not belong to a subreddit you have permission to approve.
 
@@ -1664,23 +1805,22 @@ Returns `{}` on success. If the target is already ignored/unignored it is treate
 
 .. csv-table:: Form data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "id","string","The full ID36 of a post or comment (prefixed with `t3_` or `t1_`)."
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","A user context is required."
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "403","* The `id` parameter was not specified.
 

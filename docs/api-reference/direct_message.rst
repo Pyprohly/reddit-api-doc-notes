@@ -38,7 +38,6 @@ Schema
 
 .. csv-table:: Message Object
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "id","string","The ID of the message if the message is a user or subreddit message. If a comment message,
    the ID of the comment."
@@ -109,7 +108,7 @@ Schema
 
    The submission ID36 can be obtained from this value."
    "distinguished","string?","`null` if not distinguished, otherwise
-   `\"moderator\"` or `\"admin\"`, or `\"gold-auto\"`.
+   `""moderator""` or `""admin""`, or `""gold-auto""`.
 
    Is always `moderator` if a subreddit message."
    "link_title?","string","Key does not exist if user or subreddit message.
@@ -154,7 +153,6 @@ Additional URL params:
 
 .. csv-table:: URL Params
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "mark","boolean","Whether to mark items as read."
 
@@ -181,7 +179,6 @@ Returns ``{"json": {"errors": []}}`` on success.
 
 .. csv-table:: Form data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "to","string","The user or subreddit to send the message to.
 
@@ -194,35 +191,39 @@ Returns ``{"json": {"errors": []}}`` on success.
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","There is no user context."
-   "NO_USER","The `to` parameter was not specifid or was empty.
-
-   *\"please enter a username\"* -> to"
-   "NO_SUBJECT","The `subject` parameter was not specifid or was empty.
-
-   *\"please enter a subject\"* -> subject"
-   "NO_TEXT","The `text` parameter was not specifid or was empty.
-
-   *\"we need something here\"* -> text"
-   "USER_DOESNT_EXIST","The user name specified by the `to` parameter does not exist.
-
-   *\"that user doesn't exist\"*" -> to"
-   "SUBREDDIT_NOEXIST","The subreddit specified by `from_sr` does not exist.
-
-   *\"Hmm, that community doesn't exist. Try checking the spelling.\"* -> from_sr"
-   "NO_SR_TO_SR_MESSAGE","*\"you can't send a message from a subreddit to another subreddit\"* -> from"
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
+   "NO_USER","200","The `to` parameter was not specified or was empty.","
+   ``{""json"": {""errors"": [[""NO_USER"", ""please enter a username"", ""to""]]}}``
+   "
+   "NO_SUBJECT","200","The `subject` parameter was not specified or was empty.","
+   ``{""json"": {""errors"": [[""NO_SUBJECT"", ""please enter a subject"", ""subject""]]}}``
+   "
+   "NO_TEXT","200","The `text` parameter was not specified or was empty.","
+   ``{""json"": {""errors"": [[""NO_TEXT"", ""we need something here"", ""text""]]}}``
+   "
+   "USER_DOESNT_EXIST","200","The user name specified by the `to` parameter does not exist.","
+   ``{""json"": {""errors"": [[""USER_DOESNT_EXIST"", ""that user doesn't exist"", ""to""]]}}``
+   "
+   "SUBREDDIT_NOEXIST","200","The subreddit specified by `from_sr` does not exist.","
+   ``{""json"": {""errors"": [[""SUBREDDIT_NOEXIST"", ""Hmm, that community doesn't exist. Try checking the spelling."", ""from_sr""]]}}``
+   "
+   "NO_SR_TO_SR_MESSAGE","200","The `to` and `from_sr` were both specified and both refer to subreddits.","
+   ``{""json"": {""errors"": [[""NO_SR_TO_SR_MESSAGE"", ""you can't send a message from a subreddit to another subreddit"", ""from""]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
-   :header: "Status Code","Description"
-   :escape: \
+   :header: "Status Code","Description","Example"
 
-   "403","The `from_sr` parameter was specified and the current user is not a moderator of the specified subreddit."
+   "403","The `from_sr` parameter was specified and the current user is not a moderator of that subreddit.","
+   ``{""message"": ""Forbidden"", ""error"": 403}``
+   "
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_compose
 
@@ -250,17 +251,17 @@ Returns an empty JSON object on success.
 
 .. csv-table:: Form data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "id","string","The full ID36 of a message (starting with `t4_`)."
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","There is no user context."
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_del_msg
 
@@ -281,25 +282,24 @@ Returns an empty JSON object on success.
 
 .. csv-table:: Form data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "id","string","The full ID36 of a message (`t4`), or comment (`t1`)."
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
    "USER_REQUIRED","There is no user context."
 
 |
 
 .. csv-table:: HTTP Errors
-   :header: "Status Code","Description"
-   :escape: \
+   :header: "Status Code","Description","Example"
 
-   "400","The `id` parameter was not specified, is invalid, or the ID doesn't exist."
+   "400","The `id` parameter was not specified, is invalid, or the ID doesn't exist.","
+   ``{""message"": ""Bad Request"", ""error"": 400}``
+   "
 
 .. seealso::
    https://www.reddit.com/dev/api/#POST_api_read_message
@@ -317,11 +317,12 @@ Mark all messages as read.
 
 Returns empty JSON object on success.
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","There is no user context."
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_read_all_messages
 
@@ -346,17 +347,17 @@ Returns an empty JSON object on success.
 
 .. csv-table:: Form data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "id","string","A comma-separated list of full IDs of messages (`t4`), or comments (`t1`)."
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","There is no user context."
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
 
 .. seealso::
    https://www.reddit.com/dev/api/#POST_api_collapse_message
@@ -377,33 +378,34 @@ To block a user directly by ID or name, see :ref:`here <account-block-user>` ins
 
 If the ID specified by `id` is invalid, the action is treated as a success.
 
-If the ID specified by `id` match that of a user's full ID36 (the ID must be real),
-then a 500 HTTP status error is returned.
+This endpoint does not process user IDs but if the ID specified by `id` matches that of an
+existing user's full ID36, then a 500 HTTP status error is raised.
 
 Returns an empty JSON object on success.
 
 .. csv-table:: Form data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "id","string","The full ID36 of a submission, comment, message, or subreddit."
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","There is no user context."
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
-   "500","The full ID of a user (beginning with `t2_`) was provided.
-   The ID must be valid for a real user for this to happen."
+   "500","The full ID of an existing user (beginning with `t2_`) was provided.
+   This endpoint is not meant for user IDs","
+   ``{""message"": ""Internal Server Error"", ""error"": 500}``
+   "
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_block
 
@@ -414,5 +416,7 @@ Unblock subreddit
 .. http:post:: /api/unblock_subreddit
 
 *scope: privatemessages*
+
+???
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_unblock_subreddit

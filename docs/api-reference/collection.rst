@@ -18,7 +18,6 @@ Schema
 
 .. csv-table:: Submission Object
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "collection_id","string","The collection's UUID."
    "subreddit_id","string","The full ID36 (prefixed with `t5_`) of the subreddit the collection belongs."
@@ -29,9 +28,9 @@ Schema
    "created_at_utc","float","The UNIX timestamp of when the collection was created."
    "last_update_utc","float","The UNIX timestamp of when the last post was added. This field is not updated in
    any other circumstance such as updating the title or description."
-   "display_layout","string?","Either `null`, `\"TIMELINE\"`, or `\"GALLERY\"`.
+   "display_layout","string?","Either `null`, `""TIMELINE""`, or `""GALLERY""`.
 
-   A new collection will have this field value be `null` which is treated the same as `\"TIMELINE\"`."
+   A new collection will have this field value be `null` which is treated the same as `""TIMELINE""`."
    "link_ids","string array","The full ID36s of the submissions contained in the collection."
    "permalink","string","An absolute permalink for this collection."
    "primary_link_id?","string","The full ID36 of the first submission listed in the `sorted_links` structure.
@@ -63,7 +62,6 @@ If the given `collection_id` was not found then ``{"json": {"errors": []}}`` is 
 
 .. csv-table:: URL Params
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "collection_id","string","The UUID of a collection."
    "include_links","boolean","Whether to include the `sorted_links` field in the collection object.
@@ -72,19 +70,18 @@ If the given `collection_id` was not found then ``{"json": {"errors": []}}`` is 
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "NO_TEXT","`collection_id` parameter was not specified or was empty.
-
-   *\"we need something here\"* -> collection_id"
-   "TOO_LONG","The specified `collection_id` is over 36 characters.
-
-   *\"this is too long (max: 36)\"* -> collection_id"
-   "TOO_SHORT","The specified `collection_id` is under 36 characters.
-
-   *\"this is too short (max: 36)\"* -> collection_id"
+   "NO_TEXT","200","The `collection_id` parameter was not specified or was empty.","
+   ``{""json"": {""errors"": [[""NO_TEXT"", ""we need something here"", ""collection_id""]]}}``
+   "
+   "TOO_LONG","200","The specified `collection_id` was over 36 characters.","
+   ``{""json"": {""errors"": [[""TOO_LONG"", ""This field must be under 36 characters"", ""collection_id""]]}}``
+   "
+   "TOO_SHORT","200","The specified `collection_id` was under 36 characters.","
+   ``{""json"": {""errors"": [[""TOO_SHORT"", ""this is too short (min: 36)"", ""collection_id""]]}}``
+   "
 
 .. seealso:: https://www.reddit.com/dev/api/#GET_api_v1_collections_collection
 
@@ -102,21 +99,19 @@ Collection objects from this endpoint don't have the `primary_link_id` or `sorte
 
 .. csv-table:: URL Params
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "sr_fullname","string","A full ID36 (prefixed with `t5_`) of a subreddit."
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "SUBREDDIT_NOEXIST","* The `sr_fullname` parameter was not specified.
+   "SUBREDDIT_NOEXIST","200","* The `sr_fullname` parameter was not specified.
 
-   * The subreddit specified by the `sr_fullname` parameter could not be found.
-
-   \"that subreddit doesn't exist\" -> sr_fullname"
+   * The subreddit specified by the `sr_fullname` parameter could not be found.","
+   ``{""json"": {""errors"": [[""SUBREDDIT_NOEXIST"", ""Hmm, that community doesn't exist. Try checking the spelling."", ""sr_fullname""]]}}``
+   "
 
 .. seealso:: https://www.reddit.com/dev/api/#GET_api_v1_collections_subreddit_collections
 
@@ -133,9 +128,8 @@ Create a collection.
 Returns the newly created collection JSON object.
 The collection object will not have the `primary_link_id` or `sorted_links` fields.
 
-.. csv-table:: URL Params
+.. csv-table:: Form Data or URL Params
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "sr_fullname","string","A full ID36 (prefixed with `t5_`) of a subreddit."
    "title","string","Title of the submission up to 300 characters long."
@@ -144,27 +138,28 @@ The collection object will not have the `primary_link_id` or `sorted_links` fiel
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "SUBREDDIT_NOEXIST","* The `sr_fullname` parameter was not specified.
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
+   "SUBREDDIT_NOEXIST","200","* The `sr_fullname` parameter was not specified.
 
-   * The `sr_fullname` subreddit doesn't exist.
+   * The `sr_fullname` subreddit doesn't exist.","
+   ``{""json"": {""errors"": [[""SUBREDDIT_NOEXIST"", ""Hmm, that community doesn't exist. Try checking the spelling."", ""sr_fullname""]]}}``
+   "
+   "NO_TEXT","200","The `title` parameter was not specified or was empty.","
+   ``{""json"": {""errors"": [[""NO_TEXT"", ""we need something here"", ""title""]]}}``
+   "
+   "TOO_LONG","200","* (1) The specified title was longer than 300 characters.
 
-   *\"that subreddit doesn't exist\"* -> sr_fullname"
-   "NO_TEXT","`title` parameter was not specified or was empty.
-
-   *\"we need something here\"* -> title"
-   "TOO_LONG","* The specified title was longer than 300 characters.
-     (*\"this is too long (max: 300)\"* -> title)
-
-   * The specified description was longer than 500 characters."
-   "INVALID_OPTION","The value for `display_layout` is not valid.
-   Options are case-sensitive.
-
-   *\"that option is not valid\"* -> display_layout"
-   "USER_REQUIRED","A user context is required. *\"Please log in to do that.\"*"
+   * The specified description was longer than 500 characters.","
+   (1): ``{""json"": {""errors"": [[""TOO_LONG"", ""This field must be under 300 characters"", ""title""]]}}``
+   "
+   "INVALID_OPTION","200","The value specified for `display_layout` is not valid. The options are case-sensitive.","
+   ``{""json"": {""errors"": [[""INVALID_OPTION"", ""that option is not valid"", ""display_layout""]]}}``
+   "
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_v1_collections_create_collection
 
@@ -180,31 +175,34 @@ Delete a collection.
 
 Returns ``{"json": {"errors": []}}`` on success.
 
-.. csv-table:: URL Params
+.. csv-table:: Form Data or URL Params
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "collection_id","string","The collection's UUID."
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "NO_TEXT","`collection_id` parameter was not specified or was empty.
-
-   *\"we need something here\"* -> collection_id"
-   "TOO_LONG","The specified `collection_id` is over 36 characters.
-
-   *\"this is too long (max: 36)\"* -> collection_id"
-   "TOO_SHORT","The specified `collection_id` is under 36 characters.
-
-   *\"this is too short (max: 36)\"* -> collection_id"
-   "INVALID_COLLECTION_ID","The `collection_id` specified does not exist.
-
-   *\"That collection doesn't exist\"* -> collection_id"
-   "USER_REQUIRED","A user context is required. *\"Please log in to do that.\"*"
+   "NO_TEXT","200","The `collection_id` parameter was not specified or was empty.","
+   ``{""json"": {""errors"": [[""NO_TEXT"", ""we need something here"", ""collection_id""]]}}``
+   "
+   "INVALID_COLLECTION_ID","200","The `collection_id` specified does not exist.","
+   ``{""json"": {""errors"": [[""INVALID_COLLECTION_ID"", ""That collection doesn't exist"", ""collection_id""]]}}``
+   "
+   "TOO_LONG","200","The specified `collection_id` was over 36 characters.","
+   ``{""json"": {""errors"": [[""TOO_LONG"", ""This field must be under 36 characters"", ""collection_id""]]}}``
+   "
+   "TOO_SHORT","200","The specified `collection_id` was under 36 characters.","
+   ``{""json"": {""errors"": [[""TOO_SHORT"", ""this is too short (min: 36)"", ""collection_id""]]}}``
+   "
+   "INVALID_COLLECTION_ID","200","The `collection_id` specified does not exist.","
+   ``{""json"": {""errors"": [[""INVALID_COLLECTION_ID"", ""That collection doesn't exist"", ""collection_id""]]}}``
+   "
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
 
 
 Add post
@@ -218,46 +216,50 @@ Add a submission to a collection.
 
 Returns ``{"json": {"errors": []}}`` on success.
 
-.. csv-table:: URL Params
+.. csv-table:: Form Data or URL Params
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "collection_id","string","The collection's UUID."
    "link_fullname","string","A full ID36 of a submission."
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "NO_TEXT","The `collection_id` parameter was not specified.
-
-   *\"we need something here\"* -> collection_id"
-   "TOO_LONG","The specified `collection_id` is over 36 characters.
-
-   *\"this is too long (max: 36)\"* -> collection_id"
-   "TOO_SHORT","The specified `collection_id` is under 36 characters.
-
-   *\"this is too short (max: 36)\"* -> collection_id"
-   "INVALID_COLLECTION_UPDATE","* The `collection_id` specified does not exist.
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
+   "NO_TEXT","200","The `collection_id` parameter was not specified or was empty string.","
+   ``{""json"": {""errors"": [[""NO_TEXT"", ""we need something here"", ""collection_id""]]}}``
+   "
+   "TOO_LONG","200","The specified `collection_id` was over 36 characters.","
+   ``{""json"": {""errors"": [[""TOO_LONG"", ""This field must be under 36 characters"", ""collection_id""]]}}``
+   "
+   "TOO_SHORT","200","The specified `collection_id` was under 36 characters.","
+   ``{""json"": {""errors"": [[""TOO_SHORT"", ""this is too short (min: 36)"", ""collection_id""]]}}``
+   "
+   "INVALID_COLLECTION_UPDATE","200","* The `collection_id` specified does not exist.
 
    * The submission specified by `link_fullname` already exists in the collection.
 
-   * The submission specified by `link_fullname` does not match the collection's subreddit.
-
-   *\"That collection couldn't be updated\"* -> collection_id"
-   "USER_REQUIRED","A user context is required. *\"Please log in to do that.\"*"
+   * The submission specified by `link_fullname` does not match the collection's subreddit.","
+   ``{""json"": {""errors"": [[""INVALID_COLLECTION_UPDATE"", ""That collection couldn't be updated"", ""collection_id""]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
-   :header: "Status Code","Description"
-   :escape: \
+   :header: "Status Code","Description","Example"
 
    "404","* The `link_fullname` parameter was not specified. 
 
-   * The `link_fullname` submission full ID36 does not exist."
+   * The `link_fullname` submission full ID36 does not exist.","
+   ``{""message"": ""Not Found"", ""error"": 404}``
+   "
+   "500","The `collection_id` specified is not a UUID.","
+   ``{""message"": ""Internal Server Error"", ""error"": 500}``
+   "
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_v1_collections_add_post_to_collection
 
@@ -273,44 +275,48 @@ Remove a submission from a collection.
 
 Returns ``{"json": {"errors": []}}`` on success.
 
-.. csv-table:: URL Params
+.. csv-table:: Form Data or URL Params
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "collection_id","string","The collection's UUID."
    "link_fullname","string","A full ID36 of a submission."
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "NO_TEXT","The `collection_id` parameter was not specified.
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
+   "NO_TEXT","200","The `collection_id` parameter was not specified.","
+   ``{""json"": {""errors"": [[""NO_TEXT"", ""we need something here"", ""collection_id""]]}}``
+   "
+   "TOO_LONG","200","The specified `collection_id` was over 36 characters.","
+   ``{""json"": {""errors"": [[""TOO_LONG"", ""This field must be under 36 characters"", ""collection_id""]]}}``
+   "
+   "TOO_SHORT","200","The specified `collection_id` was under 36 characters.","
+   ``{""json"": {""errors"": [[""TOO_SHORT"", ""this is too short (min: 36)"", ""collection_id""]]}}``
+   "
+   "INVALID_COLLECTION_UPDATE","200","* The `collection_id` specified does not exist.
 
-   *\"we need something here\"* -> collection_id"
-   "TOO_LONG","The specified `collection_id` is over 36 characters.
-
-   *\"this is too long (max: 36)\"* -> collection_id"
-   "TOO_SHORT","The specified `collection_id` is under 36 characters.
-
-   *\"this is too short (max: 36)\"* -> collection_id"
-   "INVALID_COLLECTION_UPDATE","* The submission specified by `link_fullname` does not
-     exist in the collection.
-
-   *\"That collection couldn't be updated\"* -> collection_id"
-   "USER_REQUIRED","A user context is required. *\"Please log in to do that.\"*"
+   * The submission specified by `link_fullname` does not exist in the collection.","
+   ``{""json"": {""errors"": [[""INVALID_COLLECTION_UPDATE"", ""That collection couldn't be updated"", ""collection_id""]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
-   :header: "Status Code","Description"
-   :escape: \
+   :header: "Status Code","Description","Example"
 
    "404","* The `link_fullname` parameter was not specified. 
 
-   * The `link_fullname` submission full ID36 does not exist."
-   "500","The `collection_id` specified does not exist."
+   * The `link_fullname` submission full ID36 does not exist.","
+   ``{""message"": ""Not Found"", ""error"": 404}``
+   "
+   "500","The `collection_id` specified is not a UUID.","
+   ``{""message"": ""Internal Server Error"", ""error"": 500}``
+   "
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_v1_collections_remove_post_in_collection
 
@@ -331,40 +337,36 @@ to the top of the collection in the order specified. The rest are moved down, ma
 
 Returns ``{"json": {"errors": []}}`` on success.
 
-.. csv-table:: URL Params
+.. csv-table:: Form Data or URL Params
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "collection_id","string","The collection's UUID."
    "link_ids","string","A comma separated list of submission full ID36s."
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "NO_TEXT","The `collection_id` parameter was not specified.
-
-   *\"we need something here\"* -> collection_id"
-   "TOO_LONG","The specified `collection_id` is over 36 characters.
-
-   *\"this is too long (max: 36)\"* -> collection_id"
-   "TOO_SHORT","The specified `collection_id` is under 36 characters.
-
-   *\"this is too short (max: 36)\"* -> collection_id"
-   "INVALID_COLLECTION_UPDATE","One of the full ID36s specified in the `link_ids` list does not exist in the collection.
-
-   *\"That collection couldn't be updated\"* -> collection_id"
-   "USER_REQUIRED","A user context is required. *\"Please log in to do that.\"*"
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
+   "INVALID_COLLECTION_UPDATE","200","One of the full ID36s specified in the `link_ids` list does not exist in the collection.","
+   ``{""json"": {""errors"": [[""INVALID_COLLECTION_UPDATE"", ""That collection couldn't be updated"", ""collection_id""]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
-   :header: "Status Code","Description"
-   :escape: \
+   :header: "Status Code","Description","Example"
 
-   "500","The `collection_id` specified does not exist."
+   "404","* The `collection_id` parameter was not specified or was empty.
+
+   * The `collection_id` specified does not exist.
+
+   * The `collection_id` specified is invalid.","
+   ``{""message"": ""Not Found"", ""error"": 404}``
+   "
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_v1_collections_reorder_collection
 
@@ -380,33 +382,36 @@ Update a collection's title.
 
 Returns ``{"json": {"errors": []}}`` on success.
 
-.. csv-table:: URL Params
+.. csv-table:: Form Data or URL Params
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "collection_id","string","The collection's UUID."
    "title","string","The new title for the collection, up to 300 characters long."
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "NO_TEXT","* The `collection_id` parameter was not specified.
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
+   "NO_TEXT","200","* (1) The `collection_id` parameter was not specified.
 
-   * The `title` parameter was not specified or was empty.
+   * The `title` parameter was not specified or was empty.","
+   (1): ``{""json"": {""errors"": [[""NO_TEXT"", ""we need something here"", ""collection_id""]]}}``
+   "
+   "TOO_LONG","200","* (1) The specified `collection_id` was over 36 characters.
 
-   *\"we need something here\"* -> title"
-   "TOO_LONG","* The specified `collection_id` is over 36 characters.
-
-   * The specified `title` is over 300 characters.
-
-   *\"this is too long (max: 36)\"* -> collection_id"
-   "INVALID_COLLECTION_ID","The `collection_id` specified does not exist.
-
-   *\"That collection doesn't exist\"* -> collection_id"
-   "USER_REQUIRED","A user context is required. *\"Please log in to do that.\"*"
+   * The specified `title` was over 300 characters.","
+   (1): ``{""json"": {""errors"": [[""TOO_LONG"", ""This field must be under 36 characters"", ""collection_id""]]}}``
+   "
+   "TOO_SHORT","200","The specified `collection_id` was under 36 characters.","
+   ``{""json"": {""errors"": [[""TOO_SHORT"", ""this is too short (min: 36)"", ""collection_id""]]}}``
+   "
+   "INVALID_COLLECTION_ID","200","The `collection_id` specified does not exist.","
+   ``{""json"": {""errors"": [[""INVALID_COLLECTION_ID"", ""That collection doesn't exist"", ""collection_id""]]}}``
+   "
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_v1_collections_update_collection_title
 
@@ -422,9 +427,8 @@ Update a collection's description.
 
 Returns ``{"json": {"errors": []}}`` on success.
 
-.. csv-table:: URL Params
+.. csv-table:: Form Data or URL Params
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "collection_id","string","The collection's UUID."
    "description","string","The new description for the collection, up to 500 characters long.
@@ -433,22 +437,28 @@ Returns ``{"json": {"errors": []}}`` on success.
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "NO_TEXT","* The `collection_id` parameter was not specified.
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
+   "NO_TEXT","200","The `collection_id` parameter was not specified.","
+   ``{""json"": {""errors"": [[""NO_TEXT"", ""we need something here"", ""collection_id""]]}}``
+   "
+   "TOO_LONG","200","* (1) The specified `collection_id` was over 36 characters.
 
-   *\"we need something here\"* -> collection_id"
-   "TOO_LONG","The specified `collection_id` is over 36 characters.
+   * (2) The specified `description` was over 500 characters.","
+   (1): ``{""json"": {""errors"": [[""TOO_LONG"", ""This field must be under 36 characters"", ""collection_id""]]}}``
 
-   * The specified `description` is over 500 characters.
-
-   *\"this is too long (max: 36)\"* -> collection_id"
-   "INVALID_COLLECTION_ID","The `collection_id` specified does not exist.
-
-   *\"That collection doesn't exist\"* -> collection_id"
-   "USER_REQUIRED","A user context is required. *\"Please log in to do that.\"*"
+   (2): ``{""json"": {""errors"": [[""TOO_LONG"", ""This field must be under 500 characters"", ""description""]]}}``
+   "
+   "TOO_SHORT","200","The specified `collection_id` was under 36 characters.","
+   ``{""json"": {""errors"": [[""TOO_SHORT"", ""this is too short (min: 36)"", ""collection_id""]]}}``
+   "
+   "INVALID_COLLECTION_ID","200","The `collection_id` specified does not exist.","
+   ``{""json"": {""errors"": [[""INVALID_COLLECTION_ID"", ""That collection doesn't exist"", ""collection_id""]]}}``
+   "
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_v1_collections_update_collection_description
 
@@ -464,39 +474,38 @@ Update a collection's display layout.
 
 Returns ``{"json": {"errors": []}}`` on success.
 
-.. csv-table:: URL Params
+.. csv-table:: Form Data or URL Params
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "collection_id","string","The collection's UUID."
    "display_layout","string","Options: `TIMELINE` or `GALLERY`. (Case-sensitive.)
 
    If not specified or an empty string, the `display_layout` field on the collection object
-   will be set to `null`, which is treated the same as `\"TIMELINE\"`."
+   will be set to `null`, which is treated the same as `""TIMELINE""`."
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "NO_TEXT","`collection_id` parameter was not specified or was empty.
-
-   *\"we need something here\"* -> collection_id"
-   "TOO_LONG","The specified `collection_id` is over 36 characters.
-
-   *\"this is too long (max: 36)\"* -> collection_id"
-   "TOO_SHORT","The specified `collection_id` is under 36 characters.
-
-   *\"this is too short (max: 36)\"* -> collection_id"
-   "INVALID_COLLECTION_ID","The `collection_id` specified does not exist.
-
-   *\"That collection doesn't exist\"* -> collection_id"
-   "INVALID_OPTION","The value for `display_layout` is not valid.
-   Options are case-sensitive.
-
-   *\"that option is not valid\"* -> display_layout"
-   "USER_REQUIRED","A user context is required. *\"Please log in to do that.\"*"
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
+   "NO_TEXT","200","The `collection_id` parameter was not specified or was empty.","
+   ``{""json"": {""errors"": [[""NO_TEXT"", ""we need something here"", ""collection_id""]]}}``
+   "
+   "TOO_LONG","200","The specified `collection_id` was over 36 characters.","
+   ``{""json"": {""errors"": [[""TOO_LONG"", ""This field must be under 36 characters"", ""collection_id""]]}}``
+   "
+   "TOO_SHORT","200","The specified `collection_id` was under 36 characters.","
+   ``{""json"": {""errors"": [[""TOO_SHORT"", ""this is too short (min: 36)"", ""collection_id""]]}}``
+   "
+   "INVALID_COLLECTION_ID","200","The `collection_id` specified does not exist.","
+   ``{""json"": {""errors"": [[""INVALID_COLLECTION_ID"", ""That collection doesn't exist"", ""collection_id""]]}}``
+   "
+   "INVALID_OPTION","200","The value specified for `display_layout` was not valid. Options are case-sensitive.","
+   ``{""json"": {""errors"": [[""INVALID_OPTION"", ""that option is not valid"", ""display_layout""]]}}``
+   "
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_v1_collections_update_display_layout
 
@@ -512,9 +521,8 @@ Follow or unfollow a collection.
 
 Returns ``{"json": {"errors": []}}`` on success.
 
-.. csv-table:: URL Params
+.. csv-table:: Form Data or URL Params
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "collection_id","string","The collection's UUID."
    "follow","boolean","Follow the collection if truth value specified (a string is truthy if 
@@ -524,25 +532,27 @@ Returns ``{"json": {"errors": []}}`` on success.
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "NO_TEXT","`collection_id` parameter was not specified or was empty.
-
-   *\"we need something here\"* -> collection_id"
-   "TOO_LONG","The specified `collection_id` is over 36 characters.
-
-   *\"this is too long (max: 36)\"* -> collection_id"
-   "TOO_SHORT","The specified `collection_id` is under 36 characters.
-
-   *\"this is too short (max: 36)\"* -> collection_id"
-   "USER_REQUIRED","A user context is required. *\"Please log in to do that.\"*"
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
+   "NO_TEXT","200","The `collection_id` parameter was not specified or was empty.","
+   ``{""json"": {""errors"": [[""NO_TEXT"", ""we need something here"", ""collection_id""]]}}``
+   "
+   "TOO_LONG","200","The specified `collection_id` was over 36 characters.","
+   ``{""json"": {""errors"": [[""TOO_LONG"", ""This field must be under 36 characters"", ""collection_id""]]}}``
+   "
+   "TOO_SHORT","200","The specified `collection_id` was under 36 characters.","
+   ``{""json"": {""errors"": [[""TOO_SHORT"", ""this is too short (min: 36)"", ""collection_id""]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
-   :header: "Status Code","Description"
-   :escape: \
+   :header: "Status Code","Description","Example"
 
-   "500","The `collection_id` specified does not exist."
+   "500","The `collection_id` specified does not exist or was invalid.","
+   ``{""message"": ""Internal Server Error"", ""error"": 500}``
+   "

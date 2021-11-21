@@ -13,7 +13,6 @@ in addition to the attributes listed in the table :ref:`here <my-user-schema>`:
 
 .. csv-table:: Account Object
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "seen_layout_switch","boolean",""
    "seen_redesign_modal","boolean",""
@@ -28,7 +27,6 @@ When the client is not in a user context:
 
 .. csv-table:: Account Object
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "features","object","Note, this object has some keys that differ from the one described in the table :ref:`here <user-features>`."
 
@@ -45,6 +43,8 @@ Get identity
 
 Get information about the authenticated user.
 
+If there is no current user, this endpoint still returns the `features` key.
+
 .. seealso:: https://www.reddit.com/dev/api/#GET_api_v1_me
 
 
@@ -57,11 +57,12 @@ Get preferences
 
 Retrieve the preference settings of the logged in user.
 
-.. csv-table:: API Errors (variant 1)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","you must login"
+   "USER_REQUIRED","403","There is no user context.","
+   ``{""explanation"": ""Please log in to do that."", ""message"": ""Forbidden"", ""reason"": ""USER_REQUIRED""}``
+   "
 
 .. seealso:: https://www.reddit.com/dev/api/#GET_api_v1_me_prefs
 
@@ -81,12 +82,15 @@ Returns the updated preferences, as you would get from `GET /api/v1/me/prefs`.
 
 For boolean values, a string that starts with `0` or `F` or `f` is treated as falsy.
 
-.. csv-table:: API Errors (variant 1)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","you must login"
-   "JSON_PARSE_ERROR","The JSON provided was invalid."
+   "USER_REQUIRED","403","There is no user context.","
+   ``{""explanation"": ""Please log in to do that."", ""message"": ""Forbidden"", ""reason"": ""USER_REQUIRED""}``
+   "
+   "JSON_PARSE_ERROR","400","The provided JSON was invalid.","
+   ``{""fields"": [""json""], ""explanation"": ""Sorry, something went wrong. Double-check things and try again."", ""message"": ""Bad Request"", ""reason"": ""JSON_PARSE_ERROR""}``
+   "
 
 .. seealso:: https://www.reddit.com/dev/api/#PATCH_api_v1_me_prefs
 
@@ -98,11 +102,10 @@ Get karma breakdown
 
 *scope: mysubreddits*
 
-Return a breakdown of subreddit karma.
+Return a breakdown of subreddit karma for the current user.
 
 .. csv-table:: Karma Breakdown Object
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "sr","string","Subreddit name."
    "comment_karma","integer","Karma accumulated from commenting."
@@ -110,11 +113,12 @@ Return a breakdown of subreddit karma.
 
 |
 
-.. csv-table:: API Errors (variant 1)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","you must login"
+   "USER_REQUIRED","403","There is no user context.","
+   ``{""explanation"": ""Please log in to do that."", ""message"": ""Forbidden"", ""reason"": ""USER_REQUIRED""}``
+   "
 
 .. seealso:: https://www.reddit.com/dev/api/#GET_api_v1_me_karma
 
@@ -134,7 +138,6 @@ Returns a 'TrophyList' listing structure.
 
 .. csv-table:: Trophy Object
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "id","string?","An ID36. Not all trophies have a value (`null`)."
    "description","string?","Trophy description. `null` if no description."
@@ -145,11 +148,12 @@ Returns a 'TrophyList' listing structure.
    "granted_at","integer?","Maybe the UNIX timestamp of when the trophy was given? Not all trophies have a value (`null`)."
    "url","unknown?",""
 
-.. csv-table:: API Errors (variant 1)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","you must login"
+   "USER_REQUIRED","403","There is no user context.","
+   ``{""explanation"": ""Please log in to do that."", ""message"": ""Forbidden"", ""reason"": ""USER_REQUIRED""}``
+   "
 
 See also :ref:`GET /api/v1/user/{username}/trophies <user-list-trophies>`.
 
@@ -173,7 +177,6 @@ Returns an object with the following fields:
 
 .. csv-table:: User Item Object
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "date","float","Unix timestamp of when this item was added to the list. Will always be a whole number."
    "rel_id","string","Some unknown string. E.g., `r9_1w4acm`"
@@ -184,18 +187,23 @@ Returns an object with the following fields:
 
 .. csv-table:: URL Params
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "id","string","This is documented but it doesn't seem to do anything."
 
 |
 
-.. csv-table:: API Errors (variant 1)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "NOT_FRIEND","\"you are not friends with that user -> id\""
-   "USER_DOESNT_EXIST","\"that user doesn't exist -> id\""
+   "USER_REQUIRED","403","","
+   ``{""explanation"": ""Please log in to do that."", ""message"": ""Forbidden"", ""reason"": ""USER_REQUIRED""}``
+   "
+   "NOT_FRIEND","400","You are not friends with the specified user.","
+   ``{""fields"": [""id""], ""explanation"": ""you are not friends with that user"", ""message"": ""Bad Request"", ""reason"": ""NOT_FRIEND""}``
+   "
+   "USER_DOESNT_EXIST","400","The specified user does not exist.","
+   ``{""fields"": [""id""], ""explanation"": ""that user doesn't exist"", ""message"": ""Bad Request"", ""reason"": ""USER_DOESNT_EXIST""}``
+   "
 
 .. seealso:: `<https://www.reddit.com/dev/api/#GET_api_v1_me_friends_{username}>`_
 
@@ -225,32 +233,34 @@ Adding a friend who is already a friend does nothing but get the user item objec
 
 .. csv-table:: JSON Data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
-   "name","string","A username. This field isn't required.
-   If specified this must match the name in the URL placeholder or
-   a BAD_USERNAME error will be returned."
+   "name","string","A username. This field isn't required but if specified this must match the name in the URL
+   otherwise a `BAD_USERNAME` API error will be raised."
    "note","string","A string no longer than 300 characters. Reddit Premium is required."
 
 |
 
-.. csv-table:: API Errors (variant 1)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","you must login"
-   "JSON_PARSE_ERROR","JSON data was not provided.
-
-   \"unable to parse JSON data -> json\""
-   "USER_DOESNT_EXIST","\"that user doesn't exist -> id\""
-   "BAD_USERNAME","The `{username}` in the path placeholder and the
-   `name` field in the JSON data did not match.
-
-   \"invalid user name -> name\""
-   "GOLD_REQUIRED","You tried to add a note but don't have Reddit Premium.
-
-   \"you must have an active reddit gold subscription to do that -> note\""
-   "NO_TEXT","An empty string was specified for 'note'."
+   "USER_REQUIRED","403","There is no user context.","
+   ``{""explanation"": ""Please log in to do that."", ""message"": ""Forbidden"", ""reason"": ""USER_REQUIRED""}``
+   "
+   "JSON_PARSE_ERROR","400","JSON data was not provided.","
+   ``{""fields"": [""json""], ""explanation"": ""Sorry, something went wrong. Double-check things and try again."", ""message"": ""Bad Request"", ""reason"": ""JSON_PARSE_ERROR""}``
+   "
+   "USER_DOESNT_EXIST","400","The specified user does not exist.","
+   ``{""fields"": [""id""], ""explanation"": ""that user doesn't exist"", ""message"": ""Bad Request"", ""reason"": ""USER_DOESNT_EXIST""}``
+   "
+   "BAD_USERNAME","400","The `{username}` in the URL and the `name` field in the JSON data provided did not match.","
+   ``{""fields"": [""name""], ""explanation"": ""invalid user name"", ""message"": ""Bad Request"", ""reason"": ""BAD_USERNAME""}``
+   "
+   "GOLD_REQUIRED","400","You tried to add a note but you don't have Reddit Premium.","
+   ``{""fields"": [""note""], ""explanation"": ""you must have an active reddit gold subscription to do that"", ""message"": ""Bad Request"", ""reason"": ""GOLD_REQUIRED""}``
+   "
+   "NO_TEXT","400","An empty string was specified for the `note`.","
+   ``{""fields"": [""note""], ""explanation"": ""we need something here"", ""message"": ""Bad Request"", ""reason"": ""NO_TEXT""}``
+   "
 
 .. seealso:: `<https://www.reddit.com/dev/api/#PUT_api_v1_me_friends_{username}>`_
 
@@ -268,18 +278,20 @@ Returns zero data on success.
 
 .. csv-table:: URL Params
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "id","string","This is documented but it doesn't seem to do anything."
 
 |
 
-.. csv-table:: API Errors (variant 1)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","you must login"
-   "NOT_FRIEND","That user is not a friend."
+   "USER_REQUIRED","403","There is no user context.","
+   ``{""explanation"": ""Please log in to do that."", ""message"": ""Forbidden"", ""reason"": ""USER_REQUIRED""}``
+   "
+   "NOT_FRIEND","400","The user specified is not a friend.","
+   ``{""fields"": [""id""], ""explanation"": ""you are not friends with that user"", ""message"": ""Bad Request"", ""reason"": ""NOT_FRIEND""}``
+   "
 
 .. seealso:: `<https://www.reddit.com/dev/api/#DELETE_api_v1_me_friends_{username}>`_
 
@@ -317,30 +329,31 @@ If the user is already blocked then an empty JSON object is returned on success.
 
 .. csv-table:: Form data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "account_id","string","Full ID36 (prefixed with `t2_`) of a user."
    "name","string","A case-insensitive user name."
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","you must login"
+   "USER_REQUIRED","200","There is no user context","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
-   :header: "Status Code","Description"
-   :escape: \
+   :header: "Status Code","Description","Example"
 
    "400","* `account_id` nor `name` was specified.
 
    * You tried to block yourself.
 
-   * The user or account ID doesn't exist."
+   * The user or account ID doesn't exist.","
+   ``{""message"": ""Bad Request"", ""error"": 400}``
+   "
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_block_user
 
@@ -365,7 +378,6 @@ If `container` is not specified, or is specified incorrectly, no action is perfo
 
 .. csv-table:: Form data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "type","string","`enemy`"
    "container","string","The current user's full ID36."
@@ -374,22 +386,26 @@ If `container` is not specified, or is specified incorrectly, no action is perfo
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","you must login"
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
-   :header: "Status Code","Description"
-   :escape: \
+   :header: "Status Code","Description","Example"
 
    "400","* The `id` or `name` parameter was not specified.
 
-   * The the user specified by `id` or `name` doesn't exist."
-   "500","An invalid value was specified for `type`."
+   * The the user specified by `id` or `name` doesn't exist.","
+   ``{""message"": ""Bad Request"", ""error"": 400}``
+   "
+   "500","The `type` parameter was not specified or was an invalid value.","
+   ``{""message"": ""Internal Server Error"", ""error"": 500}``
+   "
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_unfriend
 
@@ -403,27 +419,27 @@ Add a user to your trusted users list.
 
 Trusted users will always be able to send you PMs.
 
-On success, the endpoint returns `{'json': {'errors': []}}`.
+On success, the endpoint returns ``{"json": {"errors": []}}``.
 
 .. csv-table:: URL Params
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "name","string","The name of the user."
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","you must login
-
-   \"Please log in to do that.\""
-   "CANT_WHITELIST_AN_ENEMY","\"You can't add a blocked user as a trusted user.\""
-   "USER_DOESNT_EXIST","The specified user in `name` does not exist or the `name` field was not specified.
-
-   \"that user doesn't exist\""
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
+   "CANT_WHITELIST_AN_ENEMY","200","The specified user is blocked.","
+   ``{""json"": {""errors"": [[""CANT_WHITELIST_AN_ENEMY"", ""You can't add a blocked user as a trusted user."", ""name""]]}}``
+   "
+   "USER_DOESNT_EXIST","200","The specified user in `name` does not exist or the `name` field was not specified.","
+   ``{""json"": {""errors"": [[""USER_DOESNT_EXIST"", ""that user doesn't exist"", ""name""]]}}``
+   "
 
 
 Remove trusted user
@@ -437,19 +453,17 @@ On success, the endpoint returns `"{}"` (a string of an empty JSON object).
 
 .. csv-table:: URL Params
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "name","string","The name of the user."
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","HTTP status","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","200","you must login
-
-   \"Please log in to do that.\""
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
 
 
 Get saved categories
@@ -465,20 +479,22 @@ Saved categories are automatically removed when the last item using it is remove
 
 Example output::
 
-   {'categories': [{'category': 'asdf'}, {'category': 'zxcv'}]}
+   {"categories": [{"category": "asdf"}, {"category": "zxcv"}]}
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","   *Please log in to do that.*"
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
-   :header: "Status Code","Description"
-   :escape: \
+   :header: "Status Code","Description","Example"
 
-   "403","The current user does not have Reddit Premium."
+   "403","The current user does not have Reddit Premium.","
+   ``{""message"": ""Forbidden"", ""error"": 403}``
+   "
 
 .. seealso:: https://www.reddit.com/dev/api/#GET_api_saved_categories

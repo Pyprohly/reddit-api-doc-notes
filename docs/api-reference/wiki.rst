@@ -73,6 +73,8 @@ Get a wiki page.
    ``{""reason"": ""PAGE_NOT_CREATED"", ""message"": ""Not Found""}``
    "
 
+.. seealso:: `<https://www.reddit.com/dev/api/#GET_wiki_{page}>`_
+
 
 Edit
 ~~~~
@@ -105,6 +107,8 @@ Returns empty JSON object on success.
    "WIKI_CREATE_ERROR","400","You do not have permission to edit the wiki page.","
    ``{""reason"": ""WIKI_CREATE_ERROR"", ""message"": ""Bad Request""}``
    "
+
+.. seealso:: https://www.reddit.com/dev/api/#POST_api_wiki_edit
 
 
 Revert
@@ -142,6 +146,8 @@ The revision message will be something like 'reverted back 53 minutes'.
    ``{""reason"": ""INVALID_REVISION"", ""message"": ""Bad Request""}``
    "
 
+.. seealso:: https://www.reddit.com/dev/api/#POST_api_wiki_revert
+
 
 .. _wiki-get-revisions:
 
@@ -171,6 +177,8 @@ The `sr_detail` parameter is not supported (despite being documented).
    ``{""reason"": ""private"", ""message"": ""Forbidden"", ""error"": 403}``
    "
 
+.. seealso:: `<https://www.reddit.com/dev/api/#GET_wiki_revisions_{page}>`_
+
 
 Get discussions
 ~~~~~~~~~~~~~~~
@@ -194,6 +202,8 @@ The `sr_detail` parameter is not supported (despite being documented).
    "private","403","You do not have access to the specified subreddit; it is private.","
    ``{""reason"": ""private"", ""message"": ""Forbidden"", ""error"": 403}``
    "
+
+.. seealso:: `<https://www.reddit.com/dev/api/#GET_wiki_discussions_{page}>`_
 
 
 Get settings
@@ -231,6 +241,8 @@ Retrieve the current permission settings for a wiki page.
    ``{""reason"": ""banned"", ""message"": ""Not Found"", ""error"": 404}``
    "
 
+.. seealso:: `<https://www.reddit.com/dev/api/#GET_wiki_settings_{page}>`_
+
 
 Set settings
 ~~~~~~~~~~~~
@@ -256,6 +268,8 @@ Returns the new settings.
    :escape: \
 
    "500","The `permlevel` parameter was not specified."
+
+.. seealso:: `<https://www.reddit.com/dev/api/#POST_wiki_settings_{page}>`_
 
 
 .. _wiki-add-editor:
@@ -292,6 +306,8 @@ Returns an empty JSON object.
    ``{""reason"": ""UNKNOWN_USER"", ""message"": ""Not Found""}``
    "
 
+.. seealso:: https://www.reddit.com/dev/api/#POST_api_wiki_alloweditor_add
+
 
 Remove editor
 ~~~~~~~~~~~~~
@@ -316,6 +332,8 @@ Get a revision log for all wiki pages.
 
 Details are the same as :ref:`getting wiki page specific revisions <wiki-get-revisions>`.
 
+.. seealso:: https://www.reddit.com/dev/api/#POST_api_wiki_alloweditor_del
+
 
 List wiki pages
 ~~~~~~~~~~~~~~~
@@ -335,6 +353,8 @@ Get a list of wiki pages in a subreddit.
    "banned","404","You do not have access to the specified subreddit: it is banned.","
    ``{""reason"": ""banned"", ""message"": ""Not Found"", ""error"": 404}``
    "
+
+.. seealso:: https://www.reddit.com/dev/api/#GET_wiki_pages
 
 
 Toggle revision visibility
@@ -368,3 +388,5 @@ indicating whether the wiki page revision is now hidden.
    "INVALID_REVISION","404","The revision UUID specified by `v` does not exist.","
    ``{""reason"": ""PAGE_NOT_CREATED"", ""message"": ""Not Found""}``
    "
+
+.. seealso:: https://www.reddit.com/dev/api/#POST_api_wiki_hide

@@ -10,7 +10,6 @@ Live Thread Schema
 
 .. csv-table:: Live Thread Schema
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "id","string","E.g., `177beztuzebxj`."
    "name","string","The live thread ID with `LiveUpdateEvent_` prepended. E.g., `LiveUpdateEvent_177beztuzebxj`."
@@ -39,7 +38,6 @@ Live Thread Update Schema
 
 .. csv-table:: Live Thread Update Schema
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "id","string","E.g., `890e9242-d7fb-11eb-b450-0ed185f1b209`"
    "name","string","The live update ID with `LiveUpdate_` prepended. E.g., `LiveUpdate_890e9242-d7fb-11eb-b450-0ed185f1b209`."
@@ -67,7 +65,6 @@ Get a live thread.
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "404","The specified live thread does not exist."
 
@@ -96,7 +93,6 @@ If one of the IDs specified does not exist then a 500 HTTP error is returned.
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "500","One of the IDs specified does not exist."
 
@@ -120,7 +116,6 @@ Returns the new live thread's ID. Return value example::
 
 .. csv-table:: Form Data / URL Params
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "title","string","A string no longer than 120 characters."
    "description","string","Markdown. Default: empty string."
@@ -129,17 +124,18 @@ Returns the new live thread's ID. Return value example::
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","There is no user context."
-   "NO_TEXT","`title` parameter was not specified or was empty.
-
-   *\"we need something here\"* -> title"
-   "RATELIMIT","Must wait one minute before creating another live thread.
-
-   *\"Looks like you've been doing that a lot. Take a break for 51 seconds before trying again.\"* -> ratelimit"
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
+   "NO_TEXT","200","The `title` parameter was not specified or was empty.","
+   ``{""json"": {""errors"": [[""NO_TEXT"", ""we need something here"", ""title""]]}}``
+   "
+   "RATELIMIT","200","You must wait one minute before creating another live thread.","
+   ``{""json"": {""errors"": [[""RATELIMIT"", ""Looks like you've been doing that a lot. Take a break for 51 seconds before trying again."", ""ratelimit""]]}}``
+   "
 
 .. seealso:: `<https://www.reddit.com/dev/api/#POST_api_live_create>`_
 
@@ -163,7 +159,6 @@ Returns ``{"json": {"errors": []}}`` on success.
 
 .. csv-table:: Form Data / URL Params
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "title","string","A string no longer than 120 characters."
    "description","string","Markdown. Default: empty string."
@@ -174,7 +169,6 @@ Returns ``{"json": {"errors": []}}`` on success.
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "403","* You do not have the `settings` permission.
 
@@ -201,7 +195,6 @@ Returns ``{"json": {"errors": []}}`` on success.
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "403","* You do not have the `close` permission.
 
@@ -242,7 +235,6 @@ Returns a listing.
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "404","The specified live thread ID or live update ID does not exist."
 
@@ -262,7 +254,6 @@ This endpoint is a listing. See :ref:`Listings overview <listings-overview>`.
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "404","The specified live thread does not exist."
 
@@ -284,26 +275,25 @@ Returns ``{"json": {"errors": []}}`` on success.
 
 .. csv-table:: Form Data / URL Params
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "body","string","Markdown text."
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","There is no user context."
-   "NO_TEXT","The `body` parameter was not specified or the value was empty.
-
-   *\"we need something here\"* -> body"
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
+   "NO_TEXT","200","The `body` parameter was not specified or the value was empty.","
+   ``{""json"": {""errors"": [[""NO_TEXT"", ""we need something here"", ""body""]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "404","The specified live thread does not exist."
 
@@ -330,29 +320,28 @@ Returns ``{"json": {"errors": []}}`` on success.
 
 .. csv-table:: Form Data / URL Params
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "id","string","The ID of a single live update. The ID must be prefixed with `LiveUpdate_`.
    E.g., `LiveUpdate_ff87068e-a126-11e3-9f93-12313b0b3603`."
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","There is no user context."
-   "NO_THING_ID","* The `id` parameter was not specified or was empty.
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
+   "NO_THING_ID","200","* The `id` parameter was not specified or was empty.
 
-   * The live update specified by `id` does not exist.
-
-   *\"ID not specified\"* -> id"
+   * The live update specified by `id` does not exist.","
+   ``{""json"": {""errors"": [[""NO_THING_ID"", ""ID not specified"", ""id""]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "403","You don't have permission to strike the live update."
    "404","The specified live thread does not exist."
@@ -378,29 +367,28 @@ Returns ``{"json": {"errors": []}}`` on success.
 
 .. csv-table:: Form Data / URL Params
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "id","string","The ID of a single live update. The ID must be prefixed with `LiveUpdate_`.
    E.g., `LiveUpdate_ff87068e-a126-11e3-9f93-12313b0b3603`."
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","There is no user context."
-   "NO_THING_ID","* The `id` parameter was not specified or was empty.
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
+   "NO_THING_ID","200","* The `id` parameter was not specified or was empty.
 
-   * The live update specified by `id` does not exist.
-
-   *\"ID not specified\"* -> id"
+   * The live update specified by `id` does not exist.","
+   ``{""json"": {""errors"": [[""NO_THING_ID"", ""ID not specified"", ""id""]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "403","You don't have permission to delete the live update."
    "404","The specified live thread does not exist."
@@ -452,7 +440,6 @@ Example return value when the invoking user does not have the `manage` permissio
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "404","The specified live thread does not exist."
 
@@ -474,7 +461,6 @@ Returns ``{"json": {"errors": []}}`` on success.
 
 .. csv-table:: Form Data / URL Params
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "type","string","Specify `liveupdate_contributor_invite` or `liveupdate_contributor`."
    "name","string","The name of a user."
@@ -487,36 +473,33 @@ Returns ``{"json": {"errors": []}}`` on success.
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","There is no user context."
-   "NO_USER","The `name` parameter was not specified or was empty.
-
-   *\"please enter a username\"* -> name"
-   "USER_DOESNT_EXIST","The user specified by `name` does not exist.
-
-   *\"that user doesn't exist\"* -> name"
-   "LIVEUPDATE_ALREADY_CONTRIBUTOR","* The user specified by `name` is already a contributor or has already been invited.
-
-   *\"that user is already a contributor\"*" -> name"
-   "INVALID_PERMISSIONS","The string specified by the `permissions` parameter is invalid.
-
-   *\"invalid permissions string\"* -> permissions"
-   "INVALID_PERMISSION_TYPE","The `type` parameter was not specified or is invalid.
-
-   *\"permissions don't apply to that type of user\"* -> type"
+   "NO_USER","200","The `name` parameter was not specified or was empty.","
+   ``{""json"": {""errors"": [[""NO_USER"", ""please enter a username"", ""name""]]}}``
+   "
+   "USER_DOESNT_EXIST","200","The user specified by `name` does not exist.","
+   ``{""json"": {""errors"": [[""USER_DOESNT_EXIST"", ""that user doesn't exist"", ""name""]]}}``
+   "
+   "INVALID_PERMISSION_TYPE","200","The `type` parameter was not specified or is invalid.","
+   ``{""json"": {""errors"": [[""INVALID_PERMISSION_TYPE"", ""permissions don't apply to that type of user"", ""type""]]}}``
+   "
+   "LIVEUPDATE_ALREADY_CONTRIBUTOR","200","The user specified by `name` is already a contributor or has already been invited.","
+   ``{""json"": {""errors"": [[""LIVEUPDATE_ALREADY_CONTRIBUTOR"", ""that user is already a contributor"", ""name""]]}}``
+   "
+   "INVALID_PERMISSIONS","200","The string specified by the `permissions` parameter is invalid.","
+   ``{""json"": {""errors"": [[""INVALID_PERMISSIONS"", ""invalid permissions string"", ""permissions""]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
-   "403","* You do not have the `manage` permission.
+   "403","* There is no user context.
 
-   * There is no user context."
+   * You do not have the `manage` permission."
    "404","The specified live thread does not exist."
    "500","The permission string has a leading or trailing comma."
 
@@ -534,20 +517,20 @@ Accept an invitation to contribute to a live thread.
 
 Returns ``{"json": {"errors": []}}`` on success.
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","There is no user context."
-   "LIVEUPDATE_NO_INVITE_FOUND","You don't have an invitation for that thread.
-
-   *\"there is no pending invite for that thread.\"*"
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
+   "LIVEUPDATE_NO_INVITE_FOUND","200","You don't have an invitation for the thread.","
+   ``{""json"": {""errors"": [[""LIVEUPDATE_NO_INVITE_FOUND"", ""there is no pending invite for that thread"", null]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "404","The specified live thread does not exist."
 
@@ -571,7 +554,6 @@ Returns ``{"json": {"errors": []}}`` on success.
 
 .. csv-table:: Form Data / URL Params
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "id","string","The full ID36 of the user to revoke an invitation for."
 
@@ -579,7 +561,6 @@ Returns ``{"json": {"errors": []}}`` on success.
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "403","* You do not have the `manage` permission.
 
@@ -605,17 +586,17 @@ If leaving a live thread you were not a contributor to, the action is treated as
 
 Returns ``{"json": {"errors": []}}`` on success.
 
-.. csv-table:: API Errors (variant 2)
+.. csv-table:: API Errors
    :header: "Error","Description"
-   :escape: \
 
-   "USER_REQUIRED","There is no user context."
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "404","The specified live thread does not exist."
 
@@ -643,7 +624,6 @@ Returns ``{"json": {"errors": []}}`` on success.
 
 .. csv-table:: Form Data / URL Params
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "id","string","The full ID36 of the user to revoke contributorship for."
 
@@ -651,7 +631,6 @@ Returns ``{"json": {"errors": []}}`` on success.
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "403","* You are not a contributor to the live thread.
 
@@ -679,7 +658,6 @@ Returns ``{"json": {"errors": []}}`` on success.
 
 .. csv-table:: Form Data / URL Params
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "type","string","Specify `liveupdate_contributor` to change the permissions for a contributor.
 
@@ -692,40 +670,41 @@ Returns ``{"json": {"errors": []}}`` on success.
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "NO_USER","The `name` parameter was not specified or was empty.
-
-   *\"please enter a username\"* -> name"
-   "USER_DOESNT_EXIST","The user specified by `name` does not exist.
-
-   *\"that user doesn't exist\"* -> name"
-   "INVALID_PERMISSIONS","The string specified by the `permissions` parameter is invalid.
-
-   *\"invalid permissions string\"* -> permissions"
-   "INVALID_PERMISSION_TYPE","The `type` parameter was not specified or is invalid.
-
-   *\"permissions don't apply to that type of user\"* -> type"
-   "LIVEUPDATE_NO_INVITE_FOUND","`type: liveupdate_contributor_invite` was specified and the user specified by `name`
-   has no invite to change permissions for.
-
-   *\"there is no pending invite for that thread\"* -> user"
-   "LIVEUPDATE_NOT_CONTRIBUTOR","`type: liveupdate_contributor` was specified and the user specified by `name`
-   is not a contributor.
-
-   *\"that user is not a contributor\"* -> user"
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
+   "NO_USER","200","","
+   ``{""json"": {""errors"": [[""NO_USER"", ""please enter a username"", ""name""]]}}``
+   "
+   "USER_DOESNT_EXIST","200","The user specified by `name` does not exist.","
+   ``{""json"": {""errors"": [[""USER_DOESNT_EXIST"", ""that user doesn't exist"", ""name""]]}}``
+   "
+   "INVALID_PERMISSION_TYPE","200","The `type` parameter was not specified or is invalid.","
+   ``{""json"": {""errors"": [[""INVALID_PERMISSION_TYPE"", ""permissions don't apply to that type of user"", ""type""]]}}``
+   "
+   "INVALID_PERMISSIONS","200","The string specified by the `permissions` parameter is invalid.","
+   ``{""json"": {""errors"": [[""INVALID_PERMISSIONS"", ""invalid permissions string"", ""permissions""]]}}``
+   "
+   "LIVEUPDATE_NO_INVITE_FOUND","200","`type: liveupdate_contributor_invite` was specified and the user specified by `name`
+   has no invite to change permissions for.","
+   ``{""json"": {""errors"": [[""LIVEUPDATE_NO_INVITE_FOUND"", ""there is no pending invite for that thread"", ""user""]]}}``
+   "
+   "LIVEUPDATE_NOT_CONTRIBUTOR","200","`type: liveupdate_contributor` was specified and the user specified by `name`
+   is not a contributor.","
+   ``{""json"": {""errors"": [[""LIVEUPDATE_NOT_CONTRIBUTOR"", ""that user is not a contributor"", ""user""]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
-   "403","* You do not have the `manage` permission.
+   "403","* There is no user context.
 
-   * There is no user context."
+   * You do not have the `manage` permission."
    "404","The specified live thread does not exist."
 
 .. seealso:: `<https://www.reddit.com/dev/api/#POST_api_live_{thread}_set_contributor_permissions>`_
@@ -744,7 +723,6 @@ This endpoint is a listing. See :ref:`Listings overview <listings-overview>`.
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "404","The specified live thread does not exist."
 

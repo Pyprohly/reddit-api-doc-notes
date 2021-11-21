@@ -45,11 +45,10 @@ A 'continue this thread' 'more comment' object:
 
 .. csv-table:: 'continue this thread' More Comments Object
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "count","integer","Always 0."
-   "name","string","Always `\"t1__\"`."
-   "id","string","Always `\"_\"`."
+   "name","string","Always `""t1__""`."
+   "id","string","Always `""_""`."
    "parent_id","string","Parent submission or comment full ID36."
    "depth","integer","The depth at which this object's parent occurs.
    E.g., if this more comment object is attached to a top-level comment, its depth will be 1."
@@ -68,7 +67,6 @@ A 'load more comments' 'more comment' object:
 
 .. csv-table:: 'load more comments' More Comments Object
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "count","integer","The number of comments this node is stubbing;
    the number of comments that are children of `parent_id`."
@@ -86,7 +84,6 @@ Example::
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "comment","integer","ID36 of a comment. Assume this comment as the root.
 
@@ -121,10 +118,11 @@ Example::
 |
 
 .. csv-table:: HTTP Errors
-   :header: "Status Code","Description"
-   :escape: \
+   :header: "Status Code","Description","Example"
 
-   "404","The given submission ID could not be found."
+   "404","The given submission ID could not be found.","
+   ``{""message"": ""Not Found"", ""error"": 404}``
+   "
 
 
 Get more comment tree comments
@@ -161,7 +159,6 @@ Elements are ordered in pre-order DFS traversal order, the same as on the site.
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "link_id","string","The full ID36 of the comments' submission."
    "children","string","A comma-delimited list of comment ID36s."
@@ -187,14 +184,15 @@ Elements are ordered in pre-order DFS traversal order, the same as on the site.
 |
 
 .. csv-table:: HTTP Errors
-   :header: "Status Code","Description"
-   :escape: \
+   :header: "Status Code","Description","Example"
 
    "400","There are too many comment ID36s (`children` parameter) for the server to handle.
 
    For example, see the large thread linked in
    `this <https://www.reddit.com/r/redditdev/comments/7si641/praw_530_toolarge_received_413_http_response_when/>`_
-   submission."
+   submission.",""
    "403","* The submission ID from `link_id` does not exist.
 
-   * The `link_id` parameter was not specified."
+   * The `link_id` parameter was not specified.","
+   ``{""message"": ""Forbidden"", ""error"": 403}``
+   "

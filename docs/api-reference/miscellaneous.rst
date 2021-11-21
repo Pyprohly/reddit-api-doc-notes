@@ -31,7 +31,6 @@ This might only happen when `type: sr`, not sure.
 
 .. csv-table:: URL Params
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "...",".",":ref:`Listing common parameters <listings-overview>`."
    "q","string","A search query."
@@ -94,7 +93,6 @@ Example output for `output_mode: markdown`::
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "output_mode","string","Either `rtjson` or `markdown`."
    "markdown_text","string","If `output_mode: rtjson`, the markdown text to convert to rich text JSON."
@@ -104,7 +102,6 @@ Example output for `output_mode: markdown`::
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "400","* The `output_mode` parameter was not specified.
 

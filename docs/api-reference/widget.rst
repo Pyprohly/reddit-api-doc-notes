@@ -384,7 +384,11 @@ Upload image
 
 Upload an image for use in a widget.
 
+This endpoint is used for obtaining an upload lease.
+
 The upload process is similar to Flair Emoji image uploads. See :ref:`here <emoji-upload>`.
+
+The `action` is typically `//reddit-subreddit-uploaded-media.s3-accelerate.amazonaws.com` for this endpoint.
 
 
 .. _widget-create:

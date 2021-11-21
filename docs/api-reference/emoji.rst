@@ -15,7 +15,6 @@ Schema
 
 .. csv-table:: Custom Feed Object
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "url","string","The emoji image file."
    "created_by","string","The full ID36 (prefixed with `t2_`) of the user who added the emoji."
@@ -39,20 +38,24 @@ Get a list of all emojis for a subreddit.
 The response includes reddit-wide 'snoomoji' emojis as well as custom emojis for the
 subreddit specified in the request URL.
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","   *Please log in to do that.*"
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
-   "403","The specified subreddit cannot be accessed."
-   "500","The specified subreddit does not exist."
+   "403","The specified subreddit cannot be accessed, because is private, etc.","
+   ``{""message"": ""Forbidden"", ""error"": 403}``
+   "
+   "500","The specified subreddit does not exist.","
+   ``{""message"": ""Internal Server Error"", ""error"": 500}``
+   "
 
 .. seealso:: `<https://www.reddit.com/dev/api/#GET_api_v1_{subreddit}_emojis_all>`_
 
@@ -109,15 +112,22 @@ plus the file extension.
 |
 
 .. csv-table:: HTTP Errors
-   :header: "Status Code","Description"
+   :header: "Status Code","Description","Example"
 
    "400","* The `filepath` or `mimetype` form parameter was not specified or the value was empty.
 
    * The file extension in the name specified by `filepath` is not supported.
 
-   * Invalid value specified for `mimetype`, or the type is not supported."
-   "403","The specified subreddit cannot be accessed."
-   "500","The specified subreddit does not exist."
+   * Invalid value specified for `mimetype`, or the type is not supported.","
+   ``{""message"": ""Bad Request"", ""error"": 400}``
+   "
+
+   "403","You are not a moderator of the target subreddit.","
+   ``{""message"": ""Forbidden"", ""error"": 403}``
+   "
+   "500","The specified subreddit does not exist.","
+   ``{""message"": ""Internal Server Error"", ""error"": 500}``
+   "
 
 .. seealso:: `<https://www.reddit.com/dev/api/#POST_api_v1_{subreddit}_emoji_asset_upload_s3.json>`_
 
@@ -144,7 +154,6 @@ Returns ``{"json": {"errors": []}}`` on success.
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "s3_key","string","The key of the Amazon S3 bucket containing the emoji image."
    "name","string","A name for the emoji. Up to 24 characters. This will be the text used to write the emoji. E.g., `:name:`."
@@ -154,28 +163,34 @@ Returns ``{"json": {"errors": []}}`` on success.
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","   *Please log in to do that.*"
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
-   :header: "Status Code","Description"
-   :escape: \
+   :header: "Status Code","Description","Example"
 
    "400","* The `s3_key` parameter was not specified or was empty.
 
    * More than 24 characters were used for the `name` parameter.
 
    * The `name` specified was invalid because it contains a space or other invalid characters.
-     Name can only contain letters, numbers, underscores, or hyphens."
-   "403","You do not have permission to add an emoji to the specified subreddit."
+     Name can only contain letters, numbers, underscores, or hyphens.","
+   ``{""message"": ""Bad Request"", ""error"": 400}``
+   "
+   "403","You do not have permission to add an emoji to the specified subreddit.","
+   ``{""message"": ""Forbidden"", ""error"": 403}``
+   "
    "500","* The `name` parameter was not specified or was empty.
 
-   * The specified subreddit does not exist."
+   * The specified subreddit does not exist.","
+   ``{""message"": ""Internal Server Error"", ""error"": 500}``
+   "
 
 .. seealso:: `<https://www.reddit.com/dev/api/#POST_api_v1_{subreddit}_emoji.json>`_
 
@@ -191,7 +206,6 @@ Returns ``{"json": {"errors": []}}`` on success.
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "name","string","The target emoji name."
    "mod_flair_only","boolean","Whether the emoji can only be used by mods. Default: false."
@@ -200,23 +214,29 @@ Returns ``{"json": {"errors": []}}`` on success.
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","   *Please log in to do that.*"
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
-   :header: "Status Code","Description"
-   :escape: \
+   :header: "Status Code","Description","Example"
 
-   "403","You do not have permission to make changes to the specified subreddit."
-   "404","The emoji specified by `name` does not exist."
+   "403","You do not have permission to make changes to the specified subreddit.","
+   ``{""message"": ""Forbidden"", ""error"": 403}``
+   "
+   "404","The emoji specified by `name` does not exist.","
+   ``{""message"": ""Not Found"", ""error"": 404}``
+   "
    "500","* The `name` parameter was not specified or was empty.
 
-   * The specified subreddit does not exist."
+   * The specified subreddit does not exist.","
+   ``{""message"": ""Internal Server Error"", ""error"": 500}``
+   "
 
 
 Delete
@@ -230,21 +250,23 @@ Delete a flair emoji.
 
 Returns ``{"json": {"errors": []}}`` on success.
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","   *Please log in to do that.*"
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
-   :header: "Status Code","Description"
-   :escape: \
+   :header: "Status Code","Description","Example"
 
    "400","* The specified emoji does not exist.
 
-   * The specified subreddit does not exist."
+   * The specified subreddit does not exist.","
+   ``{""message"": ""Forbidden"", ""error"": 403}``
+   "
 
 .. seealso:: `<https://www.reddit.com/dev/api/#DELETE_api_v1_{subreddit}_emoji_{emoji_name}>`_
 
@@ -264,7 +286,6 @@ Returns ``{"json": {"errors": []}}`` on success.
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "width","integer","An integer from 16 to 40.
 
@@ -273,20 +294,24 @@ Returns ``{"json": {"errors": []}}`` on success.
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","   *Please log in to do that.*"
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
-   :header: "Status Code","Description"
-   :escape: \
+   :header: "Status Code","Description","Example"
 
-   "403","You do not have permission to make changes to the specified subreddit."
-   "500","The specified subreddit does not exist."
+   "403","You do not have permission to make changes to the specified subreddit.","
+   ``{""message"": ""Forbidden"", ""error"": 403}``
+   "
+   "500","The specified subreddit does not exist.","
+   ``{""message"": ""Internal Server Error"", ""error"": 500}``
+   "
 
 .. seealso:: `<https://www.reddit.com/dev/api/#POST_api_v1_{subreddit}_emoji_custom_size>`_
 
@@ -302,26 +327,29 @@ Returns ``{"json": {"errors": []}}`` on success.
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "subreddit","string","The target subreddit name."
    "enable","boolean","True for enable, false for disable. Default: false."
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","   *Please log in to do that.*"
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
-   :header: "Status Code","Description"
-   :escape: \
+   :header: "Status Code","Description","Example"
 
-   "403","You do not have permission to set emoji options in the target subreddit."
+   "403","You do not have permission to set emoji options in the target subreddit.","
+   ``{""message"": ""Forbidden"", ""error"": 403}``
+   "
    "500","* The `subreddit` parameter was not specified or was empty.
 
-   * The specified subreddit does not exist."
+   * The specified subreddit does not exist.","
+   ``{""message"": ""Internal Server Error"", ""error"": 500}``
+   "

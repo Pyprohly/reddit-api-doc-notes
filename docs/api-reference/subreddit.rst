@@ -12,27 +12,50 @@ Schema
 
 .. csv-table:: Subreddit Object
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "accounts_active","integer","Deprecated. Then number of online users. Same as `active_user_count`."
    "active_user_count","integer","Then number of online users. Same as `accounts_active`."
    "accounts_active_is_fuzzed","boolean",""
-   "advertiser_category","string","E.g., `\"Technology\"`"
+   "advertiser_category","string","E.g., `""Technology""`"
    "all_original_content","boolean",""
    "allow_discovery","boolean",""
-   "allow_galleries","boolean",""
+   "allow_galleries","boolean","True if gallery posts are allowed."
    "allow_images","boolean",""
-   "allow_polls","boolean",""
+   "allow_polls","boolean","True if poll posts are allowed."
    "allow_predictions","boolean",""
    "allow_videogifs","boolean",""
    "allow_videos","boolean",""
-   "banner_background_color","string","E.g., `#7193ff`"
+   "header_img","string?","The legacy reddit subreddit icon image URL.
+
+   Value is `null` if the subreddit icon has never been set before. If it's been set and has been removed
+   the value will be an empty string."
+   "header_size","integer array?","The legacy reddit subreddit icon image width and height.
+
+   Value is `null` if a subreddit icon image is not currently set."
+   "header_title","string?","The hover text of the legacy reddit subreddit icon image.
+
+   Value is `null` if a the subreddit icon image hover text has never been set before.
+   If it's been set and has been removed the value will be an empty string."
+   "icon_img","string?","The legacy reddit subreddit mobile icon image.
+
+   Value is `null` if the subreddit icon has never been set before. If it's been set and has been removed
+   the value will be an empty string."
+   "icon_size","integer array?","The legacy reddit subreddit mobile icon image width and height.
+
+   Value is `null` if a subreddit icon image is not currently set."
+   "banner_img","string?","The legacy reddit subreddit mobile banner image.
+
+   Value is `null` if the subreddit icon has never been set before. If it's been set and has been removed
+   the value will be an empty string."
+   "banner_size","integer array?","The legacy reddit subreddit mobile banner image width and height.
+
+   Value is `null` if a subreddit icon image is not currently set."
    "banner_background_image","string","The url of the background banner image."
-   "banner_img","string",""
-   "banner_size","unknown?",""
+   "banner_background_color","string","E.g., `#7193ff`"
+   "mobile_banner_image","string",""
+   "community_icon","string",""
    "collapse_deleted_comments","boolean",""
    "comment_score_hide_mins","integer",""
-   "community_icon","string",""
    "created","float","Legacy. Same as `created_utc` but subtract 28800."
    "created_utc","float","Unix timestamp of when the post was made. Will always be a whole number."
    "description","string","Subreddit description text in markdown."
@@ -45,19 +68,13 @@ Schema
    "emojis_enabled","boolean",""
    "free_form_reports","boolean",""
    "has_menu_widget","boolean",""
-   "header_img","string",""
-   "header_size","integer array (2)",""
-   "header_title","string",""
    "hide_ads","boolean",""
-   "icon_img","string",""
-   "icon_size","unknown?",""
    "id","string","The ID36 of the subreddit (without the `t5_` prefix)."
    "is_crosspostable_subreddit","boolean",""
    "is_enrolled_in_new_modmail","unknown?",""
    "key_color","string","E.g., `#ddbd37`. Can be an empty string."
    "primary_color","string","E.g., `#223a55`. Can be an empty string."
    "lang","string","E.g., `en`"
-   "mobile_banner_image","string",""
    "name","string","The subreddit's full ID36 (with prefix `t5_`). Also see `id`."
    "notification_level","string","E.g., `low`"
    "original_content_tag_enabled","boolean",""
@@ -83,7 +100,7 @@ Schema
    "url","string","E.g., `/r/AskReddit/`"
    "user_has_favorited","boolean?","Current user has favourited the subreddit. `null` if no user context."
    "user_is_banned","boolean?","Current user is banned from the subreddit. `null` if no user context."
-   "user_is_contributor","boolean?","Current user is a contributor to the subreddit. `null` if no user context."
+   "user_is_contributor","boolean?","Current user is an approved contributor to the subreddit. `null` if no user context."
    "user_is_moderator","boolean?","Current user is a moderator of the subreddit. `null` if no user context."
    "user_is_muted","boolean?","Current user is muted in the subreddit. `null` if no user context."
    "user_is_subscriber","boolean?","Current user is subscribed to the subreddit. `null` if no user context."
@@ -95,13 +112,13 @@ Schema
 
    "user_flair_enabled_in_sr","boolean","Whether user flairs are enabled in the subreddit.
 
-   In old Reddit this is the flair option that says \"enable user flair in this subreddit\"."
+   In old Reddit this is the flair option that says ""enable user flair in this subreddit""."
    "can_assign_link_flair","boolean","Whether or not users can assign a flair to their submission in this subreddit. If false, only a moderator can assign flairs to submissions.
 
-   In old Reddit this is the flair option that says \"allow submitters to assign their own link flair\"."
+   In old Reddit this is the flair option that says ""allow submitters to assign their own link flair""."
    "can_assign_user_flair","boolean","Whether or not users can assign a flair to themselves in this subreddit. If false, only a moderator can assign flairs to users.
 
-   In old Reddit this is the flair option that says \"allow users to assign their own flair\"."
+   In old Reddit this is the flair option that says ""allow users to assign their own flair""."
    "link_flair_enabled","boolean","True if link flairs are enabled. This field is tied to the 'link flair position' flair setting: this field is false when set to `none`."
    "link_flair_position","string","Either `left`, or `right`, or empty string if `link_flair_enabled` is false (the 'none' option in the old Reddit UI)."
    "user_can_flair_in_sr","boolean?","Whether or not the current user is allowed to set their user flair in this subreddit. This will be true if the 'allow users to assign their own' user flair option is enabled, or if the current user is a moderator of the subreddit with the 'flair' permission. If neither of these conditions are true, this field value will be `null`.
@@ -111,7 +128,7 @@ Schema
 
    If a flair template is not being used then the value will be an empty string.
 
-   If a flair template is being used and the background color is unset then the value is the string `\"transparent\"`.
+   If a flair template is being used and the background color is unset then the value is the string `""transparent""`.
 
    Value `null` when:
 
@@ -187,7 +204,6 @@ If the subreddit is not found then the endpoint returns an empty listing (strang
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "403","You don't have permission to access this subreddit."
    "404","* You specified the name of a special subreddit: `all`, `popular`, `friends`, `mod`.
@@ -223,7 +239,6 @@ Mandatory parameters:
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "name","string","The new subreddit's name. This parameter is ignored if `sr` is specified and it is a valid ID."
    "sr","string","The full ID36 of an existing subreddit. This parameter is ignored if the ID is not valid."
@@ -239,22 +254,28 @@ This endpoint takes a lot of parameters see
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "NO_TEXT","* The `name` or `sr` parameter was not specified.
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
+   "NO_TEXT","200","* The `name` or `sr` parameter was not specified.
 
    * The `name` parameter was specified but was empty.
 
    * The `title` parameter was not specified.
 
-   * The ID specified by `sr` is not valid.
-
-      *we need something here* -> *name*"
-   "SUBREDDIT_EXISTS","The subreddit name specified by `name` already exists."
-   "BAD_SR_NAME","The subreddit name specified by `name` is invalid."
-   "INVALID_OPTION","The `wikimode`, `link_type`, and `type` parameters were not specified or have an invalid value."
+   * The ID specified by `sr` is not valid.","
+   ``{""json"": {""errors"": [[""NO_TEXT"", ""we need something here"", ""name""]]}}``
+   "
+   "SUBREDDIT_EXISTS","200","The subreddit name specified by `name` already exists.","
+   ``{""json"": {""errors"": [[""SUBREDDIT_EXISTS"", ""that subreddit already exists"", ""name""]]}}``
+   "
+   "BAD_SR_NAME","200","The subreddit name specified by `name` is invalid.","
+   ``{""json"": {""errors"": [[""BAD_SR_NAME"", ""This community name isn't recognizable. Check the spelling and try again."", ""name""]]}}``
+   "
+   "INVALID_OPTION","The `wikimode`, `link_type`, and `type` parameters were not specified or have an invalid value.",""
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_site_admin
 
@@ -293,7 +314,6 @@ For a subreddit that you do not have permission to view subreddit settings for, 
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "404","* You don't have permission to view this subreddit's settings.
 
@@ -312,31 +332,34 @@ Update settings
 Update a subreddit's settings.
 
 This endpoint takes JSON data.
-
-Specify the target subreddit by providing a full ID36 value to the `sr` key.
 Settings are provided as key/value entries in the JSON data.
+Specify the target subreddit by providing a full ID36 value to an `sr` key.
 
-See `Get settings`_ for a clue on valid options.
+See `Get settings`_ for a clue on the valid options.
 
 Returns an empty JSON object on success.
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "SUBREDDIT_REQUIRED","* The `sr` parameter was not specified.
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
+   "SUBREDDIT_REQUIRED","200","* The `sr` parameter was not specified.
 
-      *you must specify a subreddit* -> *sr*"
-   "MOD_REQUIRED","The current user is not a moderator of the subreddit specified by the `sr` parameter."
-   "USER_REQUIRED","   *Please log in to do that.*"
+   * The subreddit specified by `sr` does not exist.","
+   ``{""json"": {""errors"": [[""SUBREDDIT_REQUIRED"", ""you must specify a subreddit"", ""sr""]]}}``
+   "
+   "MOD_REQUIRED","200","The current user is not a moderator of the subreddit specified by the `sr` parameter.","
+   ``{""json"": {""errors"": [[""MOD_REQUIRED"", ""You must be a moderator to do that."", ""sr""]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
-   "500","Form encoded data was provided but JSON data expected."
+   "500","No JSON data was received."
 
 
 Get Trending Subreddit Names
@@ -400,7 +423,6 @@ Returns an empty JSON object on success.
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "action","string","Either `sub` or `unsub`. Default if not specified: `unsub`."
    "sr","string","A comma separated list of subreddit full ID36s (prefixed with `t5_`)."
@@ -410,11 +432,12 @@ Returns an empty JSON object on success.
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","   *Please log in to do that.*"
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_subscribe
 
@@ -422,7 +445,6 @@ Returns an empty JSON object on success.
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "400","The `skip_initial_defaults` parameter was true when `action=unsub`."
    "403","* A subreddit specified in `sr` or `sr_name` could not be accessed.
@@ -434,7 +456,7 @@ Returns an empty JSON object on success.
 
    * Attempted to unsubscribe to a subreddit you are not subscribed to and only one subreddit was specified
      (for `sr` or `sr_name`)."
-   "503","Sends *\"Our CDN was unable to reach our servers\"* HTML document. When over approximately 250 items are specified at once."
+   "503","Sends *""Our CDN was unable to reach our servers""* HTML document. When over approximately 250 items are specified at once."
 
 
 .. _subreddit-get-rules:
@@ -506,16 +528,16 @@ creating a text field in their app that does not allow the user to enter more ch
 
 A non-exhaustive list of possible requirements a moderator may enable:
 
-* `body_blacklisted_strings`: String array. Users may not submit posts that contain these words.
-* `body_restriction_policy`: String. One of `required`, `notAllowed`, or `none`, meaning that a text post body is
+* `body_blacklisted_strings` (string array):. Users may not submit posts that contain these words.
+* `body_restriction_policy` (string): One of `required`, `notAllowed`, or `none`, meaning that a text post body is
   required, not allowed, or optional, respectively.
-* `domain_blacklist`: String array. Users may not submit links to these domains
-* `domain_whitelist`: String array. Users submissions MUST be from one of these domains
-* `is_flair_required`: Boolean. If True, flair must be set at submission time.
-* `title_blacklisted_strings`: String array. Submission titles may NOT contain any of the listed strings.
-* `title_required_strings`: String array. Submission title MUST contain at least ONE of the listed strings.
-* `title_text_max_length`: Integer. Maximum length of the title field.
-* `title_text_min_length`: Integer. Minimum length of the title field.
+* `domain_blacklist` (string array): Users may not submit links to these domains
+* `domain_whitelist` (string array): Users submissions MUST be from one of these domains
+* `is_flair_required` (boolean): If True, flair must be set at submission time.
+* `title_blacklisted_strings` (string array): Submission titles may NOT contain any of the listed strings.
+* `title_required_strings` (string array): Submission title MUST contain at least ONE of the listed strings.
+* `title_text_max_length` (integer): Maximum length of the title field.
+* `title_text_min_length` (integer): Minimum length of the title field.
 
 Example output for post requirement settings that have not been changed::
 
@@ -544,24 +566,18 @@ Example output for post requirement settings that have not been changed::
 
 |
 
-.. csv-table:: API Errors (variant 1)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "SUBREDDIT_NOEXIST","The specified subreddit does not exist.
-
-      *that subreddit doesn't exist*"
-   "SUBREDDIT_NO_ACCESS","The specified subreddit is private or banned.
-
-      *you aren't allowed access to this subreddit*"
-
-|
-
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
-
-   "USER_REQUIRED","   *Please log in to do that.*"
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
+   "SUBREDDIT_NOEXIST","404","The specified subreddit does not exist.","
+   ``{""explanation"": ""Hmm, that community doesn't exist. Try checking the spelling."", ""message"": ""Not Found"", ""reason"": ""SUBREDDIT_NOEXIST""}``
+   "
+   "SUBREDDIT_NO_ACCESS","403","The specified subreddit is private or banned.","
+   ``{""explanation"": ""you aren't allowed access to this subreddit"", ""message"": ""Forbidden"", ""reason"": ""SUBREDDIT_NO_ACCESS""}``
+   "
 
 .. seealso:: `<https://www.reddit.com/dev/api/#GET_api_v1_{subreddit}_post_requirements>`_
 
@@ -586,7 +602,6 @@ If the subreddit is not found then the endpoint returns an empty listing::
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "403","The subreddit specified could not be accessed because it is private."
    "404","The subreddit specified could not be accessed because it is banned."
@@ -614,7 +629,6 @@ Returns an object with one field, `names`, which is an array of subreddit names.
 
 .. csv-table:: URL Params / Form Data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "query","string","A string up to 50 characters long to match the start of subreddit names.
    The match is case insensitive."
@@ -623,7 +637,7 @@ Returns an object with one field, `names`, which is an array of subreddit names.
    "include_over_18","boolean","Whether to filter NSFW subreddits.
 
    This parameter is ignored if there is a user context. If there is a user context the value is taken from the
-   \"include not safe for work (NSFW) search results in searches\" preference option.
+   ""include not safe for work (NSFW) search results in searches"" preference option.
 
    This parameter is ignored and enabled if the `exact` parameter is true.
 
@@ -637,7 +651,6 @@ Returns an object with one field, `names`, which is an array of subreddit names.
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "404","`exact` true was specified and the subreddit name could not be found."
 
@@ -662,7 +675,6 @@ Interestingly, this endpoint can be used to determine the subscriber count of pr
 
 .. csv-table:: Partial Subreddit Object
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "name","string","The subreddit name."
    "subscriber_count",".","Same as the `subscribers` field on the Subreddit schema."
@@ -675,13 +687,11 @@ Interestingly, this endpoint can be used to determine the subscriber count of pr
 
 .. csv-table:: URL Params / Form Data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "...",".","Same as in `GET /api/search_reddit_names`."
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "...","Same as in `GET /api/search_reddit_names`."
 
@@ -708,7 +718,6 @@ The `sr_detail` parameter is not supported (despite the offical docs saying so).
 
 .. csv-table:: URL Params
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "...",".",":ref:`Listing common parameters <listings-overview>`."
    "q","string","A search query. Matches user name beginnings or descriptions."

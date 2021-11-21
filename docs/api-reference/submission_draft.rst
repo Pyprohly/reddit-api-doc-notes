@@ -10,7 +10,6 @@ Draft Schema
 
 .. csv-table:: Draft Schema
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "id","string","A UUID for this draft. E.g., `5d5e1684-08db-11ec-a00d-ae86119e02bc`."
    "kind","string","`markdown` or `richtext`."
@@ -33,7 +32,6 @@ Draft Schema
 
 .. csv-table:: Draft Flair Info Schema
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "templateId","string","Flair template UUID."
    "type","string","Values: `text`, ...?"
@@ -61,7 +59,6 @@ Returns an object like the following::
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "kind","string","* `markdown` or `richtext` -> text post.
    * `link` -> link post."
@@ -90,19 +87,21 @@ Returns an object like the following::
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","There is no user context."
-   "JSON_PARSE_ERROR","`kind: richtext` was specified and the `body` parameter was not specified,
-   empty, or contained an invalid JSON string."
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
+   "JSON_PARSE_ERROR","200","`kind: richtext` was specified and the `body` parameter was not specified,
+   empty, or contained an invalid JSON string.","
+   ``{""json"": {""errors"": [[""JSON_PARSE_ERROR"", ""Sorry, something went wrong. Double-check things and try again."", ""body""]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "500","The `kind` parameter was not specified or the value is invalid."
 
@@ -119,11 +118,12 @@ Retrieve the current user's drafts.
 Returns a JSON object with two keys: `drafts` which is an array of draft objects,
 and `subreddits` which is an array of subreddit objects in which the drafts reference.
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","There is no user context."
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
 
 
 Read public draft
@@ -142,21 +142,38 @@ In the returned JSON, the draft can be found under `root['drafts'][draft_id]`.
 The keys in this draft object are different from that described in Draft Schema above,
 but otherwise the data is the same.
 
-.. csv-table:: API Errors (variant 1)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "FORBIDDEN","* There is no user context.
+   "FORBIDDEN","403","* There is no user context.
    * The specified draft does not exist.
-   * You do not have permission to view the draft.
+   * You do not have permission to view the draft.","
+   ::
 
-   *\"Forbidden\"*"
-   "BAD_GATEWAY","The specified ID is invalid.
+      {
+        ""code"": 403,
+        ""reason"": ""FORBIDDEN"",
+        ""explanation"": ""Forbidden""
+      }
+   "
+   "BAD_GATEWAY","502","The specified ID is not a valid UUID.","
+   ::
 
-   *\"Unprocessable Entity\"*"
-   "NOT_FOUND","The draft exists but it is not public.?
+      {
+        ""code"": 502,
+        ""reason"": ""BAD_GATEWAY"",
+        ""explanation"": ""Unprocessable Entity""
+      }
+   "
+   "NOT_FOUND","404","The draft could not be found.","
+   ::
 
-   *\"not_found\"*"
+      {
+        ""code"": 404,
+        ""reason"": ""NOT_FOUND"",
+        ""explanation"": ""not_found""
+      }
+   "
 
 
 Update
@@ -174,24 +191,23 @@ Returns an object like the following::
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "id","string","The UUID of an existing draft."
    "...",".","Parameters are the same as in `POST /api/v1/draft`."
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","There is no user context."
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "...","Same as in `POST /api/v1/draft`."
 
@@ -213,30 +229,23 @@ The ID returned is that of the deleted draft.
 
 .. csv-table:: URL Params
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "draft_id","string","The UUID of a draft."
 
 |
 
-.. csv-table:: API Errors (variant 1)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "UNKNOWN_THRIFT_ERROR","The specified draft ID does not exist.
-
-   *\"There was a connection error with Thrift: BadRequest(message=u'Draft does not exist.')\"*"
-   "VALIDATION_ERRORS","The specified draft ID was invalid.
-
-   *\"ValidationErrors(errors=[ValidationError(reason=u'Invalid draft_id.', field=u'draft_id', short_name=None)])\"*"
-
-|
-
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
-
-   "USER_REQUIRED","There is no user context."
-   "INVALID_DRAFT_ID","The `draft` parameter was not specified
-
-   *\"Draft id isn't valid\"* -> draft_id"
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
+   "INVALID_DRAFT_ID","200","The `draft_id` parameter was not specified.","
+   ``{""json"": {""errors"": [[""INVALID_DRAFT_ID"", ""Draft id isn't valid"", ""draft_id""]]}}``
+   "
+   "UNKNOWN_THRIFT_ERROR","403","The specified draft does not exist.","
+   ``{""explanation"": ""There was a connection error with Thrift: BadRequest(message=u'Draft does not exist.')"", ""message"": ""Forbidden"", ""reason"": ""UNKNOWN_THRIFT_ERROR""}``
+   "
+   "VALIDATION_ERRORS","422","The specified draft ID is not a valid UUID.","
+   ``{""explanation"": ""ValidationErrors(errors=[ValidationError(reason=u'Invalid draft_id.', field=u'draft_id', short_name=None)])"", ""message"": ""Unprocessable Entity"", ""reason"": ""VALIDATION_ERRORS""}``
+   "

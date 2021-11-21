@@ -37,7 +37,6 @@ Requires the `posts` moderator permission (otherwise 403 HTTP error).
 
 .. csv-table:: URL Params
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "r","string","The target subreddit. An alternative to specifying the subreddit name in the URL (`{subreddit}`)."
    "only","string","Either `links` or `comments`. Use `links` to only see submissions. Use `comments` to only see comments.
@@ -48,7 +47,6 @@ Requires the `posts` moderator permission (otherwise 403 HTTP error).
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "200","The specified subreddit name is too long (over 21 characters) or contains invalid characters.
    A 'page not found' HTML document is returned. (The behaviour is the same using the URL or the `r` parameter.)"
@@ -84,7 +82,6 @@ in the result set.
 
 .. csv-table:: Moderator User Item Schema
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "id","string","The full ID36 (`t2_` prefixed) of the subject."
    "username","string","The subject's name."
@@ -109,7 +106,6 @@ in the result set.
 
 .. csv-table:: Contributor User Item Schema
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "id",".","See :ref:`Moderator User Item Schema <moderator-user-item-schema>`."
    "username",".","See :ref:`Moderator User Item Schema <moderator-user-item-schema>`."
@@ -119,7 +115,6 @@ in the result set.
 
 .. csv-table:: Banned User Item Schema
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "id",".","See :ref:`Moderator User Item Schema <moderator-user-item-schema>`."
    "username",".","See :ref:`Moderator User Item Schema <moderator-user-item-schema>`."
@@ -137,7 +132,6 @@ in the result set.
 
 .. csv-table:: Muted User Item Schema
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "id",".","See :ref:`Moderator User Item Schema <moderator-user-item-schema>`."
    "username",".","See :ref:`Moderator User Item Schema <moderator-user-item-schema>`."
@@ -151,26 +145,23 @@ Endpoint URL params:
 
 .. csv-table:: URL Params
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "username","string","A username."
    "count","integer","The number of items to return. This is equivalent to the `limit` parameter on listing paginators."
 
 |
 
-.. csv-table:: API Errors (variant 1)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "SUBREDDIT_NOEXIST","The subreddit specified does not exist.
-
-   *\"Hmm, that community doesn't exist. Try checking the spelling.\"* -> subreddit"
+   "SUBREDDIT_NOEXIST","400","","
+   ``{""fields"": [""subreddit""], ""explanation"": ""Hmm, that community doesn't exist. Try checking the spelling."", ""message"": ""Bad Request"", ""reason"": ""SUBREDDIT_NOEXIST""}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "403","You don't have access to the subreddit."
 
@@ -199,7 +190,6 @@ If the specified subreddit doesn't exist an empty listing is returned.
 
 .. csv-table:: User Relationship Item Schema
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "rel_id","string","Use this for listing pagination."
    "id","string","The full ID36 of the user."
@@ -221,7 +211,6 @@ Additional URL params:
 
 .. csv-table:: URL Params
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "r","string","The target subreddit. An alternative to specifying the subreddit name in the URL (`{subreddit}`)."
    "user","string","A username."
@@ -230,7 +219,6 @@ Additional URL params:
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "403","You don't have access to the subreddit."
    "404","The specified subreddit name is too long (over 21 characters) or contains invalid characters.
@@ -260,7 +248,6 @@ or the string `a` to restrict the results to admin actions taken within the subr
 
 .. csv-table:: Mod action object
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "id","string","Mod action ID. E.g., `ModAction_727b75b0-2214-11ec-99b4-05a9ad5c4e6c`."
    "action","string","The mod action name."
@@ -283,7 +270,6 @@ or the string `a` to restrict the results to admin actions taken within the subr
 
 .. csv-table:: Form data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "...","...","Common listing parameters. See :ref:`Listings overview <listings-overview>`.
 
@@ -296,7 +282,6 @@ or the string `a` to restrict the results to admin actions taken within the subr
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "404","You do not have permission to view the mod log of the specified subreddit."
 
@@ -315,7 +300,6 @@ If the user is already invited, it is treated as a success.
 
 .. csv-table:: Form data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "r","string","The target subreddit. An alternative to specifying the subreddit name in the URL."
    "type","string","`moderator_invite` or `moderator`"
@@ -332,29 +316,36 @@ If the user is already invited, it is treated as a success.
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","There is no user context."
-   "NO_USER","The `name` parameter was not specified or was empty.
-
-   *\"please enter a username\"* -> name"
-   "USER_DOESNT_EXIST","The user specified by `name` does not exist.
-
-   *\"that user doesn't exist\"* -> name"
-   "INVALID_PERMISSIONS","The string specified by the `permissions` parameter is invalid.
-
-   *\"invalid permissions string\"* -> permissions"
-   "ALREADY_MODERATOR","*\"That user is already a moderator\"* -> name"
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
+   "NO_USER","200","The `name` parameter was not specified or was empty.","
+   ``{""json"": {""errors"": [[""NO_USER"", ""please enter a username"", ""name""]]}}``
+   "
+   "USER_DOESNT_EXIST","200","The user specified by `name` does not exist.","
+   ``{""json"": {""errors"": [[""USER_DOESNT_EXIST"", ""that user doesn't exist"", ""name""]]}}``
+   "
+   "INVALID_PERMISSIONS","200","","
+   ``{""json"": {""errors"": [[""INVALID_PERMISSIONS"", ""invalid permissions string"", ""permissions""]]}}``
+   "
+   "ALREADY_MODERATOR","200","","
+   ``{""json"": {""errors"": [[""ALREADY_MODERATOR"", ""That user is already a moderator"", ""name""]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
-   :header: "Status Code","Description"
-   :escape: \
+   :header: "Status Code","Description","Example"
 
-   "403","You don't have access to the subreddit you are sending an invite for."
+   "403","You don't have access to the subreddit you are sending an invite for.","
+   ``{""message"": ""Forbidden"", ""error"": 403}``
+   "
+   "500","The `type` parameter was not specified.","
+   ``{""message"": ""Internal Server Error"", ""error"": 500}``
+   "
 
 
 Accept moderator invite
@@ -370,26 +361,25 @@ Returns ``{"json": {"errors": []}}`` on success.
 
 .. csv-table:: Form data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "r","string","The target subreddit. An alternative to specifying the subreddit name in the URL."
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","There is no user context."
-   "NO_INVITE_FOUND","You don't have an invitation for the subreddit.
-
-   *\"there is no pending invite for that subreddit.\"*"
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
+   "NO_INVITE_FOUND","200","You don't have a pendning invitation for the subreddit.","
+   ``{""json"": {""errors"": [[""NO_INVITE_FOUND"", ""there is no pending invite for that subreddit"", null]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "500","The non subreddit form of the URL was used and `r` was not specified or was empty."
 
@@ -410,7 +400,6 @@ If the user is already invited, it is treated as a success.
 
 .. csv-table:: Form data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "r","string","The target subreddit. An alternative to specifying the subreddit name in the URL."
    "type","string","`moderator_invite`"
@@ -418,17 +407,17 @@ If the user is already invited, it is treated as a success.
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","There is no user context."
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "400","The `name` parameter was not specified, was empty, the name contains invalid characters,
    or the user of the name doesn't exist."
@@ -452,17 +441,17 @@ of the target subreddit, it is treated as a success.
 
 .. csv-table:: Form data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "id","string","The full ID36 of a subreddit (prefixed with `t5_`)."
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","A user context is required."
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_leavemoderator
 
@@ -481,7 +470,6 @@ If the given user is not a moderator of the subreddit, it is treated as a succes
 
 .. csv-table:: Form data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "r","string","The target subreddit. An alternative to specifying the subreddit name in the URL."
    "type","string","`moderator`"
@@ -489,17 +477,17 @@ If the given user is not a moderator of the subreddit, it is treated as a succes
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","There is no user context."
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "400","The `name` parameter was not specified, was empty, the name contains invalid characters,
    or the user of the name doesn't exist."
@@ -520,7 +508,6 @@ If the user is already invited, it is treated as a success.
 
 .. csv-table:: Form data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "r","string","The target subreddit. An alternative to specifying the subreddit name in the URL."
    "type","string","`moderator`: change permissions of a moderator.
@@ -533,27 +520,27 @@ If the user is already invited, it is treated as a success.
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","There is no user context."
-   "USER_DOESNT_EXIST","The user specified by `name` does not exist.
-
-   *\"that user doesn't exist\"* -> name"
-   "INVALID_PERMISSION_TYPE","The user specified by `name` isn't a moderator (if `type: moderator`)
-   or mod invitee (if `type: moderator_invite`).
-
-   *\"permissions don't apply to that type of user\"* -> type"
-   "NO_USER","The `name` parameter was not specified or was empty.
-
-   *\"please enter a username\"* -> name"
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
+   "NO_USER","200","The `name` parameter was not specified or was empty.","
+   ``{""json"": {""errors"": [[""NO_USER"", ""please enter a username"", ""name""]]}}``
+   "
+   "USER_DOESNT_EXIST","200","The user specified by `name` does not exist.","
+   ``{""json"": {""errors"": [[""USER_DOESNT_EXIST"", ""that user doesn't exist"", ""name""]]}}``
+   "
+   "INVALID_PERMISSION_TYPE","200","The user specified by `name` isn't a moderator (if `type: moderator`)
+   or mod invitee (if `type: moderator_invite`).","
+   ``{""json"": {""errors"": [[""INVALID_PERMISSION_TYPE"", ""permissions don't apply to that type of user"", ""type""]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "403","You don't have access to the subreddit you are revoking an invite for."
    "404","The subreddit specified by `r` does not exist. A 'page not found' HTML document is also returned."
@@ -582,7 +569,6 @@ If the user is already in the relationship, it is treated as a success.
 
 .. csv-table:: Form data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "r","string","The target subreddit. An alternative to specifying the subreddit name in the URL."
    "type","string","Either: `banned`, `muted`, `contributor`, `wikibanned`, `wikicontributor`."
@@ -611,38 +597,41 @@ If the user is already in the relationship, it is treated as a success.
    The note to include in the ban PM, as markdown text.
 
    Note that a PM is always sent to the banned user when a ban is issued.
-   This ban message shows in the PM under a section called "Note from the moderators:".
+   This ban message shows in the PM under a section called ""Note from the moderators:"".
 
    Default: empty string."
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","A user context is required."
-   "BAD_NUMBER","The number specified for `duration` is not in the range 1 to 999.
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
+   "BAD_NUMBER","200","The number specified for `duration` is not in the range 1 to 999,
+   when `type: banned` or `type`: `wikibanned`.","
+   ``{""json"": {""errors"": [[""BAD_NUMBER"", ""that number isn't in the right range (1 to 999)"", ""duration""]]}}``
+   "
+   "TOO_LONG","200","* (1) The value specified by `ban_reason` is over 100 characters.
 
-   *\"that number isn't in the right range (1 to 999)\"* -> duration"
-   "TOO_LONG","* The value specified by `ban_reason` is over 100 characters.
-
-   * The value specified by `note` is over 300 characters.
-
-   *\"This field must be under 100 characters\"* -> ban_reason"
+   * The value specified by `note` is over 300 characters.","
+   (1): ``{""json"": {""errors"": [[""TOO_LONG"", ""This field must be under 100 characters"", ""ban_reason""]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "400","The `id` or `name` parameter was not specified."
    "403","* The non subreddit form of the URL was used and `r` was not specified or was empty.
 
    * You don't have access to the subreddit you are operating on."
    "404","The subreddit specified by `r` does not exist. A 'page not found' HTML document is also returned."
-   "500","* The `name` parameter was not specified, was empty, or the name contains invalid characters.
+   "500","* The `type` parameter was not specified.
+
+   * The `name` parameter was not specified, was empty, or the name contains invalid characters.
 
    * The user specified by `name` does not exist, or was deleted, banned, etc."
 
@@ -665,7 +654,6 @@ If the user is not already in the relationship, it is treated as a success.
 
 .. csv-table:: Form data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "r","string","The target subreddit. An alternative to specifying the subreddit name in the URL."
    "type","string","Either: `banned`, `muted`, `contributor`, `wikibanned`, `wikicontributor`."
@@ -674,17 +662,17 @@ If the user is not already in the relationship, it is treated as a success.
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","A user context is required."
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "400","* The `id` or `name` parameter was not specified.
 
@@ -737,17 +725,17 @@ of the target subreddit, it is treated as a success.
 
 .. csv-table:: Form data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "id","string","The full ID36 of a subreddit (prefixed with `t5_`)."
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","A user context is required."
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_leavecontributor
 
@@ -799,24 +787,23 @@ Returns `{}` on success. If the target is already snoozed/unsnoozed, it is treat
 
 .. csv-table:: Form data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "id","string","The full ID36 of a post or comment (prefixed with `t3_` or `t1_`)."
    "reason","string","The report reason text to snooze on."
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","A user context is required."
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "403","* The `id` parameter was not specified.
 
@@ -842,38 +829,35 @@ Returns a JSON object on success, like the following::
 
 .. csv-table:: Form data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "title","string","A title for this removal reason."
    "message","string","The removal reason message."
 
 |
 
-.. csv-table:: API Errors (variant 1)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "MOD_REQUIRED","* The current user is not a moderator of the target subreddit.
+   "MOD_REQUIRED","400","* There is no user context.
 
-   * There is no user context.
+   * The current user is not a moderator of the target subreddit.","
+   ``{""explanation"": ""You must be a moderator to do that."", ""message"": ""Bad Request"", ""reason"": ""MOD_REQUIRED""}``
+   "
+   "NO_TEXT","400","* The `title` parameter was not specified or was empty.
 
-   *\"You must be a moderator to do that.\"*"
-   "NO_TEXT","* The `title` parameter was not specified or was empty.
+   * The `message` parameter was not specified or was empty.","
+   ``{""fields"": [""title""], ""explanation"": ""we need something here"", ""message"": ""Bad Request"", ""reason"": ""NO_TEXT""}``
+   "
+   "TOO_LONG","400","* (1) The value specified for `title` is over 50 characters.
 
-   * The `message` parameter was not specified or was empty.
-
-   *\"we need something here\"* -> title"
-   "TOO_LONG","* The value specified for `title` is over 50 characters.
-
-   * The value specified for `message` is over 10000 characters.
-
-   *\"This field must be under 50 characters\"* -> title"
+   * The value specified for `message` is over 10000 characters.","
+   (1): ``{""fields"": [""title""], ""explanation"": ""This field must be under 50 characters"", ""message"": ""Bad Request"", ""reason"": ""TOO_LONG""}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "500","The target subreddit does not exist."
 
@@ -903,23 +887,17 @@ Returns a JSON object on success, like the following::
                                "title": "Be excellent to each other"}},
     "order": ["17hxexsxbr0ye", "17hxg7deji23d", "17hxgacq8byjh", "17hxgpamf6jpf"]}
 
-.. csv-table:: API Errors (variant 1)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "SUBREDDIT_NOEXIST","The target subreddit does not exist.
+   "MOD_REQUIRED","400","* There is no user context.
 
-   *\"Hmm, that community doesn't exist. Try checking the spelling.\"*"
-   "MOD_REQUIRED","* The current user is not a moderator of the target subreddit.
-
-   * There is no user context.
-
-   *\"You must be a moderator to do that.\"*"
-   "NO_TEXT","* The `title` parameter was not specified or was empty.
-
-   * The `message` parameter was not specified or was empty.
-
-   *\"we need something here\"* -> title"
+   * The current user is not a moderator of the target subreddit.","
+   ``{""explanation"": ""You must be a moderator to do that."", ""message"": ""Bad Request"", ""reason"": ""MOD_REQUIRED""}``
+   "
+   "SUBREDDIT_NOEXIST","400","The target subreddit does not exist.","
+   ``{""explanation"": ""Hmm, that community doesn't exist. Try checking the spelling."", ""message"": ""Bad Request"", ""reason"": ""SUBREDDIT_NOEXIST""}``
+   "
 
 
 Update removal reason
@@ -937,40 +915,38 @@ Returns zero bytes on success.
 
 .. csv-table:: Form data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "title","string","A title for this removal reason."
    "message","string","The removal reason message."
 
 |
 
-.. csv-table:: API Errors (variant 1)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "SUBREDDIT_NOEXIST","The target subreddit does not exist.
+   "MOD_REQUIRED","400","* There is no user context.
 
-   *\"Hmm, that community doesn't exist. Try checking the spelling.\"* -> subreddit"
-   "MOD_REQUIRED","* The current user is not a moderator of the target subreddit.
+   * The current user is not a moderator of the target subreddit.","
+   ``{""explanation"": ""You must be a moderator to do that."", ""message"": ""Bad Request"", ""reason"": ""MOD_REQUIRED""}``
+   "
+   "SUBREDDIT_NOEXIST","400","The target subreddit does not exist.","
+   ``{""fields"": [""subreddit""], ""explanation"": ""Hmm, that community doesn't exist. Try checking the spelling."", ""message"": ""Bad Request"", ""reason"": ""SUBREDDIT_NOEXIST""}``
+   "
+   "NO_TEXT","400","* The `title` parameter was not specified or was empty.
 
-   * There is no user context.
+   * The `message` parameter was not specified or was empty.","
+   ``{""fields"": [""title""], ""explanation"": ""we need something here"", ""message"": ""Bad Request"", ""reason"": ""NO_TEXT""}``
+   "
+   "INVALID_ID","400","* The specified removal reason ID was not found.
 
-   *\"You must be a moderator to do that.\"*"
-   "NO_TEXT","* The `title` parameter was not specified or was empty.
+   * The specified removal reason ID contained invalid characters (e.g., it contained uppercase letters).","
+   ``{""fields"": [""reason_id""], ""explanation"": ""The specified id is invalid"", ""message"": ""Bad Request"", ""reason"": ""INVALID_ID""}``
+   "
+   "TOO_LONG","400","* The value specified for `title` is over 50 characters.
 
-   * The `message` parameter was not specified or was empty.
-
-   *\"we need something here\"* -> title"
-   "INVALID_ID","* The specified removal reason ID was not found.
-
-   * The specified removal reason ID contained invalid characters (e.g., it contained uppercase letters).
-
-   *\"The specified id is invalid\"* -> reason_id"
-   "TOO_LONG","* The value specified for `title` is over 50 characters.
-
-   * The value specified for `message` is over 10000 characters.
-
-   *\"This field must be under 50 characters\"* -> title"
+   * The value specified for `message` is over 10000 characters.","
+   ``{""fields"": [""title""], ""explanation"": ""This field must be under 50 characters"", ""message"": ""Bad Request"", ""reason"": ""TOO_LONG""}``
+   "
 
 
 Delete removal reason
@@ -984,18 +960,17 @@ Delete a removal reason.
 
 Returns zero bytes on success. If the specified ID did not exist it is treated as a success.
 
-.. csv-table:: API Errors (variant 1)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "SUBREDDIT_NOEXIST","The target subreddit does not exist.
+   "INVALID_ID","400","The specified removal reason ID contained invalid characters (e.g., it contained uppercase letters).","
+   ``{""fields"": [""reason_id""], ""explanation"": ""The specified id is invalid"", ""message"": ""Bad Request"", ""reason"": ""INVALID_ID""}``
+   "
+   "MOD_REQUIRED","400","* There is no user context.
 
-   *\"Hmm, that community doesn't exist. Try checking the spelling.\"* -> subreddit"
-   "MOD_REQUIRED","* The current user is not a moderator of the target subreddit.
-
-   * There is no user context.
-
-   *\"You must be a moderator to do that.\"*"
-   "INVALID_ID","* The specified removal reason ID contained invalid characters (e.g., it contained uppercase letters).
-
-   *\"The specified id is invalid\"* -> reason_id"
+   * The current user is not a moderator of the target subreddit.","
+   ``{""explanation"": ""You must be a moderator to do that."", ""message"": ""Bad Request"", ""reason"": ""MOD_REQUIRED""}``
+   "
+   "SUBREDDIT_NOEXIST","400","The target subreddit does not exist.","
+   ``{""fields"": [""subreddit""], ""explanation"": ""Hmm, that community doesn't exist. Try checking the spelling."", ""message"": ""Bad Request"", ""reason"": ""SUBREDDIT_NOEXIST""}``
+   "

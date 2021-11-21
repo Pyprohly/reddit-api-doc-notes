@@ -12,7 +12,6 @@ Schema
 
 .. csv-table:: User Object
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "id","string","The ID of the user (without the `t2_` prefix)."
    "created","float","Legacy. Same as `created_utc` but subtract 28800."
@@ -33,7 +32,7 @@ Schema
    "is_employee","boolean","Is a Reddit admin."
    "is_friend","boolean","Whether the user is a friend of the current user."
    "is_mod","boolean","Is a moderator of any subreddit."
-   "name","string","The user account name. E.g., `"spez"`"
+   "name","string","The user account name. E.g., `""spez""`"
    "verified","boolean",""
    "subreddit","object","See :ref:`Subreddit sub-object <user-subreddit>`."
    "pref_show_snoovatar","boolean",""
@@ -44,7 +43,6 @@ Additional fields for when the client has a user context and the user object mat
 
 .. csv-table:: User Object
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "can_create_subreddit","boolean",""
    "can_edit_name","boolean",""
@@ -71,7 +69,7 @@ Additional fields for when the client has a user context and the user object mat
    "is_suspended","boolean",""
    "new_modmail_exists","boolean",""
    "num_friends","integer","Number of friends in your friends list. See https://www.reddit.com/prefs/friends/."
-   "over_18","boolean","Preference option \"I am over eighteen years old and willing to view adult content\" is checked."
+   "over_18","boolean","Preference option ""I am over eighteen years old and willing to view adult content"" is checked."
    "password_set","boolean",""
    "pref_autoplay","boolean",""
    "pref_clickgadget","integer",""
@@ -89,7 +87,6 @@ Additional fields for when the client has a user context and the object does not
 
 .. csv-table:: User Object
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "accept_chats","boolean","Whether the user is accepting chat messages."
    "accept_pms","boolean","Whether the user is accepting private messages."
@@ -102,7 +99,6 @@ Features sub-object
 
 .. csv-table:: User.features Object
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "awards_on_streams","boolean",""
    "chat","boolean",""
@@ -151,7 +147,6 @@ Subreddit sub-object
 
 .. csv-table:: User.features Object
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "banner_img","string",""
    "banner_size","unknown?",""
@@ -184,10 +179,10 @@ Subreddit sub-object
    "submit_link_label","string",""
    "submit_text_label","string",""
    "submit_text_label","string",""
-   "subreddit_type","string","The string `\"user\"`."
+   "subreddit_type","string","The string `""user""`."
    "subscribers","integer",""
    "title","string",""
-   "url","string","E.g., `\"/user/Pyprohly/\"`"
+   "url","string","E.g., `""/user/Pyprohly/""`"
    "user_is_banned","boolean",""
    "user_is_contributor","boolean",""
    "user_is_moderator","boolean",""
@@ -211,7 +206,6 @@ Get information about a user by account name.
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "404","A user with the specified name was not found."
 
@@ -247,7 +241,6 @@ This end point returns an object with the following fields:
 
 .. csv-table:: Partial user objects
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "comment_karma","integer","Karma accumulated from commenting."
    "created_utc","float","Unix timestamp of when the post was made. Will always be a whole number."
@@ -262,7 +255,6 @@ This end point returns an object with the following fields:
 
 .. csv-table:: URL Params
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "ids","string","A comma separated list of user full IDs (each being prefixed by `t2_`)."
 
@@ -270,7 +262,6 @@ This end point returns an object with the following fields:
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "400","The requested URL length is too long (over 6544 characters)."
    "404","None of the IDs matched any user."
@@ -370,7 +361,6 @@ Additional URL params for *Overview*, *Submitted*, and *Comments*:
 
 .. csv-table:: URL Params
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "sort","string","One of: `hot`, `new`, `top`, `controversial`.
 
@@ -381,7 +371,6 @@ Additional URL params for *Saved*:
 
 .. csv-table:: URL Params
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "type","string","Filter for either `links` or `comments`."
 
@@ -389,7 +378,6 @@ Additional URL params for *Saved*:
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "404","The user name was not found."
    "403","You don't have permission to view this listing."
@@ -408,7 +396,6 @@ Report a user. Reporting a user brings it to the attention of a Reddit admin.
 
 .. csv-table:: Form data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "user","string","A valid, existing reddit username"
    "details","string","JSON data"
@@ -432,13 +419,12 @@ Returns a 'TrophyList' structure.
 
 For a description of the Trophy object schema, see :ref:`here <account-list-trophies>`.
 
-.. csv-table:: API Errors (variant 1)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_DOESNT_EXIST","The user name specified by `user` does not exist.
-
-   *\"that user doesn't exist\"* -> id"
+   "USER_DOESNT_EXIST","400","The user name specified by `user` does not exist.","
+   ``{""fields"": [""id""], ""explanation"": ""that user doesn't exist"", ""message"": ""Bad Request"", ""reason"": ""USER_DOESNT_EXIST""}``
+   "
 
 .. seealso:: `<https://www.reddit.com/dev/api/#GET_api_v1_user_{username}_trophies>`_
 
@@ -465,7 +451,6 @@ The `sr_detail` parameter is not supported (despite the offical docs saying so).
 
 .. csv-table:: URL Params
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "...",":ref:`Listing common parameters <listings-overview>`."
    "q","string","A search query. Matches user name beginnings or descriptions."
@@ -489,19 +474,17 @@ Returns `true` or `false`.
 
 .. csv-table:: URL Params
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "user","string","A username."
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "BAD_USERNAME","* The `user` param was not specified or is empty.
+   "BAD_USERNAME","200","* The `user` param was not specified or is empty.
 
-   * The username specified contains illegal characters.
-
-   \"invalid username\""
+   * The username specified contains illegal characters.","
+   ``{""json"": {""errors"": [[""BAD_USERNAME"", ""invalid user name"", ""user""]]}}``
+   "
 
 .. seealso:: https://www.reddit.com/dev/api/#GET_api_username_available
 
@@ -553,6 +536,5 @@ a user subreddit (i.e., `subreddit_type: user`).
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "404","A user with the specified name was not found."

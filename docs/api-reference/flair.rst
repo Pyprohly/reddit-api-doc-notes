@@ -24,7 +24,6 @@ Returns `{"json": {"errors": []}}` on success.
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "name","string","Some redditor username."
    "link","string","A full ID36 of a submission in the subreddit."
@@ -34,33 +33,35 @@ Returns `{"json": {"errors": []}}` on success.
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "BAD_FLAIR_TARGET","* The `name` or `link` parameter was not specified.
+   "BAD_FLAIR_TARGET","200","* The `name` or `link` parameter was not specified.
 
    * The username specified by `name` does not exist.
 
-   * The submission specified by `link` does not exist.
+   * The submission specified by `link` does not exist.","
+   ``{""json"": {""errors"": [[""BAD_FLAIR_TARGET"", ""not a valid flair target"", ""name""]]}}``
+   "
+   "BAD_CSS_NAME","200","The CSS class specified by `css_class` was longer than 100 characters.
 
-   *\"not a valid flair target\"* -> name"
-   "BAD_CSS_NAME","The CSS class specified by `css_class` was longer than 100 characters.
-
-   The CSS class specified by `css_class` contained invalid characters.
-
-   *\"invalid css name\"* -> css_class"
+   The CSS class specified by `css_class` contained invalid characters.","
+   ``{""json"": {""errors"": [[""BAD_CSS_NAME"", ""invalid css name"", ""css_class""]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
-   :header: "Status Code","Description"
-   :escape: \
+   :header: "Status Code","Description","Example"
 
-   "403","* The current user does not have permission to set flairs in the specified subreddit.
+   "403","* There is no user context.
 
-   * The submission targeted by `link` does not belong to the current subreddit."
-   "404","(Sends HTML document.) The subreddit specified in the URL does not exist."
+   * The current user does not have permission to set flairs in the specified subreddit.
+
+   * The submission targeted by `link` does not belong to the current subreddit.","
+   ``{""message"": ""Forbidden"", ""error"": 403}``
+   "
+   "404","The subreddit specified in the URL does not exist.","*(HTML document)*"
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_flair
 
@@ -82,7 +83,7 @@ Use the `name` parameter and don't specify the `text` or `css_class` parameters.
 
 |
 
-Alternatively:
+Alternatively, here is an alternative endpoint that does a similar thing:
 
 .. http:post:: /r/{subreddit}/api/deleteflair
 
@@ -96,19 +97,23 @@ Returns `{"json": {"errors": []}}` on success.
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "name","string","Some redditor username."
 
 |
 
 .. csv-table:: HTTP Errors
-   :header: "Status Code","Description"
-   :escape: \
+   :header: "Status Code","Description","Example"
 
-   "500","The name specified by `name` contained invalid characters.
-   Note, the `POST /r/{subreddit}/api/flair` endpoint would return a BAD_FLAIR_TARGET API error instead
-   so consider this when deciding to use this endpoint or that one."
+   "403","There is no user context.","
+   ``{""message"": ""Forbidden"", ""error"": 403}``
+   "
+   "500","The username specified by `name` contained invalid characters.
+
+   Note, the `POST /r/{subreddit}/api/flair` endpoint would return a `BAD_FLAIR_TARGET` API error instead
+   so consider this when deciding to use this endpoint or that one.","
+   ``{""message"": ""Internal Server Error"", ""error"": 500}``
+   "
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_deleteflair
 
@@ -159,17 +164,19 @@ Example return value::
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "flair_csv","A CSV string of flair information in the form of `user,flairtext,cssclass`."
 
 |
 
 .. csv-table:: HTTP Errors
-   :header: "Status Code","Description"
-   :escape: \
+   :header: "Status Code","Description","Example"
 
-   "403","The current user does not have permission to set flairs in the specified subreddit."
+   "403","* There is no user context.
+
+   * The current user does not have permission to set flairs in the specified subreddit.","
+   ``{""message"": ""Forbidden"", ""error"": 403}``
+   "
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_flaircsv
 
@@ -203,7 +210,6 @@ Returns the newly created or updated flair template object. E.g.,::
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "flair_template_id","string","Edit the flair with this ID. If the specified ID does not exist then it will be
    ignored and a new flair template will be created."
@@ -215,13 +221,13 @@ Returns the newly created or updated flair template object. E.g.,::
    "text","string","Flair text. No longer than 64 characters. If longer than 64 characters then the
    parameter is ignored and an empty string is used.
 
-   Default: `\"\"`."
+   Default: empty string."
    "text_editable","boolean","Whether users will be able to edit flair text.
 
    Default: `false`."
    "css_class","string","A CSS class. No longer than 100 characters.
 
-   Default: `\"\"`."
+   Default: empty string."
    "text_color","string","Either `light` or `dark`.
 
    Default: `dark`."
@@ -246,10 +252,13 @@ Returns the newly created or updated flair template object. E.g.,::
 |
 
 .. csv-table:: HTTP Errors
-   :header: "Status Code","Description"
-   :escape: \
+   :header: "Status Code","Description","Example"
 
-   "403","The current user does not have permission to set flairs in the specified subreddit."
+   "403","* There is no user context.
+
+   * The current user does not have permission to set flairs in the specified subreddit.","
+   ``{""message"": ""Forbidden"", ""error"": 403}``
+   "
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_flairtemplate_v2
 
@@ -271,7 +280,6 @@ Returns `{"json": {"errors": []}}` on success.
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "flair_template_id","string","Edit the flair with this ID.
 
@@ -284,25 +292,24 @@ Returns `{"json": {"errors": []}}` on success.
    "text","string","Flair text. No longer than 64 characters. If longer than 64 characters then the
    parameter is ignored and an empty string is used.
 
-   Default: `\"\"`."
+   Default: empty string."
    "text_editable","boolean","Whether users will be able to edit flair text.
 
    Default: `false`."
    "css_class","string","A CSS class. No longer than 100 characters.
 
-   Default: `\"\"`."
+   Default: empty string."
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "BAD_CSS_NAME","The CSS class specified by `css_class` was longer than 100 characters.
+   "BAD_CSS_NAME","200","The CSS class specified by `css_class` was longer than 100 characters.
 
-   The CSS class specified by `css_class` contained invalid characters.
-
-   *\"invalid css name\"* -> css_class"
+   The CSS class specified by `css_class` contained invalid characters.","
+   ``{""json"": {""errors"": [[""BAD_CSS_NAME"", ""invalid css name"", ""css_class""]]}}``
+   "
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_flairtemplate
 
@@ -345,7 +352,6 @@ Returns `{"json": {"errors": []}}` on success.
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "flair_template_id","string","A flair ID."
    "name","string","Some redditor username."
@@ -363,17 +369,20 @@ Returns `{"json": {"errors": []}}` on success.
 |
 
 .. csv-table:: HTTP Errors
-   :header: "Status Code","Description"
-   :escape: \
+   :header: "Status Code","Description","Example"
 
    "403","* The specified flair ID does not exist.
 
    * The specified flair ID is a post flair when `name` is used, or a user flair when `link` is used.
 
-   * The current user does not have permission to assign the specified flair ID."
+   * The current user does not have permission to assign the specified flair ID.","
+   ``{""message"": ""Forbidden"", ""error"": 403}``
+   "
    "404","* Neither the `name` nor `link` parameters were specified.
 
-   * The `name` specified was not found or contains invalid characters."
+   * The `name` specified was not found or contains invalid characters.","
+   ``{""message"": ""Not Found"", ""error"": 404}``
+   "
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_selectflair
 
@@ -415,18 +424,20 @@ Returns `{"json": {"errors": []}}` on success.
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "flair_template_id","string","A flair ID."
 
 |
 
 .. csv-table:: HTTP Errors
-   :header: "Status Code","Description"
-   :escape: \
+   :header: "Status Code","Description","Example"
 
-   "403","The current user does not have flair mod permission in the subreddit."
-   "404","The `flair_template_id` specified does not exist."
+   "403","The current user does not have flair mod permission in the subreddit.","
+   ``{""message"": ""Forbidden"", ""error"": 403}``
+   "
+   "404","The `flair_template_id` specified does not exist.","
+   ``{""message"": ""Not Found"", ""error"": 404}``
+   "
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_deleteflairtemplate
 
@@ -453,17 +464,17 @@ Returns `{"json": {"errors": []}}` on success.
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "flair_type","string","Either `USER_FLAIR` or `LINK_FLAIR`. Defaults `USER_FLAIR` if not specified or some other value is used."
 
 |
 
 .. csv-table:: HTTP Errors
-   :header: "Status Code","Description"
-   :escape: \
+   :header: "Status Code","Description","Example"
 
-   "403","The current user does not have flair mod permission in the subreddit."
+   "403","The current user does not have flair mod permission in the subreddit.","
+   ``{""message"": ""Forbidden"", ""error"": 403}``
+   "
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_clearflairtemplates
 
@@ -491,7 +502,6 @@ Returns `{"json": {"errors": []}}` on success.
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "flair_enabled","boolean","Whether user flairs are enabled in the subreddit.
 
@@ -502,7 +512,7 @@ Returns `{"json": {"errors": []}}` on success.
 
    This controls the `user_flair_position` field on subreddit objects.
 
-   Default: `\"\"`."
+   Default: empty string."
    "flair_self_assign_enabled","boolean","Forced false if `flair_enabled` is false.
 
    This controls the `can_assign_user_flair` field on subreddit objects.
@@ -512,7 +522,7 @@ Returns `{"json": {"errors": []}}` on success.
 
    This controls the `link_flair_position` field on subreddit objects.
 
-   Default: `\"\"`."
+   Default: empty string."
    "link_flair_self_assign_enabled","boolean","Forced false if `link_flair_position` is empty string.
 
    This controls the `can_assign_link_flair` field on subreddit objects.
@@ -522,10 +532,11 @@ Returns `{"json": {"errors": []}}` on success.
 |
 
 .. csv-table:: HTTP Errors
-   :header: "Status Code","Description"
-   :escape: \
+   :header: "Status Code","Description","Example"
 
-   "403","The current user does not have flair mod permission in the subreddit."
+   "403","The current user does not have flair mod permission in the subreddit.","
+   ``{""message"": ""Forbidden"", ""error"": 403}``
+   "
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_flairconfig
 
@@ -551,7 +562,6 @@ must be specified, otherwise a 404 is returned.
 
 .. csv-table:: URL Params
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "subreddit","string","The target subreddit."
    "flair_type","string","Either `USER_FLAIR` or `LINK_FLAIR`.
@@ -562,7 +572,6 @@ must be specified, otherwise a 404 is returned.
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "400","* A flair template ID is missing from the provided list.
 
@@ -607,17 +616,17 @@ E.g.,::
      "type": "text"},
    ...]
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","You must login to use this endpoint."
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "403","* The current user is not a moderator of the subreddit.
 
@@ -650,17 +659,17 @@ E.g.,::
      "id": "22e43042-fc6d-11e8-862d-0e2e63c9b776"},
    ...]
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","You must login to use this endpoint."
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "403","* The current user is not a moderator of the subreddit.
 
@@ -736,7 +745,6 @@ If there is no user context, this endpoint returns `"{}"` (i.e., a string of an 
 
 .. csv-table:: Form Data (or URL Params)
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "is_newlink","boolean","Whether to return information on post flairs or user flairs.
    If truthy then return information for post flairs. If not specified then defaults to false.
@@ -753,7 +761,6 @@ If there is no user context, this endpoint returns `"{}"` (i.e., a string of an 
 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
-   :escape: \
 
    "403","The submission specified by the full ID36 `link` does not belong to this subreddit."
 
@@ -802,7 +809,6 @@ to go backwards in the listing.
 
 .. csv-table:: URL Params
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "before","...","See :ref:`Listings overview <listings-overview>`."
    "after","...","See :ref:`Listings overview <listings-overview>`."
@@ -831,7 +837,6 @@ Returns `{"json": {"errors": []}}` on success.
 
 .. csv-table:: URL Params
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
    "flair_enabled","boolean","Truthy (any string matching `/^[^0Ff]/`) to enable, falsy to disable.
 
@@ -839,19 +844,18 @@ Returns `{"json": {"errors": []}}` on success.
 
 |
 
-.. csv-table:: API Errors (variant 2)
-   :header: "Error","Description"
-   :escape: \
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","You must login to use this endpoint."
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
 
 |
 
 .. csv-table:: HTTP Errors
-   :header: "Status Code","Description"
-   :escape: \
+   :header: "Status Code","Description","Example"
 
-   "404","(Sends HTML document.) The subreddit specified in the URL does not exist."
+   "404","The subreddit specified in the URL does not exist.","*(HTML document)*"
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_setflairenabled
-
