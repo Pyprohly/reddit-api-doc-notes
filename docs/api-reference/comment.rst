@@ -221,11 +221,25 @@ Sending a message requires the `privatemessages` scope.
    "USER_REQUIRED","200","There is no user context.","
    ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
    "
+   "RATELIMIT","200","","
+   ``{""json"": {""errors"": [[""RATELIMIT"", ""Looks like you've been doing that a lot. Take a break for 5 seconds before trying again."", ""ratelimit""]]}}``
+   "
    "NO_TEXT","200","Neither `text` nor `richtext_json` was specified, or they were empty.","
    ``{""json"": {""errors"": [[""NO_TEXT"", ""we need something here"", ""text""]]}}``
    "
-   "TOO_OLD","200","The target is older than 6 months and the subreddit has archiving enabled.","
+   "TOO_OLD","200","The subreddit has archiving enabled and the target is older than 6 months.","
    ``{""json"": {""errors"": [[""TOO_OLD"", ""that's a piece of history now; it's too late to reply to it"", ""parent""]]}}``
+   "
+   "THREAD_LOCKED","200","The target comment or submission is locked and you are not a moderator of the subreddit.","
+   ``{""json"": {""errors"": [[""THREAD_LOCKED"", ""Comments are locked."", ""parent""]]}}``
+   "
+   "DELETED_COMMENT","200","The target comment was deleted and can't be replied to.
+
+   Note that deleted submissions can still be replied to, and anyone with a direct link can still view a deleted submission.","
+   ``{""json"": {""errors"": [[""DELETED_COMMENT"", ""that comment has been deleted"", ""parent""]]}}``
+   "
+   "SOMETHING_IS_BROKEN","200","The author of the target submission/comment has blocked you.","
+   ``{""json"": {""errors"": [[""SOMETHING_IS_BROKEN"", ""Something is broken, please try again later."", ""parent""]]}}``
    "
 
 |
@@ -235,6 +249,11 @@ Sending a message requires the `privatemessages` scope.
 
    "403","The `thing_id` parameter wasn't given or the ID doesn't exist.","
    ``{""message"": ""Forbidden"", ""error"": 403}``
+   "
+   "500","* Potential unknown server error.
+
+   * The target submission/comment is from a quarantined subreddit that the current user has not opted in to.","
+   ``{""message"": ""Internal Server Error"", ""error"": 500}``
    "
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_comment

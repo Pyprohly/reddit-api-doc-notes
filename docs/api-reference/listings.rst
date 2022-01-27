@@ -198,9 +198,9 @@ Comment objects have the following extra fields:
 
 .. csv-table:: Comment Object extra fields
    :header: "Field","Type (hint)","Description"
-   :escape: \
 
-   "num_comments","integer","The number of comments in the submission containing this comment."
+   "num_comments?","integer","The number of comments in the submission containing this comment.
+   This field sometimes doesn't exist. Dunno why."
    "quarantine","boolean","Whether this comment is in a quarantined subreddit."
    "over_18","boolean","Whether the submission of this comment has been marked as NSFW."
    "link_title","string","Title of the submission containing this comment."

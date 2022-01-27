@@ -132,7 +132,7 @@ Schema
    Contains information about the gallery items, including captions and link URLs.
    Use the `media_id` in the `media_metadata` field object to get more information about the media items.
 
-   This field does not exist if not a gallery post.
+   This field does not exist if not a gallery post. This field can be `null` even if `is_gallery` is true.
 
    The object will have one key, `items`, whose value is an array of gallery item objects.
 
@@ -589,12 +589,12 @@ Return object example for video posts::
 
    {"json": {"errors": [], "data": {"websocket_url": "wss://ws-0c2fc51946b39365a.wss.redditmedia.com/i2arnoco52c71?m=AQAASr_0YNe2OENAgcxRDFT6lNowcSPjOboA1bfLsYXZUzts20rI"}}}
 
-.. csv-table:: Form Data
+.. csv-table:: Form Data or URL Params
    :header: "Field","Type (hint)","Description"
 
    "kind","string","Either: `link`, `self`, `image`, `video`, `videogif`,
    `crosspost`. Default: `link`."
-   "sr","string","The subreddit name in which to submit to."
+   "sr","string","The subreddit name in which to submit to. Can be prefixed with `r/` or `/r/`."
    "title","string","Title of the submission. Up to 300 characters long."
    "text","string","The markdown text for a text post."
    "url","string","A valid URL, for a link post."
@@ -899,6 +899,10 @@ Delete a Comment or Submission.
 
 This endpoint does not produce any kind of return value. If the target doesn't exist or isn't valid,
 nothing happens.
+
+When a submission is deleted it's text content (if a text post) will be set to "[deleted]" and the submission
+will be unlisted from its subreddit. Users can still otherwise view and reply to deleted to submissions if they
+have a direct link to it.
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"

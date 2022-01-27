@@ -184,7 +184,7 @@ Returns ``{"json": {"errors": []}}`` on success.
 
    To message a user, specify the name of a user, optionally prefixed with `u/` or `/u/`.
 
-   To message a subreddit, specify the name of a subreddit prefixed with either `#`, `r/`, or `/r/`.
+   To message a subreddit, specify the name of a subreddit prefixed with either `#`, `r/`, or `/r/`."
    "subject","string","A string no longer than 100 characters."
    "text","string","The message body."
    "from_sr","string","The name of a subreddit. The name may begin with `r/` or `/r/`."
@@ -214,6 +214,14 @@ Returns ``{"json": {"errors": []}}`` on success.
    "
    "NO_SR_TO_SR_MESSAGE","200","The `to` and `from_sr` were both specified and both refer to subreddits.","
    ``{""json"": {""errors"": [[""NO_SR_TO_SR_MESSAGE"", ""you can't send a message from a subreddit to another subreddit"", ""from""]]}}``
+   "
+   "NOT_WHITELISTED_BY_USER_MESSAGE","200","The target user has direct messages from strangers disabled.
+
+   This setting can be configured at `<https://old.reddit.com/prefs/blocked>`_ by setting ""Show private messages from""
+   to ""Only trusted users"".
+
+   `<https://www.reddit.com/r/redditdev/comments/h17rgd/new_error_code_when_sending_message_not/>`_","
+   ``{""json"": {""errors"": [[""NOT_WHITELISTED_BY_USER_MESSAGE"", ""can't send a message to that user"", ""to""]]}}``
    "
 
 |

@@ -214,6 +214,9 @@ Add post
 
 Add a submission to a collection.
 
+Collections have a capacity of 100 posts. Attempting to add to a full collection will
+result in an `INVALID_COLLECTION_UPDATE` API error.
+
 Returns ``{"json": {"errors": []}}`` on success.
 
 .. csv-table:: Form Data or URL Params
@@ -243,7 +246,9 @@ Returns ``{"json": {"errors": []}}`` on success.
 
    * The submission specified by `link_fullname` already exists in the collection.
 
-   * The submission specified by `link_fullname` does not match the collection's subreddit.","
+   * The submission specified by `link_fullname` does not match the collection's subreddit.
+
+   * The collection is full (it contains 100 posts).","
    ``{""json"": {""errors"": [[""INVALID_COLLECTION_UPDATE"", ""That collection couldn't be updated"", ""collection_id""]]}}``
    "
 

@@ -442,7 +442,7 @@ Search users by name or description.
 
 This endpoint returns a :ref:`paginated listing <listings-overview>`.
 
-The listing contains **partial** user objects.
+The listing contains user objects but they are missing the `awardee_karma`, `awarder_karma`, `total_karma` fields.
 
 If the parameter `q` is not specified, this endpoint returns `"{}"`
 (i.e., a string of an empty JSON object).

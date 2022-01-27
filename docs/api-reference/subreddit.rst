@@ -10,11 +10,16 @@ Overview
 Schema
 ~~~~~~
 
-.. csv-table:: Subreddit Object
+This table only applies to subreddits that are not private or banned.
+The `GET /r/{subreddit}/about` endpoint will return an error if the target subreddit is private or banned.
+On the other hand, `GET /api/info` will return an object with the same keys as documented in the table below
+but with many of the values being `null`.
+
+.. csv-table:: Subreddit Object (`GET /r/{subreddit}/about`)
    :header: "Field","Type (hint)","Description"
 
    "accounts_active","integer","Deprecated. Then number of online users. Same as `active_user_count`."
-   "active_user_count","integer","Then number of online users. Same as `accounts_active`."
+   "active_user_count","integer","The number of online users. Same as `accounts_active`."
    "accounts_active_is_fuzzed","boolean",""
    "advertiser_category","string","E.g., `""Technology""`"
    "all_original_content","boolean",""
@@ -81,7 +86,7 @@ Schema
    "over18","boolean","Whether the subreddit is marked as NSFW."
    "public_description","string",""
    "public_description_html","string",""
-   "public_traffic","boolean",""
+   "public_traffic","boolean","Whether the subreddit's traffic page is publicly-accessible."
    "quarantine","boolean","Is the subreddit quarantined."
    "restrict_commenting","boolean",""
    "restrict_posting","boolean",""
@@ -183,11 +188,21 @@ Actions
 Get by ID
 ~~~~~~~~~
 
-See :ref:`here <get-api-info>`.
+Use `GET /api/info`. See :ref:`here <get-api-info>`.
 
 
 Get by name
 ~~~~~~~~~~~
+
+Since `2020-10-21`
+(`this post <https://www.reddit.com/r/redditdev/comments/jfltfx/any_way_of_speeding_up_my_api_requests/g9le48w/>`_)
+the `GET /api/info` endpoint can be used to get subreddit objects by name, and also in bulk too.
+
+However, there is a difference between the endpoints. Banned subreddits can be fetched with `GET /api/info`
+but not with `GET /r/{subreddit}/about` which returns a 403 error, except many of the fields in the subreddit object
+may be `null` rather than the type reported in the schema table above.
+
+-----
 
 .. http:get:: /r/{subreddit}/about
 
