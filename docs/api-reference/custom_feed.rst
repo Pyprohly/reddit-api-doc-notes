@@ -88,14 +88,14 @@ Example output::
 .. seealso:: `<https://www.reddit.com/dev/api/#GET_api_multi_{multipath}>`_
 
 
-List own custom feeds
-~~~~~~~~~~~~~~~~~~~~~
+List own created custom feeds
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. http:get:: /api/multi/mine
 
 *scope: read*
 
-Fetch a list of custom feeds belonging to the current user.
+Fetch a list of custom feeds curated by the current user.
 
 .. csv-table:: URL Params
    :header: "Field","Type (hint)","Description"
@@ -114,14 +114,14 @@ Fetch a list of custom feeds belonging to the current user.
 .. seealso:: https://www.reddit.com/dev/api/#GET_api_multi_mine
 
 
-List user custom feeds
-~~~~~~~~~~~~~~~~~~~~~~
+List user created custom feeds
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. http:get:: /api/multi/user/{username}
 
 *scope: read*
 
-Fetch a list of custom feeds belonging to a given user.
+Fetch a list of custom feeds curated by a given user.
 
 .. csv-table:: URL Params
    :header: "Field","Type (hint)","Description"
@@ -152,6 +152,9 @@ Create
 
 Create a custom feed.
 
+The `{username}` component of the URL should match the current user's user name, otherwise a
+`MULTI_CANNOT_EDIT` API error is returned.
+
 Use POST to create a custom feed.
 Responds with a `MULTI_EXISTS` API error and HTTP 409 Conflict if it already exists.
 
@@ -177,7 +180,8 @@ The newly created custom feed object is returned, with a 201 HTTP status code.
    :header: "Field","Type (hint)","Description"
 
    "model","string","A string of JSON data."
-   "expand_srs","boolean","This parameter only works with `PUT` not `POST` requests."
+   "expand_srs","boolean","See same parameter in :ref:`Get <custom-feed-get>`.
+   This parameter only works with `PUT` not `POST`."
 
 |
 
@@ -422,7 +426,10 @@ Add to custom feed
 
 Add a subreddit to a custom feed.
 
-The `{username}` component of the URL is mostly ignored, it doesn't have to match the current user's name.
+The `{username}` component of the URL does not have to match the current user's name. If the username refers
+to a user that exists and the feed name you specify exists on that user, you'll get a `MULTI_CANNOT_EDIT`
+API error. If the username or feed name you specify doesn't exist, the custom feed will be created, seemingly
+under that user's name, but the URL for the custom feed will only be visible for you.
 
 If the feed name specified by the `{feed_name}` component of the URL doesn't exist, it will be created.
 The new custom feed name will be lower cased and it will contain the subreddit specified.
@@ -451,8 +458,17 @@ If the custom feed already contains the subreddit it is treated as a success.
    "SUBREDDIT_NOEXIST","400","The specified subreddit (in the URL) does not exist.","
    ``{""explanation"": ""Hmm, that community doesn't exist. Try checking the spelling."", ""message"": ""Bad Request"", ""reason"": ""SUBREDDIT_NOEXIST""}``
    "
-   "BAD_SR_NAME","400","The value specified by `model`s `name` key is not valid.","
+   "BAD_SR_NAME","400","The value specified by `model`\ s `name` key is not valid.","
    ``{""fields"": [""name""], ""explanation"": ""This community name isn't recognizable. Check the spelling and try again."", ""message"": ""Bad Request"", ""reason"": ""BAD_SR_NAME""}``
+   "
+   "JSON_PARSE_ERROR","400","The `model` parameter was not specified or contains badly formatted JSON.","
+   ``{""fields"": [""model""], ""explanation"": ""Sorry, something went wrong. Double-check things and try again."", ""message"": ""Bad Request"", ""reason"": ""JSON_PARSE_ERROR""}``
+   "
+   "JSON_MISSING_KEY","400","The JSON specified by the `model` parameter is missing the `name` key.","
+   ``{""fields"": [""name""], ""explanation"": ""JSON missing key: \""name\"""", ""message"": ""Bad Request"", ""reason"": ""JSON_MISSING_KEY""}``
+   "
+   "MULTI_CANNOT_EDIT","403","You don't have permission to add to the specified custom feed.","
+   ``{""fields"": [""multipath""], ""explanation"": ""you can't change that multireddit"", ""message"": ""Forbidden"", ""reason"": ""MULTI_CANNOT_EDIT""}``
    "
 
 .. seealso:: `<https://www.reddit.com/dev/api/#PUT_api_multi_{multipath}_r_{srname}>`_

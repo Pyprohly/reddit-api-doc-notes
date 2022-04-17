@@ -34,8 +34,8 @@ Conversation Schema
    for this conversation thread. Prepend like so to get the direct message link:
    `https://www.reddit.com/message/messages/{legacyFirstMessageId}`.
 
-   This field can be null in rare cases, such as the ""r/YourSubreddit is now enrolled in the New Modmail""
-   modmail message by u/reddit."
+   This field can be null in rare cases, such as in the ""r/YourSubreddit is now enrolled in the New Modmail""
+   modmail message from u/reddit."
    "lastUserUpdate","string?","An ISO8601 date string. If `isInternal` is true this should always be `null`."
    "lastModUpdate","string?","An ISO8601 date string."
    "lastUpdated","string","An ISO8601 date string. Same as either `lastUserUpdate` or `lastModUpdate`, whichever is newer."

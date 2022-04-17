@@ -202,6 +202,13 @@ Commenting on a submission requires the `submit` scope.
 Replying to a comment also requires the `submit` scope.
 Sending a message requires the `privatemessages` scope.
 
+If `return_rtjson: 1` and the target submission/comment is from a quarantined subreddit that the current
+user has not opted in to, a 500 HTTP error will be returned. If `return_rtjson` is not specified or is falsy
+then the endpoint will instead return ``{"json": {"errors": [], "data": {"things": []}}}``. In either case,
+attempting to comment reply to a quarantined subreddit will cause the submission's comment counter to increase
+but the comment will not be visible in the subsmission's comment tree. The comment will still show up in
+the user's comment history and can be seen by anyone.
+
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
 
@@ -209,9 +216,9 @@ Sending a message requires the `privatemessages` scope.
    "text","string","Markdown text."
    "richtext_json","string","A string of RTJSON to use instead of `text`."
    "return_rtjson","boolean","If truthy (a string that starts with `0` or `F` or `f` is treated as falsy),
-   return the newly created object as the top level JSON object instead of being wrapped in a listing.
+   directly return the newly created object as the top level JSON object.
 
-   If `thing_id` is a message (starting with `t4_`), this parameter is ignored."
+   If `thing_id` specifies a message (starting with `t4_`), this parameter is ignored."
 
 |
 
@@ -241,6 +248,21 @@ Sending a message requires the `privatemessages` scope.
    "SOMETHING_IS_BROKEN","200","The author of the target submission/comment has blocked you.","
    ``{""json"": {""errors"": [[""SOMETHING_IS_BROKEN"", ""Something is broken, please try again later."", ""parent""]]}}``
    "
+   "SUBREDDIT_OUTBOUND_LINKING_DISALLOWED","200","Some subreddits prevent you from linking to other subreddits.
+   E.g., writing 'r/funny' in 'r/formuladank'. It is not known what setting controls this.
+
+   `<https://www.reddit.com/r/redditdev/comments/sdoc9t/two_new_api_exception_error_codes_from_reddit/hujvbm5/>`_","
+   ``{""json"": {""errors"": [[""SUBREDDIT_OUTBOUND_LINKING_DISALLOWED"", ""Linking to subreddits is not allowed."", ""text""]]}}``
+   "
+   "SUBREDDIT_LINKING_DISALLOWED","200","Some subreddits cannot be linked to at all. E.g., 'r/chonglangTV'.
+   It is unknown why.
+
+   `<https://www.reddit.com/r/redditdev/comments/sdoc9t/two_new_api_exception_error_codes_from_reddit/hujvbm5/>`_","
+   ``{""json"": {""errors"": [[""SUBREDDIT_OUTBOUND_LINKING_DISALLOWED"", ""Linking to subreddits is not allowed."", ""text""]]}}``
+   "
+   "USER_BLOCKED","200","The target submission/comment author is a user you have blocked.","
+   ``{""json"": {""errors"": [[""USER_BLOCKED"", ""you can't send to a user that you have blocked"", ""parent""]]}}``
+   "
 
 |
 
@@ -250,9 +272,8 @@ Sending a message requires the `privatemessages` scope.
    "403","The `thing_id` parameter wasn't given or the ID doesn't exist.","
    ``{""message"": ""Forbidden"", ""error"": 403}``
    "
-   "500","* Potential unknown server error.
-
-   * The target submission/comment is from a quarantined subreddit that the current user has not opted in to.","
+   "500","If `return_rtjson: 1`, the target submission/comment is from a quarantined subreddit that the current user has not opted in to.
+   ","
    ``{""message"": ""Internal Server Error"", ""error"": 500}``
    "
 

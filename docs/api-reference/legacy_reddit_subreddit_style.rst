@@ -161,8 +161,12 @@ The URL of the (non-stylesheet) subreddit images can be retrieved via :ref:`subr
    * The value provided for `name` is invalid.","
    ``{""errors"": [""BAD_CSS_NAME""], ""img_src"": """", ""errors_values"": [""bad image name""]}``
    "
-   "IMAGE_ERROR","200","The value provided for `name` is invalid.","
-   ``{""errors"": [""IMAGE_ERROR""], ""img_src"": """", ""errors_values"": [""Invalid image or general image error""]}``
+   "IMAGE_ERROR","200","(1): The value provided for `name` is invalid.
+
+   (2): The image must be 256x256 pixels.","
+   (1): ``{""errors"": [""IMAGE_ERROR""], ""img_src"": """", ""errors_values"": [""Invalid image or general image error""]}``
+
+   (2): ``{""errors"": [""IMAGE_ERROR""], ""img_src"": """", ""errors_values"": [""must be 256x256 pixels""]}``
    "
 
 |

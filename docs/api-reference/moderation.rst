@@ -227,14 +227,14 @@ Additional URL params:
 .. seealso:: `<https://www.reddit.com/dev/api/#GET_about_{where}>`_
 
 
-Pull moderation actions
-~~~~~~~~~~~~~~~~~~~~~~~
+Pull moderation action log entries
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. http:get:: /r/{subreddit}/about/log
 
 *scope: modlog*
 
-Retrieve recent moderation actions.
+Retrieve recent moderation actions from the mod log.
 
 This endpoint is a paginated listing. See :ref:`Listings Overview <listings-overview>`.
 The `limit` parameter has a max value of 500.
@@ -250,10 +250,10 @@ or the string `a` to restrict the results to admin actions taken within the subr
    :header: "Field","Type (hint)","Description"
 
    "id","string","Mod action ID. E.g., `ModAction_727b75b0-2214-11ec-99b4-05a9ad5c4e6c`."
-   "action","string","The mod action name."
-   "mod","string","The name of the moderator who initiated the action."
-   "mod_id36","string","The full ID36 of the moderator who initiated the action."
    "created_utc","float","Unix timestamp of when the action was done. Always a whole number."
+   "action","string","The mod action name."
+   "mod_id36","string","The full ID36 of the moderator who initiated the action."
+   "mod","string","The name of the moderator who initiated the action."
    "subreddit","string","Name of the subreddit the action was performed in. Since you get the actions
    by subreddit, all actions should have the same value."
    "subreddit_name_prefixed","string","Same as `subreddit` field but prefixed with `r/`."
@@ -974,3 +974,289 @@ Returns zero bytes on success. If the specified ID did not exist it is treated a
    "SUBREDDIT_NOEXIST","400","The target subreddit does not exist.","
    ``{""fields"": [""subreddit""], ""explanation"": ""Hmm, that community doesn't exist. Try checking the spelling."", ""message"": ""Bad Request"", ""reason"": ""SUBREDDIT_NOEXIST""}``
    "
+
+
+Create moderation user note
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. http:post:: /api/mod/notes
+
+*scope: modnote*
+
+Create a user note.
+
+More info: https://www.reddit.com/r/modnews/comments/t8vafc/announcing_mod_notes/.
+
+Returns the created note. Example output::
+
+   {"created": {"subreddit_id": "t5_g495e",
+                "operator_id": "t2_4x25quk",
+                "mod_action_data": {"action": null,
+                                    "reddit_id": null,
+                                    "details": null,
+                                    "description": null},
+                "subreddit": "Pyprohly_test3",
+                "user": "test",
+                "operator": "Pyprohly",
+                "id": "ModNote_0b168fe2-c0fe-4542-be9d-4008991a853a",
+                "user_note_data": {"note": "asdf",
+                                   "reddit_id": null,
+                                   "label": null},
+                "user_id": "t2_1tlb",
+                "created_at": 1650098853,
+                "type": 'NOTE'}}
+
+.. csv-table:: URL Params
+   :header: "Field","Type (hint)","Description"
+
+   "subreddit","string","The target subreddit name."
+   "user","string","The target user name."
+   "note","string","The content of the note. Max 250 characters."
+   "label","string","Options: `BOT_BAN`, `PERMA_BAN`, `BAN`, `ABUSE_WARNING`, `SPAM_WARNING`, `SPAM_WATCH`,
+   `SOLID_CONTRIBUTOR`, `HELPFUL_USER`.
+   "
+   "reddit_id","string","A full ID36 of a comment (`t1`) or submission (`t3`). Can be any comment or submission,
+   even one outside of the subreddit."
+
+|
+
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
+
+   "USER_DOESNT_EXIST","400","The user name specified by `user` does not exist.","
+   ``{""fields"": [""user""], ""explanation"": ""that user doesn't exist"", ""message"": ""Bad Request"", ""reason"": ""USER_DOESNT_EXIST""}``
+   "
+   "BAD_SR_NAME","400","The subreddit specified by `subreddit` does not exist.","
+   ``{""fields"": [""subreddit""], ""explanation"": ""This community name isn't recognizable. Check the spelling and try again."", ""message"": ""Bad Request"", ""reason"": ""BAD_SR_NAME""}``
+   "
+   "NO_TEXT","400","The `note` parameter was not specified or was empty.","
+   ``{""fields"": [""note""], ""explanation"": ""we need something here"", ""message"": ""Bad Request"", ""reason"": ""NO_TEXT""}``
+   "
+   "TOO_LONG","400","The value for the `note` parameter was too long, over 250 characters.","
+   ``{""fields"": [""note""], ""explanation"": ""This field must be under 250 characters"", ""message"": ""Bad Request"", ""reason"": ""TOO_LONG""}``
+   "
+   "INVALID_OPTION","400","The value specified for `label` is invalid.","
+   ``{""fields"": [""label""], ""explanation"": ""that option is not valid"", ""message"": ""Bad Request"", ""reason"": ""INVALID_OPTION""}``
+   "
+   "NO_THING_ID","400","The value specified for `reddit_id` is invalid.","
+   ``{""fields"": [""reddit_id""], ""explanation"": ""id not specified"", ""message"": ""Bad Request"", ""reason"": ""NO_THING_ID""}``
+   "
+
+|
+
+.. csv-table:: HTTP Errors
+   :header: "Status Code","Description"
+
+   "403","You are not a moderator of the target subreddit.","
+   ``{""message"": ""Forbidden"", ""error"": 403}``
+   "
+
+.. seealso:: https://www.reddit.com/dev/api/#POST_api_mod_notes
+
+
+Delete moderation note
+~~~~~~~~~~~~~~~~~~~~~~
+
+.. http:delete:: /api/mod/notes
+
+*scope: modnote*
+
+Delete a moderation note.
+
+This endpoint can be used to delete either user or action type notes.
+
+This endpoint must be given three pieces of information: the note ID, the subreddit name and the user name.
+If the `subreddit` or `user` information is incorrect, the endpoint will raise a 500 HTTP error.
+
+Returns the following on success::
+
+   {"deleted": True}
+
+.. csv-table:: URL Params
+   :header: "Field","Type (hint)","Description"
+
+   "note_id","string","The ID of the note to be deleted. It should be prefixed with `ModNote_`."
+   "subreddit","string","The target subreddit name."
+   "user","string","The target user name."
+
+|
+
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
+
+   "PARAMETER_REQUIRED","400","The `note_id` parameter was not specified or was empty.","
+   ``{""fields"": [""note_id""], ""explanation"": ""The parameter \""note_id\"" is required."", ""message"": ""Bad Request"", ""reason"": ""PARAMETER_REQUIRED""}``
+   "
+   "INVALID_ID","400","The value specified by `note_id` was invalid.","
+   ``{""fields"": [""note_id""], ""explanation"": ""The specified id is invalid"", ""message"": ""Bad Request"", ""reason"": ""INVALID_ID""}``
+   "
+   "USER_DOESNT_EXIST","400","The `user` parameter was not specified or was empty.","
+   ``{""fields"": [""user""], ""explanation"": ""that user doesn't exist"", ""message"": ""Bad Request"", ""reason"": ""USER_DOESNT_EXIST""}``
+   "
+   "BAD_SR_NAME","400","The `subreddit` parameter was not specified or was empty.","
+   ``{""fields"": [""subreddit""], ""explanation"": ""This community name isn't recognizable. Check the spelling and try again."", ""message"": ""Bad Request"", ""reason"": ""BAD_SR_NAME""}``
+   "
+
+|
+
+.. csv-table:: HTTP Errors
+   :header: "Status Code","Description"
+
+   "500","The `subreddit` or `user` specified is incorrect for the given note ID.","
+   ``{""message"": ""Internal Server Error"", ""error"": 500}``
+   "
+
+.. seealso:: https://www.reddit.com/dev/api/#DELETE_api_mod_notes
+
+
+Pull moderation notes
+~~~~~~~~~~~~~~~~~~~~~
+
+.. http:get:: /api/mod/notes
+
+*scope: modnote*
+
+Get moderation notes of a user in a subreddit.
+
+The endpoint returns *moderation notes* which could be a combination of *user notes* (when `type: NOTE`)
+or *action notes*.
+
+Example return object when both the specified user and subreddit exist but you do not have permission to
+view the relevant data, or no data exists for that user::
+
+   {"mod_notes": [], "start_cursor": None, "end_cursor": None, "has_next_page": False}
+
+Return object schema:
+
+* `mod_notes` (object array): An array of moderation notes.
+* `start_cursor` (string?): The pagination cursor of the first moderation note.
+* `end_cursor` (string?): The pagination cursor of the last moderation note.
+* `has_next_page` (boolean): True if more results exist.
+
+|
+
+.. csv-table:: Mod note object
+   :header: "Field","Type (hint)","Description"
+
+   "id","string","Mod note ID. E.g., `ModNote_e610966c-279a-11ec-812d-f1e67fc3cfa1`."
+   "created_at","integer","Unix timestamp of when the mod note entry was made. Always a whole number."
+   "type","string","The mod note type. Possible values same as the `filter` parameter of the `GET /api/mod/notes` endpoint."
+   "cursor?","string","A pagination cursor to be used as the value of the `before` parameter
+   in the `GET /api/mod/notes` endpoint.
+
+   This field only exists from notes that come from the `GET /api/mod/notes` endpoint."
+   "subreddit_id","string","The full ID36 (`t5_` prefixed) of the subreddit."
+   "subreddit","string","The name of the subreddit."
+   "operator_id","string","The full ID36 (`t2_` prefixed) of the moderator who actioned the note."
+   "operator","string","The name of the moderator who actioned the note."
+   "user_id","string","The full ID36 (`t2_` prefixed) of the user who this note applies."
+   "user","string","The name of the user who this note applies."
+   "mod_action_data","object","Moderation action data. The information in this object is only useful
+   if the note is an action note, not a user note.
+
+   The only field value that is not `null` when the note is a user note is the `reddit_id` field, but
+   this field is duplicated at `(root).user_note_data.reddit_id` anyway.
+
+   Schema:
+
+      * `action` (string?): The name of the action. In lowercase. Value is `null` if `type: NOTE` on the root.
+      * `reddit_id` (string?): The full ID36 of some relevant object, either a comment or submission.
+        Value should always match `(root).user_note_data.reddit_id`. Value may be `null`.
+      * `details` (string?): The full ID36 . Value is `null` if `type: NOTE` on the root.
+      * `description` (string?): The full ID36 . Value is `null` if `type: NOTE` on the root.
+   "
+   "user_note_data","object","User note data. The information in this object is only useful
+   if the note is a user note, not an action note.
+
+   Schema:
+
+      * `note` (string?): The content of the user note. Value `null` if root object does not represent a user note.
+      * `label` (string?): Note label.
+
+        Possible values: `ABUSE_WARNING`, `SPAM_WARNING`, `SPAM_WATCH`,
+        `SOLID_CONTRIBUTOR`, `HELPFUL_USER`, `BOT_BAN`, `PERMA_BAN`, `BAN`.
+
+        Value is `null` if no label was assigned to this note, or the note object not a user note.
+
+      * `reddit_id` (string?): The full ID36 of a comment or submission object if one was assigned to this note
+        during creation. Value should always match `(root).mod_action_data.reddit_id`.
+   "
+
+|
+
+.. csv-table:: URL Params
+   :header: "Field","Type (hint)","Description"
+
+   "limit","string","The number of entries to return. Default: 25, max: 100."
+   "before","string","A pagination cursor."
+   "subreddit","string","The target subreddit name."
+   "user","string","The target user name."
+   "filter","string","One of: `NOTE`, `APPROVAL`, `REMOVAL`, `BAN`, `MUTE`, `INVITE`, `SPAM`, `CONTENT_CHANGE`, `MOD_ACTION`, `ALL`. Default: `ALL`."
+
+|
+
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
+
+   "USER_DOESNT_EXIST","400","The user name specified by `user` does not exist.","
+   ``{""fields"": [""user""], ""explanation"": ""that user doesn't exist"", ""message"": ""Bad Request"", ""reason"": ""USER_DOESNT_EXIST""}``
+   "
+   "BAD_SR_NAME","400","The subreddit specified by `subreddit` does not exist.","
+   ``{""fields"": [""subreddit""], ""explanation"": ""This community name isn't recognizable. Check the spelling and try again."", ""message"": ""Bad Request"", ""reason"": ""BAD_SR_NAME""}``
+   "
+   "INVALID_OPTION","400","An invalid value was specified for the `filter` parameter.","
+   ``{""fields"": [""filter""], ""explanation"": ""that option is not valid"", ""message"": ""Bad Request"", ""reason"": ""INVALID_OPTION""}``
+   "
+
+.. seealso:: https://www.reddit.com/dev/api/#GET_api_mod_notes
+
+
+Get latest moderation user note of user
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. http:get:: /api/mod/notes/recent
+
+*scope: modnote*
+
+Get the most recently written user note for some user.
+
+Both parameters should be comma separated lists of equal lengths. The entries from both lists will be zipped together.
+If one list is longer than the other the excess entries will be ignored.
+
+If either subreddit or user does not exist then a `null` will be output in the list. But if only one pair of arguments
+were given then a 400 HTTP error is returned instead.
+
+Up to 500 pairs of subreddit names and usernames are accepted at a time.
+
+The response contains a list of mod notes in the order that subreddits and users were given.
+If no note exists for a given pair, `null` will take its place in the list.
+
+.. csv-table:: URL Params
+   :header: "Field","Type (hint)","Description"
+
+   "subreddits","string","A comma separated list of subreddit names."
+   "users","string","A comma separated list of moderator names."
+
+|
+
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
+
+   "PARAMETER_REQUIRED","400","(1): The `subreddits` parameter was not specified or was empty.
+
+   (2): The `users` parameter was not specified or was empty.","
+   (1): ``{""fields"": [""subreddits""], ""explanation"": ""The parameter \""subreddits\"" is required."", ""message"": ""Bad Request"", ""reason"": ""PARAMETER_REQUIRED""}``
+
+   (2): ``{""fields"": [""accounts""], ""explanation"": ""The parameter \""accounts\"" is required."", ""message"": ""Bad Request"", ""reason"": ""PARAMETER_REQUIRED""}``
+   "
+
+|
+
+.. csv-table:: HTTP Errors
+   :header: "Status Code","Description"
+
+   "400","Only one pair of arguments were given and either the subreddit or user specified do not exist.","
+   ``{""message"": ""Bad Request"", ""error"": 400}``
+   "
+
+.. seealso:: https://www.reddit.com/dev/api/#GET_api_mod_notes_recent

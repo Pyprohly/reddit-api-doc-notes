@@ -575,7 +575,10 @@ used as the text body. An `INVALID_SELFPOST` error is returned if both are speci
 
 To create a link post, use `kind: link`. A link post is created with `url` as the link.
 
-To create an image post, use `kind: image`. A image post is created using `url` as the image.
+To create an image post, use `kind: image`. Specify the image URL with `url`.
+
+To create an video post, use `kind: video`. Specify the video URL with `url`. The video thumbnail image must
+also be specified using `video_poster_url`.
 
 Return object example for text and link posts::
 
@@ -639,9 +642,11 @@ Return object example for video posts::
    "SUBREDDIT_NOEXIST","200","The specified subreddit does not exist.","
    ``{""json"": {""errors"": [[""SUBREDDIT_NOEXIST"", ""Hmm, that community doesn't exist. Try checking the spelling."", ""sr""]]}}``
    "
-   "SUBREDDIT_NOTALLOWED","200","You don't have permission to post to the subreddit.
+   "SUBREDDIT_NOTALLOWED","200","* You don't have permission to post to the subreddit.
 
-   Quarantined subreddits can be posted to, even if you haven't yet opt-ed in to viewing its content.","
+   * You are trying to submit an image or video post to a NSFW subreddit.
+
+   Note, quarantined subreddits can be posted to, even if you haven't yet opt-ed in to viewing its content.","
    ``{""json"": {""errors"": [[""SUBREDDIT_NOTALLOWED"", ""This community only allows trusted members to post here"", ""sr""]]}}``
    "
    "INVALID_OPTION","200","The option specified in the `kind` field isn't valid.","
@@ -675,6 +680,9 @@ Return object example for video posts::
    "
    "ALREADY_SUB","200","The given link has already been submitted to the subreddit.","
    ``{""json"": {""errors"": [[""ALREADY_SUB"", ""This community doesn't allow links to be posted more than once, and this link has already been shared"", ""url""]]}}``
+   "
+   "NO_VIDEOS","200","The subreddit does not have video posting enabled.","
+   ``{""json"": {""errors"": [[""ALREADY_SUB"", ""This community doesn't allow videos"", ""sr""]]}}``
    "
 
 |
@@ -1843,3 +1851,47 @@ Send removal reason
 ~~~~~~~~~~~~~~~~~~~
 
 See :ref:`here <comment-send-removal-reason>`.
+
+
+Get duplicates
+~~~~~~~~~~~~~~
+
+.. http:get:: [/r/{subreddit}]/duplicates/{article}
+
+*scope: read*
+
+Gets the crossposts for a submission.
+
+Returns an array of two listings. The first one contains one element which is the originating submission
+specified by `{article}`. The second one contains a list of 'duplicates' which could be crosspost type
+posts, or just regular link posts that have linked to the same URL.
+
+`{subreddit}` can be obmitted. If given it must be correctly match the subreddit for the article ID
+otherwise an empty listing will be returned.
+`{article}` is a submission ID36.
+
+See :ref:`Additional URL Params <frontpage-listings-additional-url-params>`.
+
+More additional URL params:
+
+.. csv-table:: URL Params
+   :header: "Field","Type (hint)","Description"
+
+   "sort","string","Either `num_comments` or `new`. Default: `num_comments`."
+   "crossposts_only","boolean","If truthy (any string matching `/^[^0Ff]/`), return only crosspost type submissions
+   in the second listing. These crossposts may not necessarily be crossposting the originating submission specified
+   by `{article}`, they are just the duplicates that are crosspost type posts."
+   "sr","string","Filter the duplicates list by an exact subreddit name. If the subreddit name specified doesn't
+   exist then this parameter is ignored and all posts are returned."
+
+|
+
+.. csv-table:: HTTP Errors
+   :header: "Status Code","Description","Example"
+
+   "403","Fetching some submissions results in a 403. E.g., `124srz`.","
+   ``{""message"": ""Forbidden"", ""error"": 403}``
+   "
+   "404","The article ID could not be found.","
+   ``{""message"": ""Not Found"", ""error"": 404}``
+   "

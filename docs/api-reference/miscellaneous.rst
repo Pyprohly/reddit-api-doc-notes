@@ -5,6 +5,32 @@ Miscellaneous
 Actions
 -------
 
+OAuth2 Scopes
+~~~~~~~~~~~~~
+
+.. http:get:: /api/v1/scopes
+
+*scope: (any)*
+
+Retrieve descriptions of reddit's OAuth2 scopes.
+
+If no scopes are given, information on all scopes are returned.
+
+.. csv-table:: URL Params
+   :header: "Field","Type (hint)","Description"
+
+   "scopes","string","A space separated list of scopes."
+
+|
+
+.. csv-table:: HTTP Errors
+   :header: "Status Code","Description","Example"
+
+   "400","An invalid scope string was specified.","
+   ``This is an error that should never occur.  You win.``
+   "
+
+
 Search reddit submissions and subreddits
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

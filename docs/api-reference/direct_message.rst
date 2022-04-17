@@ -124,6 +124,27 @@ Schema
 Actions
 -------
 
+Get message thread
+~~~~~~~~~~~~~~~~~~
+
+.. http:get:: /message/messages/{message_id36}
+
+*scope: (unknown)*
+
+Get a message thread by message ID36.
+
+Using a non-first-message ID will behave as if the message thread's first message ID was specified.
+
+Returns a listing structure containing one element which is the message thread.
+
+.. csv-table:: HTTP Errors
+   :header: "Status Code","Description","Example"
+
+   "403","The target message specified does not exist or you do not have permission to access it.","
+   ``{""message"": ""Forbidden"", ""error"": 403}``
+   "
+
+
 Get messages
 ~~~~~~~~~~~~
 
@@ -154,7 +175,9 @@ Additional URL params:
 .. csv-table:: URL Params
    :header: "Field","Type (hint)","Description"
 
-   "mark","boolean","Whether to mark items as read."
+   "mark","boolean","Whether to mark items as read.
+
+   Doesn't seem to work?"
 
 .. seealso:: `<https://www.reddit.com/dev/api/#GET_message_{where}>`_
 

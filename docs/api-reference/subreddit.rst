@@ -18,8 +18,8 @@ but with many of the values being `null`.
 .. csv-table:: Subreddit Object (`GET /r/{subreddit}/about`)
    :header: "Field","Type (hint)","Description"
 
-   "accounts_active","integer","Deprecated. Then number of online users. Same as `active_user_count`."
-   "active_user_count","integer","The number of online users. Same as `accounts_active`."
+   "accounts_active",".","Deprecated. Then number of online users. Same as `active_user_count`."
+   "active_user_count","integer?","The number of online users. Value is `null` if object was retrieved from a search."
    "accounts_active_is_fuzzed","boolean",""
    "advertiser_category","string","E.g., `""Technology""`"
    "all_original_content","boolean",""
@@ -72,7 +72,7 @@ but with many of the values being `null`.
    "emojis_custom_size","unknown?",""
    "emojis_enabled","boolean",""
    "free_form_reports","boolean",""
-   "has_menu_widget","boolean",""
+   "has_menu_widget","boolean","True if the subreddit has a menu widget active, otherwise false. Value is false if the object was retrieved from a search."
    "hide_ads","boolean",""
    "id","string","The ID36 of the subreddit (without the `t5_` prefix)."
    "is_crosspostable_subreddit","boolean",""
@@ -114,10 +114,11 @@ but with many of the values being `null`.
    "whitelist_status","string","E.g., `all_ads`"
    "wiki_enabled","boolean",""
    "wls","integer",""
+   "user_flair_enabled_in_sr","boolean?","Whether user flairs are enabled in the subreddit.
 
-   "user_flair_enabled_in_sr","boolean","Whether user flairs are enabled in the subreddit.
+   In old Reddit this is the flair option that says ""enable user flair in this subreddit""
 
-   In old Reddit this is the flair option that says ""enable user flair in this subreddit""."
+   Value is false if object was retrieved from a search."
    "can_assign_link_flair","boolean","Whether or not users can assign a flair to their submission in this subreddit. If false, only a moderator can assign flairs to submissions.
 
    In old Reddit this is the flair option that says ""allow submitters to assign their own link flair""."
@@ -128,7 +129,7 @@ but with many of the values being `null`.
    "link_flair_position","string","Either `left`, or `right`, or empty string if `link_flair_enabled` is false (the 'none' option in the old Reddit UI)."
    "user_can_flair_in_sr","boolean?","Whether or not the current user is allowed to set their user flair in this subreddit. This will be true if the 'allow users to assign their own' user flair option is enabled, or if the current user is a moderator of the subreddit with the 'flair' permission. If neither of these conditions are true, this field value will be `null`.
 
-   Can also be `null` if there is no user context."
+   Value is `null` if there is no user context. Value is `null` if the object was retrieved from a search."
    "user_flair_background_color","string?","Current user's flair background color hex string. E.g., `#46d160`.
 
    If a flair template is not being used then the value will be an empty string.
@@ -178,9 +179,10 @@ but with many of the values being `null`.
 
    Value `null` when:
 
-   * A flair has never been assigned to the current user before in this subreddit.
+   * There is no user context.
 
-   * There is no user context."
+   * Object was retrieved from a search."
+
 
 Actions
 -------
