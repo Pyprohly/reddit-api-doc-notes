@@ -200,7 +200,7 @@ Since `2020-10-21`
 (`this post <https://www.reddit.com/r/redditdev/comments/jfltfx/any_way_of_speeding_up_my_api_requests/g9le48w/>`_)
 the `GET /api/info` endpoint can be used to get subreddit objects by name, and also in bulk too.
 
-However, there is a difference between the endpoints. Banned subreddits can be fetched with `GET /api/info`
+However, there is a difference between the endpoints. Non-public subreddits can be retrieved with `GET /api/info`
 but not with `GET /r/{subreddit}/about` which returns a 403 error, except many of the fields in the subreddit object
 may be `null` rather than the type reported in the schema table above.
 
@@ -379,7 +379,7 @@ Returns an empty JSON object on success.
    "500","No JSON data was received."
 
 
-Get Trending Subreddit Names
+Get trending subreddit names
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. http:get:: https://reddit.com/api/trending_subreddits.json
@@ -399,6 +399,30 @@ Example output::
 .. note:: The documented endpoint `GET /api/trending_subreddits` always results in a HTTP 400 error.
 
 .. seealso:: https://www.reddit.com/dev/api/#GET_api_trending_subreddits
+
+
+Get similar subreddits
+~~~~~~~~~~~~~~~~~~~~~~
+
+.. http:get:: /api/similar_subreddits
+
+*scope: (any)*
+
+Get a list of similar subreddits.
+
+Returns subreddit objects in a listing structure.
+
+If a specified subreddit ID does not exist or is invalid, it is ignored.
+
+.. csv-table:: URL Params
+   :header: "Field","Type (hint)","Description"
+
+   "sr_fullnames","string","A comma-separated string of subreddit (`t5_` prefixed) full ID36s.
+
+   The maximum limit is unknown."
+   "max_recs","integer","The maximum number of entries to return. Default: 10.
+
+   The parameter name stands for 'max. records', or maybe even 'max. recommendations'."
 
 
 Subscribe

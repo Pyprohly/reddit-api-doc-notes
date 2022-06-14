@@ -133,7 +133,8 @@ Get message thread
 
 Get a message thread by message ID36.
 
-Using a non-first-message ID will behave as if the message thread's first message ID was specified.
+Specifying the ID of any message in the same thread gives you the same list. I.e., using
+a non-first message ID will behave as if the first message ID of the thread was specified.
 
 Returns a listing structure containing one element which is the message thread.
 

@@ -30,8 +30,13 @@ Schema
    "hide_from_robots","boolean",""
    "icon_img","string","Avatar image. E.g., `https://www.redditstatic.com/avatars/avatar_default_01_A5A4A4.png`."
    "is_employee","boolean","Is a Reddit admin."
-   "is_friend","boolean","Whether the user is a friend of the current user."
+   "is_friend","boolean","Whether the user is a friend of the current user. If there is no user context, always false."
    "is_mod","boolean","Is a moderator of any subreddit."
+   "is_blocked","boolean","True if the current account has blocked this user. If there is no user context, always false."
+   "is_suspended","?boolean","This field only exists if the user is suspended (in which case it will be true),
+   or if the user matches the current user context (in which case it will likely be false).
+
+   When a user is suspended, only a small number of fields are returned. See :ref:`Get by name <user-get-by-name>`."
    "name","string","The user account name. E.g., `""spez""`"
    "verified","boolean",""
    "subreddit","object","See :ref:`Subreddit sub-object <user-subreddit>`."
@@ -66,7 +71,7 @@ Additional fields for when the client has a user context and the user object mat
    "in_redesign_beta","boolean",""
    "inbox_count","integer",""
    "is_sponsor","boolean",""
-   "is_suspended","boolean",""
+   "is_suspended","boolean","True if the user is suspended."
    "new_modmail_exists","boolean",""
    "num_friends","integer","Number of friends in your friends list. See https://www.reddit.com/prefs/friends/."
    "over_18","boolean","Preference option ""I am over eighteen years old and willing to view adult content"" is checked."
@@ -193,6 +198,8 @@ Subreddit sub-object
 Actions
 -------
 
+.. _user-get-by-name:
+
 Get by name
 ~~~~~~~~~~~
 
@@ -204,6 +211,15 @@ Get information about a user by account name.
 
 `{username}` is case-insensitive.
 
+If the target user is suspended, only these fields are returned:
+
+* name (string): The user account's name.
+* is_suspended (boolean): true.
+* is_blocked (boolean): Same as on the user object schema.
+* awardee_karma (integer): Same as on the user object schema.
+* awarder_karma (integer): Same as on the user object schema.
+* total_karma (integer): Same as on the user object schema.
+
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
 
@@ -212,8 +228,8 @@ Get information about a user by account name.
 .. seealso:: `<https://www.reddit.com/dev/api/#GET_user_{username}_about>`_
 
 
-Get partial by ID
-~~~~~~~~~~~~~~~~~
+Get user summary by ID
+~~~~~~~~~~~~~~~~~~~~~~
 
 .. http:get:: /api/user_data_by_account_ids
 
