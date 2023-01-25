@@ -351,7 +351,6 @@ Listings contain user objects that have the following fields:
    "name","string","The name of the user."
    "id","string","The full ID of the user. E.g., `t2_4x25quk`"
 
-
 |
 
 .. csv-table:: HTTP Errors
@@ -360,8 +359,9 @@ Listings contain user objects that have the following fields:
 
    "500","The `sr_detail` parameter was used and its value is truthy (matches `/^[^fF0]/`)."
 
-If the client is not logged in then the endpoints return the string `"{}"`.
-Notice this is a string of an empty JSON object.
+If the client is not logged in then the endpoint will return a HTTP 302 Found redirect.
+If the client is made to follow the redirect then the string `"{}"` will be returned.
+Notice this is a *string* of an empty JSON object.
 
 Also see :ref:`User listings <user-listings>` for more relevant listings.
 

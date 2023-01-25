@@ -77,9 +77,9 @@ emoji image to the Amazon Simple Storage Service bucket specified in the lease.
 
 Use `POST /api/v1/{subreddit}/emoji_asset_upload_s3` to obtain an upload lease for your emoji
 image. In the response data there will be a field called `action` whose value is a URL but is
-missing the `https:` prefix. Prepend `https:` to this URL and add your emoji image to a field
-named `file` in a multipart request, along with the parameters in the `fields` array from the
-upload lease as form data in the multipart request.
+missing the `https:` prefix. Prepend `https:` to this URL and send the parameters in the
+`fields` array from the upload lease as multipart form data along with your emoji image to a
+field named `file`.
 
 The `action` is typically `//reddit-uploaded-emoji.s3-accelerate.amazonaws.com` for this endpoint.
 The action endpoint will return XML data. Remember to check for a bad status in the response.
@@ -95,7 +95,7 @@ plus the file extension.
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
 
-   "filepath","string","The file name (base name, not a full path) of the image file to upload.
+   "filepath","string","The file name (either a base name or a full path) of the image file to upload.
    Example: `image.png`."
    "mimetype","string","The mimetype of the image file to upload. It does not have to match the
    extension of the `filepath`. Example: `image/png`."

@@ -440,6 +440,9 @@ Schema
    "crosspost_parent_list?","object array","If the submission is a crosspost, the array contains one object
    which is the submission of the original post.
 
+   The array could be empty if `crosspost_parent` refers to a submission in a subreddit that is
+   now banned and the submission is no longer accessible. (E.g., `t3_ymaixl`.)
+
    This field does not exist if the post is not a crosspost."
    "ignore_reports?",".","See same field on :ref:`Comment Schema <comment-schema>`"
    "num_reports",".","See same field on :ref:`Comment Schema <comment-schema>`"
@@ -519,7 +522,7 @@ plus the file extension.
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
 
-   "filepath","string","The file name (base name, not a full path) of the image file to upload.
+   "filepath","string","The file name (either a base name or a full path) of the image file to upload.
    Example: `image.png`."
    "mimetype","string","The mimetype of the image file to upload. It does not have to match the
    extension of the `filepath`. Example: `image/png`."
@@ -1043,7 +1046,7 @@ Cast a vote on a Submission or Comment.
    :header: "Field","Type (hint)","Description"
 
    "id","string","full ID36 of a Submission or Comment"
-   "dir","integer or string","vote direction. one of `1`, `0`, or `-1`"
+   "dir","integer","vote direction. one of `1`, `0`, or `-1`"
    "rank","integer","unknown purpose"
 
 |

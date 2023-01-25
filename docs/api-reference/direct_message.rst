@@ -6,27 +6,17 @@ Overview
 --------
 
 There are two main categories of messages: composed messages and comment messages.
-Composed messages are the direct messages that are composed and sent by users.
-Comment messages are automatically generated notifications of a reply to one of your
-submissions or comments, or a comment in which you were mentioned.
+Composed messages are the direct messages that are written and sent by users.
+Comment messages are automatically generated message notifications indicating that a reply
+was made to one of your submissions or comments, or a comment in which you were mentioned.
 
-If the message is a user (or subreddit) message, the container object will have ``kind: t4``,
-but if it is a comment message it will have ``kind: t1`` and the `id` field will be a comment ID
-instead of a message ID. Given only the data, you can distinguish these two message types by inspecting
-the `was_comment` field. It is true for a comment message.
+If the message is sent by a user or through a subreddit, it is a composed message and
+the container object will have ``kind: t4``. Otherwise if it is a comment message it will have ``kind: t1``
+and the `id` field will be a comment ID instead of a message ID. Given only the data, you can
+distinguish these two message types by inspecting the `was_comment` field. It is true for a comment message.
 
-Message modes:
-
-.. code-block:: text
-
-   user > self
-   user sub > self
-   sub > self  (user is hidden)
-   self > user
-   self sub > user
-   self > sub
-
-Note that subreddits cannot direct message subreddits.
+Users can send messages to users, users can send messages to subreddits and vice versa.
+Subreddits cannot direct message other subreddits.
 
 Other than checking the name of `author` and `dest` there's little information that provides an indication
 of whether a message is incoming or outgoing, except if the message is an outgoing message to a subreddit.
@@ -39,24 +29,42 @@ Schema
 .. csv-table:: Message Object
    :header: "Field","Type (hint)","Description"
 
-   "id","string","The ID of the message if the message is a user or subreddit message. If a comment message,
+   "id","string","The ID of the message if the message is a composed message. If a comment message,
    the ID of the comment."
-   "name","string","The `id` field but with `t4_` prepended if a user or subreddit message, or
+   "name","string","Same as the `id` field but with `t4_` prepended if a composed message, or
    `t1_` prepended if a comment message."
-   "created_utc","float","Unix timestamp of when the message was made, or comment was made in the case of a comment message. Will always be a whole number."
+   "created_utc","float","Unix timestamp of when the composed message was sent, or when the comment was made
+   in the case of a comment message. Will always be a whole number."
    "created","float","Legacy. Same as `created_utc` but subtract 28800."
-   "author","string?","If a user message, the name of the user who sent the message.
+   "author","string?","If a user-sent composed message, the name of the user who sent the message.
 
-   If a subreddit message, value is `null`.
+   If a subreddit-sourced composed message, value is `null`.
 
-   If a comment message, the name of the author who made the relevant comment."
-   "author_fullname","string?","If a user message, the full ID36 of the user who sent the message, unless
-   it was sent by a special user such as `reddit` or `welcomebot` in which case the value will be `null`.
-   Hence, this field is not in complete sync with `author`.
+   If a comment message, the name of the user who made the comment."
+   "author_fullname","string?","If a user-sent composed message, the full ID36 of the user who sent the message.
 
-   If a subreddit message, value is `null`.
+
+   If the message was sent by `reddit` or `welcomebot` the value might be `null`,
+   hence this field is not in complete sync with the `author` field.
+
+   * The ID36 of user `reddit` is `1qwk`. Only on the 'Welcome to reddit!' message sent by this user seems to
+     be have a `null` value for this field.
+   * The ID36 of user `welcomebot` is `55mv77ab`.
+     All messages by this user seem to have a `null` value for this field.
+
+   If a subreddit-sourced composed message, value is `null`.
 
    If a comment message, the full ID36 of the author who made the relevant comment."
+   "subreddit","string?","If a subreddit-sourced composed message, the name of the subreddit in which
+   the message was from.
+
+   If a comment message, the name of the subreddit in which the comment was from.
+
+   Is `null` if message not sent via a subreddit."
+   "dest","string","The username of the recipient.
+
+   If the message is a part of a message thread and the message was directed to a subreddit instead of a user,
+   this field will contain the subreddit name, prefixed with `#`, instead."
    "subject","string","The subject of the message.
 
    If a comment message then the value will be
@@ -64,41 +72,32 @@ Schema
    `post reply` if `type: post_reply`,
    `username mention` if `type: username_mention`,
    ",
-   "dest","string","The username of the recipient.
-
-   If the message is a part of a message thread and the message was directed to a subreddit instead of a user,
-   this field will contain the subreddit name, prefixed with `#`, instead."
    "body","string","The message content.
 
    If a comment message, it contains the body of the comment."
    "body_html","","HMTL of the `body` field."
-   "subreddit","string?","If a subreddit message, the name of the subreddit in which the message was from.
-
-   If a comment message, the name of the subreddit in which the comment was from.
-
-   Is `null` if a user message."
-   "likes","boolean?","Always `null` if a user message or subreddit message.
+   "likes","boolean?","Always `null` if a composed message.
 
    If a comment message, determines upvote direction. Same as the `likes` field on the :ref:`comment schema <comment-schema>`."
    "replies","string | object","A listing of replies to this message, or an empty string if there are no replies."
    "score","integer","If a comment object, same as the `score` field on the :ref:`comment schema <comment-schema>`,
-   otherwise if a user or subreddit message the value is `0`."
+   otherwise if a composed message the value is `0`."
    "num_comments","integer?","If a comment message, same as the `num_comments` field on the :ref:`submission schema <submission-schema>`.
 
-   If a user message or subreddit message, value is `null`."
-   "parent_id","string?","If a user or subreddit message, contains the full ID36 (prefixed with `t4_`) of
-   the user or subreddit message in which this message was a reply to. If this message is not a reply to another
-   message, the value is `null`.
+   If a composed message, value is `null`."
+   "parent_id","string?","If a composed message, contains the full ID36 (prefixed with `t4_`) of
+   the composed message in which this message was a reply to. If this message is not a reply to another
+   message then the value is `null`.
 
    If a comment message, same as the `parent_id` field on the :ref:`comment schema <comment-schema>`."
    "subreddit_name_prefixed","string?","Is `null` if the `subreddit` field is `null`, else contains the value of
    the `subreddit` field prepended with `r/`."
    "new","boolean","Unread indicator. False if the message has been seen by the user."
-   "type","string","Value is `unknown` if a user or subreddit message.
+   "type","string","Value is `unknown` if a composed message.
 
    If a comment message, value is one of `comment_reply`, `post_reply`, or `username_mention`."
-   "was_comment","boolean","True if a comment message, false if a user or subreddit message."
-   "context","","Empty string if user or subreddit message.
+   "was_comment","boolean","True if a comment message, false if a composed message."
+   "context","string","Empty string if a composed message.
 
    If a comment message, the value is the path to the relevant comment.
 
@@ -110,8 +109,8 @@ Schema
    "distinguished","string?","`null` if not distinguished, otherwise
    `""moderator""` or `""admin""`, or `""gold-auto""`.
 
-   Is always `moderator` if a subreddit message."
-   "link_title?","string","Key does not exist if user or subreddit message.
+   Is always `moderator` if a subreddit-sourced composed message."
+   "link_title?","string","Key does not exist if composed message.
 
    If a comment message, same as `title` in the :ref:`submission schema <submission-schema>`."
    "first_message","integer?","The integer ID of the first message in the thread of messages.

@@ -188,11 +188,12 @@ Subreddit sub-object
    "subscribers","integer",""
    "title","string",""
    "url","string","E.g., `""/user/Pyprohly/""`"
-   "user_is_banned","boolean",""
-   "user_is_contributor","boolean",""
-   "user_is_moderator","boolean",""
-   "user_is_muted","boolean",""
-   "user_is_subscriber","boolean",""
+   "user_is_banned",".","Same as on the :ref:`Subreddit schema <subreddit-schema>`."
+   "user_is_contributor",".","Same as on the :ref:`Subreddit schema <subreddit-schema>`."
+   "user_is_moderator",".","Same as on the :ref:`Subreddit schema <subreddit-schema>`."
+   "user_is_muted","null","This value is out of sync with the `user_is_muted` field on the
+   Subreddit schema and appears to always be `null`."
+   "user_is_subscriber",".","Same as on the :ref:`Subreddit schema <subreddit-schema>`."
 
 
 Actions

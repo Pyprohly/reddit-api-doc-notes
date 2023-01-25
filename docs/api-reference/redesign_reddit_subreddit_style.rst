@@ -24,7 +24,7 @@ The `action` is typically `//reddit-subreddit-uploaded-media.s3-accelerate.amazo
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
 
-   "filepath","string","The file name (base name, not a full path) of the image file to upload.
+   "filepath","string","The file name (either a base name or a full path) of the image file to upload.
    Example: `image.png`."
    "mimetype","string","The mimetype of the image file to upload. It does not have to match the
    extension of the `filepath`. Example: `image/png`."

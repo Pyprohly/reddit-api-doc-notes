@@ -8,6 +8,7 @@ Actions
 Get submission comment tree
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+.. http:get:: [/r/{subreddit}]/comments
 .. http:get:: [/r/{subreddit}]/comments/{submission}
 .. http:get:: [/r/{subreddit}]/comments/{submission}/_/{comment}
 
@@ -85,15 +86,23 @@ Example::
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
 
-   "comment","integer","ID36 of a comment. Assume this comment as the root.
+   "article","string","The ID36 of a submission.
 
-   The `/comments/{submission}/_/{comment}` URL can be used instead of this parameter.
-   If both are used together then the parameter will take preference.
+   This parameter should only be used if the submission ID36 is not specified in
+   the `{submission}` part of the URL `/comments/{submission}`.
+   If both are used together then this parameter will take preference.
+   "
+   "comment","string","The ID36 of a comment. Assume this comment as the root.
 
-   Care must be taken when using this parameter: if the comment does not exist then the parameter
-   will be ignored and the root comments will be returned instead.
-   Clients should assert that the first comment's `parent_id` starts with `t1_` and should reject
-   the data otherwise (i.e., it starts with `t3_`).
+   This parameter should only be used if the comment ID36 is not specified in
+   the `{comment}` part of the URL `/comments/{submission}/_/{comment}`.
+   If both are used together then this parameter will take preference.
+
+   If the comment does not exist then a 404 HTTP error is usually returned, but
+   care must be taken when using this parameter (either via the query param or URL):
+   if the comment used to exist but no longer exists then the requested comment will
+   not be returned and the comment list will be empty. Clients should check that the
+   comment list is not empty and reject the result if it is.
    "
    "context","integer","If `comment` is specified, the number of parent comments to include.
    An integer from 0 to 8. Any number higher than 8 is treated the same as 8."
@@ -104,7 +113,8 @@ Example::
    And so on.
    The maximum is 10, which is also the default if the parameter is not specified.
    Any value higher than 10 is treated the same as 10."
-   "limit","integer","Restrict the number of comments to retrieve."
+   "limit","integer","Limit the number of comments to retrieve. The default seems to be 200, and the
+   max value appears to be 500."
    "showedits","boolean",""
    "showmore","boolean",""
    "sort","string","One of `confidence` ('best'), `top`, `new`, `controversial`, `old`, `random`, `qa`, `live`.
@@ -120,9 +130,15 @@ Example::
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description","Example"
 
-   "404","The given submission ID could not be found.","
+   "404","* The specified submission ID does not exist.
+
+   * The specified comment ID does not exist or the comment belongs
+     to a submission other than the one specified.
+   ","
    ``{""message"": ""Not Found"", ""error"": 404}``
    "
+
+.. seealso:: `<https://www.reddit.com/dev/api/#GET_comments_{article}>`_
 
 
 Get more comment tree comments

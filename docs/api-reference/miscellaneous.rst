@@ -64,7 +64,9 @@ This might only happen when `type: sr`, not sure.
    specified in the URL. If no subreddit is specified in the URL, this parameter
    is ignored, hence, you can always send this parameter.
 
-   This parameter is ignored if `type` is not `link`."
+   This parameter is ignored if `type` is not `link`.
+
+   Default: false."
    "type","string","One of: `link`, `sr`, or `user`. Default: `link`.
 
    The documentation says this parameter takes a comma-separated list, but this is no longer the case.

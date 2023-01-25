@@ -154,8 +154,11 @@ Endpoint URL params:
 .. csv-table:: API Errors
    :header: "Error","Status Code","Description","Example"
 
-   "SUBREDDIT_NOEXIST","400","","
+   "SUBREDDIT_NOEXIST","400","The target subreddit does not exist.","
    ``{""fields"": [""subreddit""], ""explanation"": ""Hmm, that community doesn't exist. Try checking the spelling."", ""message"": ""Bad Request"", ""reason"": ""SUBREDDIT_NOEXIST""}``
+   "
+   "SUBREDDIT_NO_ACCESS","400","The current user is banned from the target subreddit.","
+   ``{""explanation"": ""you aren't allowed access to this subreddit"", ""message"": ""Bad Request"", ""reason"": ""SUBREDDIT_NO_ACCESS""}``
    "
 
 |
@@ -217,10 +220,22 @@ Additional URL params:
 
 |
 
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
+
+   "private","403","The target subreddit is private.","
+   ``{""reason"": ""private"", ""message"": ""Forbidden"", ""error"": 403}``
+   "
+
+|
+
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
 
-   "403","You don't have access to the subreddit."
+   "302","The target subreddit does not exist."
+   "403","* You don't have access to the subreddit.
+
+   * For `/about/moderators`: There is no user context, or the current user is banned from the subreddit."
    "404","The specified subreddit name is too long (over 21 characters) or contains invalid characters.
    A 'page not found' HTML document is returned. (The behaviour is the same using the URL or the `r` parameter.)"
 

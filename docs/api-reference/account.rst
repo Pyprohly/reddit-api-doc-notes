@@ -102,7 +102,10 @@ Get karma breakdown
 
 *scope: mysubreddits*
 
-Return a breakdown of subreddit karma for the current user.
+Return the current user's karma breakdown by subreddit.
+
+The entries are sorted in descending order by comment karma plus
+submission karma.
 
 .. csv-table:: Karma Breakdown Object
    :header: "Field","Type (hint)","Description"
@@ -195,7 +198,7 @@ Returns an object with the following fields:
 .. csv-table:: API Errors
    :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","403","","
+   "USER_REQUIRED","403","There is no user context.","
    ``{""explanation"": ""Please log in to do that."", ""message"": ""Forbidden"", ""reason"": ""USER_REQUIRED""}``
    "
    "NOT_FRIEND","400","You are not friends with the specified user.","
@@ -221,12 +224,12 @@ Add friend
 
 *scope: subscribe*
 
-Create or update a "friend" relationship.
+Create or update a friend relationship.
 
 This endpoint can add/change a note on a friend.
 Making a note requires Reddit Premium.
 
-Returns the user object on success. See the table :ref:`here <user-item-object-table>`.
+Returns the updated user object on success. See the table :ref:`here <user-item-object-table>`.
 
 Adding a friend who is already a friend does nothing but get the user item object
 (i.e., without updating the 'date' field).
@@ -349,9 +352,9 @@ If the user is already blocked then an empty JSON object is returned on success.
 
    "400","* `account_id` nor `name` was specified.
 
-   * You tried to block yourself.
+   * The username or user ID given doesn't exist.
 
-   * The user or account ID doesn't exist.","
+   * You tried to block yourself.","
    ``{""message"": ""Bad Request"", ""error"": 400}``
    "
 
@@ -434,7 +437,7 @@ On success, the endpoint returns ``{"json": {"errors": []}}``.
    "USER_REQUIRED","200","There is no user context.","
    ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
    "
-   "CANT_WHITELIST_AN_ENEMY","200","The specified user is blocked.","
+   "CANT_WHITELIST_AN_ENEMY","200","The specified user is on your blocked list.","
    ``{""json"": {""errors"": [[""CANT_WHITELIST_AN_ENEMY"", ""You can't add a blocked user as a trusted user."", ""name""]]}}``
    "
    "USER_DOESNT_EXIST","200","The specified user in `name` does not exist or the `name` field was not specified.","

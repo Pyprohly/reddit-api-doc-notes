@@ -353,7 +353,9 @@ Returns a JSON object with 4 keys:
 
    Default: `all`."
    "entity","string","A comma delimited list of subreddit names in which to get conversations for.
-   Defaults to all moderated subreddits."
+   Defaults to all moderated subreddits.
+
+   Cannot be an empty, otherwise a 504 HTTP error is returned after a few seconds delay."
    "sort","string","One of: `recent`, `mod`, `user`, `unread`. Default: `recent`."
 
 |
@@ -370,6 +372,13 @@ Returns a JSON object with 4 keys:
    "INVALID_OPTION","400","The value specified for `state` is invalid.","
    ``{""fields"": [""state""], ""explanation"": ""that option is not valid"", ""message"": ""Bad Request"", ""reason"": ""INVALID_OPTION""}``
    "
+
+|
+
+.. csv-table:: HTTP Errors
+   :header: "Status Code","Description"
+
+   "504","The string specified by `entity` is empty."
 
 .. seealso:: https://www.reddit.com/dev/api/#GET_api_mod_conversations
 
