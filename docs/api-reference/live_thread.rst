@@ -20,7 +20,7 @@ Live Thread Schema
    "description_html","string","Live thread description as HTML."
    "resources","string","The sidebar text in markdown."
    "resources_html","string","The sidebar text in HTML."
-   "websocket_url","string","Websocket URL. Connect to this to stream live updates."
+   "websocket_url","string","Websocket URL. Connect to this websocket to stream live updates."
    "state","string","`live` if active, `complete` if closed."
    "nsfw","boolean","Is live thread marked as NSFW."
    "is_announcement","boolean",""
@@ -39,9 +39,13 @@ Live Thread Update Schema
 .. csv-table:: Live Thread Update Schema
    :header: "Field","Type (hint)","Description"
 
-   "id","string","E.g., `890e9242-d7fb-11eb-b450-0ed185f1b209`"
+   "id","string","E.g., `890e9242-d7fb-11eb-b450-0ed185f1b209`."
    "name","string","The live update ID with `LiveUpdate_` prepended. E.g., `LiveUpdate_890e9242-d7fb-11eb-b450-0ed185f1b209`."
-   "author","string","The name of the user who posted the update. E.g., `spez`."
+   "author","string?","The name of the user who posted the update.
+
+   Value null if the user account was deleted.
+   The UI displays deleted accounts as `[deleted]`.
+   "
    "body","string","The markdown content body."
    "body_html","string","The content body in HTML."
    "created_utc","float","Unix timestamp of when the live update was made. Will always be a whole number."
@@ -147,11 +151,11 @@ Configure
 
 *scope: livemanage*
 
-Configure the thread.
+Configure the live thread.
 
-Requires the `settings` permission.
+Requires the `settings` live thread permission.
 
-All parameters must be specified otherwise they will be set to their defaults.
+All parameters must be specified otherwise they will be set to their effective defaults.
 
 Returns ``{"json": {"errors": []}}`` on success.
 
@@ -170,11 +174,10 @@ Returns ``{"json": {"errors": []}}`` on success.
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
 
-   "403","* You do not have the `settings` permission.
-
-   * You do not have permission to close that thread.
-
-   * There is no user context."
+   "403","* There is no user context.
+   * You do not have the `settings` live thread permission.
+   * You do not have permission.
+   "
    "404","The specified live thread does not exist."
 
 .. seealso:: `<https://www.reddit.com/dev/api/#POST_api_live_{thread}_edit>`_
@@ -196,13 +199,10 @@ Returns ``{"json": {"errors": []}}`` on success.
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
 
-   "403","* You do not have the `close` permission.
-
-   * You do not have permission to close that thread.
-
+   "403","* There is no user context.
+   * You do not have the `close` permission.
    * The live thread is already closed.
-
-   * There is no user context."
+   "
    "404","The specified live thread does not exist."
 
 .. seealso:: `<https://www.reddit.com/dev/api/#POST_api_live_{thread}_close_thread>`_
@@ -356,9 +356,9 @@ Delete live update
 
 *scope: edit*
 
-Delete a live update from the thread.
+Delete a live update.
 
-Requires that specified update must have been authored by the user
+Requires that specified update must have been authored by the current user
 or that you have the `edit` permission.
 
 If an already deleted update is specified, the action will be treated as a success.
@@ -453,9 +453,9 @@ Send contributor invite
 
 *scope: livemanage*
 
-Invite another user to contribute to the live thread.
+Invite a user to contribute to the live thread.
 
-Requires the `manage` permission.
+Requires the `manage` live thread permission.
 
 Returns ``{"json": {"errors": []}}`` on success.
 
@@ -498,7 +498,6 @@ Returns ``{"json": {"errors": []}}`` on success.
    :header: "Status Code","Description"
 
    "403","* There is no user context.
-
    * You do not have the `manage` permission."
    "404","The specified live thread does not exist."
    "500","The permission string has a leading or trailing comma."
@@ -523,7 +522,7 @@ Returns ``{"json": {"errors": []}}`` on success.
    "USER_REQUIRED","200","There is no user context.","
    ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
    "
-   "LIVEUPDATE_NO_INVITE_FOUND","200","You don't have an invitation for the thread.","
+   "LIVEUPDATE_NO_INVITE_FOUND","200","You don't have an invitation for the specified live thread.","
    ``{""json"": {""errors"": [[""LIVEUPDATE_NO_INVITE_FOUND"", ""there is no pending invite for that thread"", null]]}}``
    "
 
@@ -546,7 +545,7 @@ Revoke contributor invite
 
 Revoke an outstanding contributor invite.
 
-Requires the `manage` permission.
+Requires the `manage` live thread permission.
 
 If attempting to remove the invite for a user that was not invited, the action is treated as a success.
 
@@ -562,11 +561,9 @@ Returns ``{"json": {"errors": []}}`` on success.
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
 
-   "403","* You do not have the `manage` permission.
-
-   * You do not have permission to remove the invite.
-
-   * There is no user context."
+   "403","* There is no user context.
+   * You do not have the `manage` permission.
+   * You do not have permission."
 
 .. seealso:: `<https://www.reddit.com/dev/api/#POST_api_live_{thread}_accept_contributor_invite>`_
 
@@ -612,7 +609,7 @@ Remove contributor
 
 Revoke another user's contributorship.
 
-Requires the `manage` permission.
+Requires the `manage` live thread permission.
 
 It is possible to remove your own contributorship, having the same effect as
 `POST /api/live/{thread}/leave_contributor`.
@@ -632,11 +629,8 @@ Returns ``{"json": {"errors": []}}`` on success.
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
 
-   "403","* You are not a contributor to the live thread.
-
-   * You are not a contributor to the live thread that has the `manage` permission.
-
-   * There is no user context."
+   "403","* There is no user context.
+   * You are not a contributor to the live thread that has the `manage` permission."
    "404","The specified live thread does not exist."
    "500","The `id` parameter was not specified, was invalid, or empty."
 
@@ -652,7 +646,7 @@ Set contributor permissions
 
 Change a contributor or a contributor invite's permissions.
 
-Requires the `manage` permission.
+Requires the `manage` live thread permission.
 
 Returns ``{"json": {"errors": []}}`` on success.
 
@@ -676,7 +670,7 @@ Returns ``{"json": {"errors": []}}`` on success.
    "USER_REQUIRED","200","There is no user context.","
    ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
    "
-   "NO_USER","200","","
+   "NO_USER","200","The `name` parameter was empty.","
    ``{""json"": {""errors"": [[""NO_USER"", ""please enter a username"", ""name""]]}}``
    "
    "USER_DOESNT_EXIST","200","The user specified by `name` does not exist.","
@@ -688,8 +682,8 @@ Returns ``{"json": {"errors": []}}`` on success.
    "INVALID_PERMISSIONS","200","The string specified by the `permissions` parameter is invalid.","
    ``{""json"": {""errors"": [[""INVALID_PERMISSIONS"", ""invalid permissions string"", ""permissions""]]}}``
    "
-   "LIVEUPDATE_NO_INVITE_FOUND","200","`type: liveupdate_contributor_invite` was specified and the user specified by `name`
-   has no invite to change permissions for.","
+   "LIVEUPDATE_NO_INVITE_FOUND","200","`type: liveupdate_contributor_invite` was specified and the
+   user specified by `name` does not have an invite.","
    ``{""json"": {""errors"": [[""LIVEUPDATE_NO_INVITE_FOUND"", ""there is no pending invite for that thread"", ""user""]]}}``
    "
    "LIVEUPDATE_NOT_CONTRIBUTOR","200","`type: liveupdate_contributor` was specified and the user specified by `name`
@@ -703,8 +697,7 @@ Returns ``{"json": {"errors": []}}`` on success.
    :header: "Status Code","Description"
 
    "403","* There is no user context.
-
-   * You do not have the `manage` permission."
+   * You do not have the `manage` live thread permission."
    "404","The specified live thread does not exist."
 
 .. seealso:: `<https://www.reddit.com/dev/api/#POST_api_live_{thread}_set_contributor_permissions>`_

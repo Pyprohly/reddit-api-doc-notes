@@ -50,7 +50,7 @@ Schema
    "clicked","boolean",""
    "title","string","The title of the post."
    "subreddit_name_prefixed","string","Same as the `subreddit` field but prefixed with `r/`. E.g., `r/IAmA`."
-   "hidden","boolean",""
+   "hidden","boolean","Whether the current user has hidden the post."
    "downs","integer","Always `0`."
    "thumbnail","string","The post thumbnail as seen in listings.
 
@@ -74,7 +74,7 @@ Schema
    "subreddit_type","string","One of `public`, `private`, `restricted`, `archived`, `employees_only`, `gold_only`, `gold_restricted`, or `user`."
    "ups","integer","Same as `score`."
    "media_embed","unknown object",""
-   "is_original_content","boolean","Whether the post is marked as OC."
+   "is_original_content","boolean","Whether the post is marked as 'original content'."
    "media","object?","`null` if not a video post.
 
    Example value for a video post::
@@ -224,12 +224,15 @@ Schema
    "likes","boolean?","`null` if no user context.
 
    If user context: `null` if not voted on, `true` if upvoted, `false` if downvoted."
-   "suggested_sort","string?","`null` if suggested sort is not set, or one of `confidence` (best), `top`, `new`, `controversial`, `old`, `qa`."
+   "suggested_sort","string?","Either: `confidence` (best), `new`, `old`, `top`, `qa`, `controversial`, or `live`.
+
+   Value `null` if not set."
    "view_count","unknown?",""
    "archived","boolean","Whether the post is archived. Archived posts cannot be commented on, but the author can still edit the OP."
    "no_follow","boolean",""
    "pinned","boolean","Whether the post is pinned to the poster's profile.
-   This attribute will only be true if the submission object was obtained through a user listing."
+
+   This attribute can only be true if the submission object was obtained through a user listing."
    "over_18","boolean","Whether the submission has been marked as NSFW."
    "preview?","object","This field is not available if the post was removed or deleted.
 
@@ -349,23 +352,36 @@ Schema
    "locked","boolean","Whether the post has been locked. https://www.reddit.com/r/modnews/comments/3qguqv/moderators_lock_a_post/"
    "visited","boolean",""
    "removed_by","unknown?",""
-   "distinguished","string?","`null` if not distinguished, otherwise `""moderator""` or `""admin""`."
+   "distinguished","string?","Either `moderator` or `admin`, or null.
+
+   Value null if not distinguished."
    "subreddit_id","string","The full ID36 of the subreddit that was posted to. E.g., `t5_2qzb6` for `r/IAmA`."
    "removal_reason",".","See `removal_reason` field on the :ref:`Comment schema <comment-schema>`."
    "mod_reason_by",".","See `mod_reason_by` field on the :ref:`Comment schema <comment-schema>`."
    "mod_reason_title",".","See `mod_reason_title` field on the :ref:`Comment schema <comment-schema>`."
    "mod_note",".","See `mod_note` field on the :ref:`Comment schema <comment-schema>`."
    "id","string","The ID of the submission (without the `t3_` prefix). Also see `name`."
-   "is_robot_indexable","boolean","Will be `false` if the post was removed or deleted."
+   "is_robot_indexable","boolean","Whether search engines should index this submission.
+
+   Will be `false` if the post was removed or deleted."
    "author","string","The redditor name. Possibly `[removed]` if the post was removed
    or `[deleted]` if the post was removed by the author."
    "discussion_type","unknown?",""
-   "num_comments","integer","The number of comments. May not match the number of visible comments."
-   "send_replies","boolean","Whether an inbox message will be sent to you when the submission receives a new top-level comment."
+   "num_comments","integer","The number of comments. This should be treated as an estimation and may not match
+   the number of actual visible comments. It could be higher or lower."
+   "send_replies","boolean","Whether an inbox message will be sent to you when the submission receives a new top-level comment.
+
+   This will be `true` when:
+
+   * The submission was not created by the current user.
+   * There is no user context.
+   "
    "whitelist_status","string?","Known values: `no_ads`."
    "parent_whitelist_status","string?","Known values: `no_ads`."
-   "contest_mode","boolean","Whether the post is in contest mode or not."
-   "permalink","string","The URI of the post without the domain.
+   "contest_mode","boolean","Whether the post is in contest mode.
+
+   In contest mode, the comments are shown in a random order."
+   "permalink","string","The URL of the post without the domain.
    E.g., `/r/IAmA/comments/erd8si/i_was_born_with_two_y_chromosomes_ama/`"
    "stickied","boolean","Whether the post is a 'stickied' post in the subreddit."
    "url","string","If a text post, it is the url of the submission. If a link post,
@@ -404,35 +420,85 @@ Schema
    there is no event metadata on the post. The float is always a whole number."
    "event_is_live?","boolean","`true` if the event is live (event is happening now), `false` if not. Field does not exist if there is no event info."
    "is_followed?","boolean","`true` if the event is being followed by the current user.
+
    Field does not exist if the event is not being followed or there is no user context."
-   "author_flair_background_color",".","See same field in Comment schema."
-   "author_flair_css_class",".","See same field in Comment schema."
-   "author_flair_richtext?",".","See same field in Comment schema."
-   "author_flair_type?",".","See same field in Comment schema."
-   "author_flair_template_id",".","See same field in Comment schema."
-   "author_flair_text",".","See same field in Comment schema."
-   "author_flair_text_color",".","See same field in Comment schema."
-   "author_patreon_flair?",".","See same field in Comment schema."
-   "link_flair_background_color","string","Submission flair's background color hex. E.g., `#46d160`. Empty string if flair has no background color."
+   "author_flair_template_id","string?","The author's flair template UUID.
+
+   Value `null` when:
+
+   * The flair isn't using a template.
+   * User flairs are disabled in the subreddit (`user_flair_enabled_in_sr` is false).
+   "
+   "author_flair_type","string","The author's flair type: either `text` or `richtext`."
+   "author_flair_richtext?","unknown array","Richtext object."
+   "author_flair_text","string?","The author's flair text for the subreddit.
+
+   Value `null` when:
+
+   * There is no user context.
+   * User flairs are disabled in the subreddit (`user_flair_enabled_in_sr` is false).
+   * A flair has never been assigned to the current user before in this subreddit.
+   "
+   "author_flair_css_class","string?","The author's flair CSS class.
+
+   When a flair template is being used, the value of this field will be that of the CSS class designated by the template. If the flair template does not specify a CSS class then the value will be `null`.
+
+   When no flair template is being used, the value starts as `null`. If a CSS class was ever manually assigned (by a moderator), this field will never be `null` again while a flair template isn't being used, and clearing the CSS class results in this field being an empty string.
+
+   Value `null` when there is no user context.
+
+   Value `null` when user flairs are disabled in the subreddit (`user_flair_enabled_in_sr` is false)."
+   "author_flair_background_color","string?","Current user's flair background color hex string. E.g., `#46d160`.
+
+   If a flair template is not being used then the value will be an empty string.
+
+   If a flair template is being used and the background color is unset then the value is the string `""transparent""`.
+
+   Value `null` when:
+
+   * There is no user context.
+   * User flairs are disabled in the subreddit (`user_flair_enabled_in_sr` is false).
+   * A flair has never been assigned to the current user before in this subreddit.
+   "
+   "author_flair_text_color","string?","Color scheme. Either `dark`, `light`, or empty string.
+
+   Value is empty string if a flair template is not being used (i.e., `user_flair_template_id` is `null`).
+
+   Value `null` when:
+
+   * There is no user context.
+   * User flairs are disabled in the subreddit (`user_flair_enabled_in_sr` is false).
+   * A flair has never been assigned to the current user before in this subreddit.
+   "
+   "author_patreon_flair?","boolean","Unknown. This attribute is not available if the post was removed or deleted."
+   "link_flair_richtext","unknown array",""
+   "link_flair_template_id?","string","The post flair template UUID.
+
+   Field not available if flair not configured.
+
+   Field not available if the post was removed or deleted."
+   "link_flair_type","string","Values: `text`, `richtext`."
+   "link_flair_text","string?","Post flair text.
+
+   Value `null` if flair not configured."
    "link_flair_css_class","string?","Post flair CSS class.
 
    Empty string if flair is configured and no CSS class is set.
 
    Value `null` if flair not configured."
-   "link_flair_richtext","unknown array",""
-   "link_flair_text","string?","Post flair text.
+   "link_flair_background_color","string","Submission flair's background color hex. E.g., `#46d160`.
 
-   Value `null` if flair not configured."
-   "link_flair_text_color","string","Values: `dark`, `light`.
+   If a flair template is not being used then the value is an empty string.
 
-   Starts as `dark`. If no flair set then `dark` is used."
-   "link_flair_type","string","Values: `text`, `richtext`."
-   "link_flair_template_id?","string","The link flair UUID.
+   A post flair template background color cannot be unset unlike user flair templates."
+   "link_flair_text_color","string","Values: `dark`, `light`, empty string.
 
-   Field not available if flair not configured.
+   Value is empty string if a flair template is not being used.
 
-   Field not available if the post was removed or deleted."
-   "is_crosspostable","boolean","Whether the post can be crossposted. Will be `false` if the post was removed or deleted."
+   Newly created post flair templates have a starting value of `dark`."
+   "is_crosspostable","boolean","Whether the post can be crossposted.
+
+   Will be `false` if the post was removed or deleted."
    "num_crossposts","integer","Crosspost count."
    "crosspost_parent?","string","The full ID36 of the crosspost original post.
 
@@ -468,13 +534,11 @@ The `id` parameter will take up to 100 IDs.
 Any ID not found will be ignored.
 Alphabetic characters in the ID must be lowercase or they will be ignored.
 If more than 100 IDs are given, all IDs are ignored.
-Duplicates are ignored.
 
 The `sr_name` parameter will take up to 100 names.
-Any ID not found will be ignored.
+Any name not found will be ignored.
 Names are case-insensitive.
 If more than 100 names are given, the first 100 are used and the rest are ignored.
-Duplicates are ignored.
 
 The `id` and `sr_name` parameters can be used together for a maximum output of 200 items.
 
@@ -616,15 +680,15 @@ Return object example for video posts::
    Parameter ignored if empty string."
    "flair_text","string","A string no longer than 64 characters.
    Parameter ignored if empty string."
-   "event_end","string","A datetime string e.g. `2018-09-11T12:00:00`.
+   "event_start","string","A datetime ISO 8601 string. E.g. `2018-09-11T12:00:00`.
    Parameter ignored if empty string."
-   "event_start","string","A datetime string e.g. `2018-09-11T12:00:00`.
+   "event_end","string","A datetime ISO 8601 string. E.g. `2018-09-11T12:00:00`.
    Parameter ignored if empty string."
-   "event_tz","string","A pytz timezone e.g. `America/Los_Angeles`.
+   "event_tz","string","A pytz timezone. E.g. `America/Los_Angeles`.
    Parameter ignored if empty string."
    "ad","boolean","Setting to true appears to post the submission unlisted, accessible only by URL."
    "extension","string","Used for determining which view-type (e.g. `json`, `compact` etc.) to use for the redirect that is generated if the resubmit error occurs."
-   "resubmit","boolean","When the 'Restrict how often the same link can be posted' content control setting
+   "resubmit","boolean","When the ""Restrict how often the same link can be posted"" content control setting
    is enabled, if a link with the same URL has already been submitted then an `ALREADY_SUB` API error would
    be returned unless this field is `true`.
 
@@ -639,7 +703,7 @@ Return object example for video posts::
    "USER_REQUIRED","200","There is no user context.","
    ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
    "
-   "BAD_SR_NAME","200","The `sr` parameter was not specified.","
+   "BAD_SR_NAME","200","The `sr` parameter was not specified or was empty.","
    ``{""json"": {""errors"": [[""BAD_SR_NAME"", ""This community name isn't recognizable. Check the spelling and try again."", ""sr""]]}}``
    "
    "SUBREDDIT_NOEXIST","200","The specified subreddit does not exist.","
@@ -649,7 +713,7 @@ Return object example for video posts::
 
    * You are trying to submit an image or video post to a NSFW subreddit.
 
-   Note, quarantined subreddits can be posted to, even if you haven't yet opt-ed in to viewing its content.","
+   Note, quarantined subreddits can be posted to even if you haven't yet opt-ed in to viewing its content.","
    ``{""json"": {""errors"": [[""SUBREDDIT_NOTALLOWED"", ""This community only allows trusted members to post here"", ""sr""]]}}``
    "
    "INVALID_OPTION","200","The option specified in the `kind` field isn't valid.","
@@ -681,7 +745,7 @@ Return object example for video posts::
    when a video post is being made.","
    ``{""json"": {""errors"": [[""MISSING_VIDEO_URLS"", ""This community requires a video link and a post link"", ""url""]]}}``
    "
-   "ALREADY_SUB","200","The given link has already been submitted to the subreddit.","
+   "ALREADY_SUB","200","For `kind: link`, the given link has already been submitted to the subreddit.","
    ``{""json"": {""errors"": [[""ALREADY_SUB"", ""This community doesn't allow links to be posted more than once, and this link has already been shared"", ""url""]]}}``
    "
    "NO_VIDEOS","200","The subreddit does not have video posting enabled.","
@@ -911,9 +975,9 @@ Delete a Comment or Submission.
 This endpoint does not produce any kind of return value. If the target doesn't exist or isn't valid,
 nothing happens.
 
-When a submission is deleted it's text content (if a text post) will be set to "[deleted]" and the submission
-will be unlisted from its subreddit. Users can still otherwise view and reply to deleted to submissions if they
-have a direct link to it.
+When a submission is deleted it's text content (if a text post) will be set to "`[deleted]`"
+and the submission will be unlisted from its subreddit. Users can still otherwise view and
+reply to deleted to submissions if they have a direct link to it.
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
@@ -995,11 +1059,16 @@ Lock
 
 Lock a comment or submission.
 
-Locking prevents the submission/comment from receiving new comments.
 Nothing happens if the target is already locked.
 
-https://www.reddit.com/r/modnews/comments/brgr8i/
-moderators_you_may_now_lock_individual_comments/
+Locking prevents a submission/comment from receiving new comments.
+A locked submission is unable to receive any new comments.
+Locking a comment only stops direct comments, but
+existing child comments can still receive replies.
+
+https://www.reddit.com/r/modnews/comments/3qguqv/moderators_lock_a_post/
+
+https://www.reddit.com/r/modnews/comments/brgr8i/moderators_you_may_now_lock_individual_comments/
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
@@ -1034,9 +1103,9 @@ Vote
 
 *scope: vote*
 
-Cast a vote on a Submission or Comment.
+Cast a vote on a submission or comment.
 
-`dir` is the direction of the vote:
+The `dir` parameter is the direction of the vote:
 
 * `1`: upvote
 * `0`: un-vote
@@ -1081,7 +1150,7 @@ Save
 
 *scope: save*
 
-Save a Submission or Comment.
+Save a submission or comment.
 
 Returns an empty JSON object.
 
@@ -1167,7 +1236,7 @@ Mark NSFW
 
 *scope: modposts*
 
-Mark a Submission as NSFW.
+Mark a submission as NSFW.
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
@@ -1190,7 +1259,7 @@ Mark a Submission as NSFW.
 
    "403","* The `id` parameter was not specified.
 
-   * You do not have mod privileges to mark the target"
+   * You do not have permission to mark the target."
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_marknsfw
 
@@ -1205,7 +1274,7 @@ Mark spoiler
 
 *scope: modposts*
 
-Mark a Submission as spolier.
+Mark a submission as spolier.
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
@@ -1228,7 +1297,7 @@ Mark a Submission as spolier.
 
    "403","* The `id` parameter was not specified.
 
-   * You do not have mod privileges to mark the target"
+   * You do not have permission to mark the target."
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_spoiler
 
@@ -1242,7 +1311,7 @@ Distinguish
 
 *scope: modposts*
 
-Distinguish a Submission or Comment by decorating the author's name:
+Distinguish a submission or comment by decorating the author's name:
 giving it a different color, and putting a sigil beside it.
 
 Only moderators of the subreddit can do this. This can be useful to draw attention to and
@@ -1259,9 +1328,10 @@ Distinguish options:
 The first time a top-level comment is moderator distinguished the author
 will get a notification in their inbox linking to the comment.
 
-`sticky` is a boolean flag for comments, which will stick the distingushed comment to the top of all comments threads.
-Only one comment may be stickied at a time. If a comment is marked sticky when
-there is already a stickied comment it will override that stickied comment.
+When `sticky` is true, a distinguished comment will be moved to the top of
+all comments in the thread.
+Only one comment may be stickied at a time. Attempting to sticky a comment
+when there is already a stickied comment will override that stickied comment.
 Only top-level comments may be stickied.
 
 The target entity is returned in a listing structure.
@@ -1305,7 +1375,7 @@ Set sticky
 
 *scope: modposts*
 
-Set or unset a Submission as sticky in its subreddit.
+Set or unset a submission as sticky in its subreddit.
 
 Stickied posts are shown at the top of the subreddit in the default 'Hot' listing.
 
@@ -1333,7 +1403,7 @@ Unstickying a post that isn't stickied does nothing.
 
 If `state` is not specified then it is assumed to be `false` and the post will be unstickied.
 
-You cannot reorder sticky posts directly. You must unsticky them then re-sticky them.
+You cannot reorder sticky posts directly. You must unsticky and re-sticky them.
 
 Returns ``{"json": {"errors": []}}`` on success.
 
@@ -1381,13 +1451,15 @@ A user can have at most 4 pinned posts at a time.
 The rules for the `num` parameter are the same as in :ref:`subreddit stickying <submission-set-sticky>`.
 
 If `num` is not specified, the new post is inserted at the top of the list.
-If the list is at maximum length, least recently pinned post will be evicted.
+If the list is at maximum length, the least recently pinned post will be evicted.
 It acts like a queue.
 
 .. note::
+
    This feature uses the same endpoint as :ref:`subreddit stickying <submission-set-sticky>`
    but there are stark differences in insertion behaviour when `num` is not specified.
-   To summarise these differences:
+
+   To summarise:
 
    * When subreddit stickying: the post will be placed at the **bottom** of the list.
      If the list is full then the bottom-most post will be **replaced**.
@@ -1441,9 +1513,9 @@ Set contest mode
 
 *scope: modposts*
 
-Set or unset "contest mode" for a submission's comments.
+Set or unset 'contest mode' for a submission's comments.
 
-In contest mode, upvote counts are hidden and comments are displayed in a random order.
+In contest mode, vote counts are hidden and comments are displayed in a random order.
 
 If `state` is not specified, `false` is assumed.
 
@@ -1469,7 +1541,8 @@ Returns ``{"json": {"errors": []}}`` on success.
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
 
-   "403","ID not found, or you do not have permission to enable/disable contest mode for this post."
+   "403","* The specified ID was not found.
+   * You do not have permission to modify the target."
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_set_contest_mode
 
@@ -1483,7 +1556,7 @@ Set suggested sort
 
 Set or unset the suggested sort for a submission's comments.
 
-When set, all redditors will see comments in the suggested sort by default.
+When set, users will see comments in the suggested sort order by default.
 They can still manually change back to their preferred sort if they choose.
 
 If `sort` is `blank`, not given, or an unknown value, the suggested sort will be unset.
@@ -1508,7 +1581,8 @@ If `sort` is `blank`, not given, or an unknown value, the suggested sort will be
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
 
-   "403","ID not found, or you do not have permission to set the suggestd sort for this post"
+   "403","* The specified ID was not found.
+   * You do not have permission to modify the target."
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_set_suggested_sort
 
@@ -1553,20 +1627,22 @@ Set event time
 
 Add or modify post event times.
 
-The datetimes provided must not contain milliseconds otherwise a `BAD_TIME` API error is returned.
+The datetimes provided must not contain milliseconds otherwise you're in for a `BAD_TIME` API error.
 
 Specify only `event_start` to change only the starting date.
 The same cannot be done for `event_end`, a 500 HTTP error will occur.
 
-If both `event_start` and `event_end` are specified then the `event_start` must be before `event_end`
-otherwise a `MIN_EVENT_TIME` API error is returned.
-It's possible however to make a second request specifying only `event_start` to modify the start date
-so that `event_start` is after `event_end`. If this happens then the time difference can be longer than
-7 days.
+If both `event_start` and `event_end` are specified then the `event_start` must be before
+`event_end` in time, otherwise a `MIN_EVENT_TIME` API error is returned.
+It is possible however to make a second request specifying only `event_start` to modify
+the start date so that `event_start` is after `event_end`. If this happens then the time
+difference can be longer than 7 days.
 
-The endpoint returns a JSON object containing the Unix timestamps of the start and end times of the event.
-It's a bit odd that the Unix timestamps are in milliseconds given that the the endpoint does not accept
-date time strings with millisecond information. Also, the `event_start` and `event_end` fields of submission object are in seconds. Perhaps it's a good idea to ignore the output of this endpoint.
+The endpoint returns a JSON object containing the Unix timestamps of the start and
+end times of the event. It's rather odd that the Unix timestamps are in milliseconds
+given that the the endpoint does not accept date time strings with millisecond information.
+Also, recall that the `event_start` and `event_end` fields of submission object are in seconds.
+Perhaps it's a good idea to ignore the output of this endpoint.
 
 Returned object example::
 
@@ -1576,15 +1652,15 @@ Returned object example::
    :header: "Field","Type (hint)","Description"
 
    "id","string","Full ID36 of a post."
-   "event_start","string","A datetime in ISO 8601 format. E.g., `2018-09-11T12:00:00`.
+   "event_start","string","A datetime string in ISO 8601 format. E.g., `2018-09-11T12:00:00`.
 
    If value is empty the parameter is ignored."
-   "event_end","string","A datetime in ISO 8601 format. E.g., `2018-09-11T12:00:00`.
+   "event_end","string","A datetime string in ISO 8601 format. E.g., `2018-09-11T12:00:00`.
 
    If value is empty the parameter is ignored."
    "event_tz","string","A timezone. E.g., `America/Los_Angeles`.
 
-   If not specified, defaults to `UTC`."
+   If not specified, effectively defaults to `UTC`."
 
 |
 
@@ -1601,14 +1677,14 @@ Returned object example::
    Note that this error will always indicate `event_start` is wrong even if it's `event_end` that needs fixing.","
    ``{""json"": {""errors"": [[""BAD_TIME"", ""This time is invalid"", ""event_start""]]}}``
    "
-   "INVALID_TIMEZONE","200","The value specified for `event_tz` is invalid.","
-   ``{""json"": {""errors"": [[""INVALID_TIMEZONE"", ""This timezone is invalid"", ""event_tz""]]}}``
+   "MIN_EVENT_TIME","200","The event must last at least 30 minutes","
+   ``{""json"": {""errors"": [[""MIN_EVENT_TIME"", ""This event must last at least 30 minutes"", ""event_end""]]}}``
    "
    "MAX_EVENT_TIME","200","The event can't be longer than 7 days.","
    ``{""json"": {""errors"": [[""MAX_EVENT_TIME"", ""This event can't be longer than 7 days"", ""event_end""]]}}``
    "
-   "MIN_EVENT_TIME","200","The event must last at least 30 minutes","
-   ``{""json"": {""errors"": [[""MIN_EVENT_TIME"", ""This event must last at least 30 minutes"", ""event_end""]]}}``
+   "INVALID_TIMEZONE","200","The value specified for `event_tz` is invalid.","
+   ``{""json"": {""errors"": [[""INVALID_TIMEZONE"", ""This timezone is invalid"", ""event_tz""]]}}``
    "
 
 |
@@ -1631,7 +1707,7 @@ Follow post event
 
 Follow or unfollow a post event.
 
-Followers will receive a push notification when the event starts.
+Followers receive a push notification when the event starts.
 
 Returns an empty JSON object on success.
 
@@ -1710,12 +1786,22 @@ Returns an empty JSON object on success.
 
 |
 
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
+
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
+
+|
+
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
 
-   "404","* The target specified by the `id` parameter does not belong to a subreddit you have permission to approve.
+   "403","* The target does not exist.
 
-   * The `id` parameter was not specified."
+   * The target belongs to a subreddit you do not have permission over."
+   "404","The `id` parameter was not specified."
 
 
 .. _post-api-remove:
@@ -1768,12 +1854,22 @@ Extra attributes for posts only:
 
 |
 
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
+
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
+
+|
+
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
 
-   "404","* The target specified by the `id` parameter does not belong to a subreddit you have permission to approve.
+   "403","* The target does not exist.
 
-   * The `id` parameter was not specified."
+   * The target belongs to a subreddit you do not have permission over."
+   "404","The `id` parameter was not specified."
 
 
 Report
@@ -1842,6 +1938,47 @@ Returns `{}` on success. If the target is already ignored/unignored it is treate
    * The target specified by `id` was not found, or points to an item you are not a moderator of."
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_ignore_reports
+
+
+Snooze reports
+~~~~~~~~~~~~~~
+
+.. http:post:: /api/snooze_reports
+.. http:post:: /api/unsnooze_reports
+
+*scope: modposts*
+
+Temporarily ignore a custom report reason in a subreddit for 7 days.
+
+Info `<https://www.reddit.com/r/modnews/comments/mlgsw5/safety_updates_on_preventing_harassment_and_more/>`_.
+
+Returns `{}` on success. If the target is already snoozed/unsnoozed it is treated as a success.
+
+.. csv-table:: Form data
+   :header: "Field","Type (hint)","Description"
+
+   "id","string","The full ID36 of a post or comment (prefixed with `t3_` or `t1_`)."
+   "reason","string","The custom report reason to snooze."
+
+|
+
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
+
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
+
+|
+
+.. csv-table:: HTTP Errors
+   :header: "Status Code","Description"
+
+   "403","* The `id` parameter was not specified.
+
+   * The target specified by `id` was not found, or points to an item you are not a moderator of."
+
+.. seealso:: https://www.reddit.com/dev/api/#POST_api_snooze_reports
 
 
 Set removal reason

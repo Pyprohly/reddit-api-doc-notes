@@ -13,7 +13,7 @@ Reddit help article: `<https://mods.reddithelp.com/hc/en-us/articles/36001056037
 Schema
 ~~~~~~
 
-.. csv-table:: Custom Feed Object
+.. csv-table:: Flair Emoji Object
    :header: "Field","Type (hint)","Description"
 
    "url","string","The emoji image file."
@@ -207,7 +207,7 @@ Returns ``{"json": {"errors": []}}`` on success.
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
 
-   "name","string","The target emoji name."
+   "name","string","The target emoji name. Case sensitive."
    "mod_flair_only","boolean","Whether the emoji can only be used by mods. Default: false."
    "user_flair_allowed","boolean","Whether the emoji can be used on user flairs. Default: true."
    "post_flair_allowed","boolean","Whether the emoji can be used on post flairs. Default: true."

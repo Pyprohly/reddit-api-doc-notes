@@ -16,10 +16,10 @@ Wiki page schema
 
    "content_md","string","The wiki page markdown content."
    "content_html","string","The wiki page content as HTML."
-   "may_revise","boolean","Whether the current user may edit the wiki page."
-   "revision_id","string","The revivsion UUID."
-   "revision_date","integer","The UNIX timestamp of when the revision was commited."
-   "revision_by","object","The author of the revision.
+   "may_revise","boolean","True if the current user may edit the wiki page."
+   "revision_id","string","The current revision UUID."
+   "revision_date","integer","UNIX timestamp of when the current revision was commited."
+   "revision_by","object","Author of the revision.
 
    The object is similar to the :ref:`User schema <user-schema>` except it's missing the
    `awardee_karma`, `awarder_karma`, and `total_karma` fields."
@@ -40,7 +40,7 @@ Wiki page revision schema
    The object is similar to the :ref:`User schema <user-schema>` except it's missing the
    `awardee_karma`, `awarder_karma`, and `total_karma` fields."
    "reason","string?","The revision message. Up to 256 characters long. Value is `null` if no message."
-   "revision_hidden","boolean","Whether the revision is hidden."
+   "revision_hidden","boolean","True if the revision is hidden."
 
 
 Actions
@@ -66,11 +66,17 @@ Get a wiki page.
 .. csv-table:: API Errors
    :header: "Error","Status Code","Description","Example"
 
-   "PAGE_NOT_CREATED","404","The specified wiki page does not exist.","
-   ``{""reason"": ""PAGE_NOT_CREATED"", ""message"": ""Not Found""}``
+   "PAGE_NOT_FOUND","404","The specified wiki page does not exist.","
+   ``{""reason"": ""PAGE_NOT_FOUND"", ""message"": ""Not Found""}``
    "
    "INVALID_REVISION","404","The revision UUID specified by `v` does not exist.","
    ``{""reason"": ""PAGE_NOT_CREATED"", ""message"": ""Not Found""}``
+   "
+   "private","403","You do not have access to the specified subreddit: it is private.","
+   ``{""reason"": ""private"", ""message"": ""Forbidden"", ""error"": 403}``
+   "
+   "banned","404","You do not have access to the specified subreddit: it is banned.","
+   ``{""reason"": ""banned"", ""message"": ""Not Found"", ""error"": 404}``
    "
 
 .. seealso:: `<https://www.reddit.com/dev/api/#GET_wiki_{page}>`_
@@ -107,6 +113,12 @@ Returns empty JSON object on success.
    "WIKI_CREATE_ERROR","400","You do not have permission to edit the wiki page.","
    ``{""reason"": ""WIKI_CREATE_ERROR"", ""message"": ""Bad Request""}``
    "
+   "private","403","You do not have access to the specified subreddit: it is private.","
+   ``{""reason"": ""private"", ""message"": ""Forbidden"", ""error"": 403}``
+   "
+   "banned","404","You do not have access to the specified subreddit: it is banned.","
+   ``{""reason"": ""banned"", ""message"": ""Not Found"", ""error"": 404}``
+   "
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_wiki_edit
 
@@ -125,7 +137,7 @@ This creates a new edit with content matching that of the specified revision.
 If multiple requests specifying the same revision UUID are made, only the first one will have an effect,
 since the content will be the same.
 
-The revision message will be something like 'reverted back 53 minutes'.
+The revision message will look something like 'reverted back 53 minutes'.
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
@@ -158,7 +170,7 @@ Get revisions
 
 *scope: wikiread*
 
-Get wiki page revision log.
+Get wiki page revision log entries.
 
 This endpoint returns a :ref:`paginated listing <listings-overview>`.
 
@@ -167,7 +179,7 @@ The `sr_detail` parameter is not supported (despite being documented).
 .. csv-table:: API Errors
    :header: "Error","Status Code","Description","Example"
 
-   "PAGE_NOT_CREATED","404","The wiki page specified in the URL does not exist.","
+   "PAGE_NOT_FOUND","404","The specified wiki page does not exist.","
    ``{""reason"": ""PAGE_NOT_FOUND"", ""message"": ""Not Found""}``
    "
    "WIKI_DISABLED","403","The specified subreddit does not have wikis enabled.","
@@ -175,6 +187,9 @@ The `sr_detail` parameter is not supported (despite being documented).
    "
    "private","403","You do not have access to the specified subreddit; it is private.","
    ``{""reason"": ""private"", ""message"": ""Forbidden"", ""error"": 403}``
+   "
+   "banned","404","You do not have access to the specified subreddit; it is banned.","
+   ``{""reason"": ""banned"", ""message"": ""Not Found"", ""error"": 404}``
    "
 
 .. seealso:: `<https://www.reddit.com/dev/api/#GET_wiki_revisions_{page}>`_
@@ -196,11 +211,17 @@ The `sr_detail` parameter is not supported (despite being documented).
 .. csv-table:: API Errors
    :header: "Error","Status Code","Description","Example"
 
-   "PAGE_NOT_CREATED","404","The wiki page specified in the URL does not exist.","
+   "PAGE_NOT_FOUND","404","The specified wiki page does not exist.","
    ``{""reason"": ""PAGE_NOT_FOUND"", ""message"": ""Not Found""}``
+   "
+   "WIKI_DISABLED","403","The specified subreddit does not have wikis enabled.","
+   ``{""reason"": ""WIKI_DISABLED"", ""message"": ""Forbidden""}``
    "
    "private","403","You do not have access to the specified subreddit; it is private.","
    ``{""reason"": ""private"", ""message"": ""Forbidden"", ""error"": 403}``
+   "
+   "banned","404","You do not have access to the specified subreddit; it is banned.","
+   ``{""reason"": ""banned"", ""message"": ""Not Found"", ""error"": 404}``
    "
 
 .. seealso:: `<https://www.reddit.com/dev/api/#GET_wiki_discussions_{page}>`_
@@ -213,14 +234,12 @@ Get settings
 
 *scope: modwiki*
 
-Get link submissions linking to a particular wiki page.
-
 Retrieve the current permission settings for a wiki page.
 
 .. csv-table:: Wiki page settings
    :header: "Field","Type (hint)","Description"
 
-   "permlevel","integer","The permission level specifing who can edit this wiki page.
+   "permlevel","integer","Permission level indicating who can edit this wiki page.
 
    0: use subreddit wiki permissions
    1: only approved wiki contributors for this page may edit
@@ -231,13 +250,19 @@ Retrieve the current permission settings for a wiki page.
 .. csv-table:: API Errors
    :header: "Error","Status Code","Description","Example"
 
-   "PAGE_NOT_CREATED","404","The wiki page specified in the URL does not exist.","
-   ``{""reason"": ""PAGE_NOT_FOUND"", ""message"": ""Not Found""}``
-   "
    "MOD_REQUIRED","403","You are not a moderator of the specified subreddit.","
    ``{""reason"": ""MOD_REQUIRED"", ""message"": ""Forbidden"", ""explanation"": ""You must be a moderator to do that.""}``
    "
-   "banned","404","The specified subreddit is banned.","
+   "WIKI_DISABLED","403","The specified subreddit does not have wikis enabled.","
+   ``{""reason"": ""WIKI_DISABLED"", ""message"": ""Forbidden""}``
+   "
+   "PAGE_NOT_FOUND","404","The wiki page specified in the URL does not exist.","
+   ``{""reason"": ""PAGE_NOT_FOUND"", ""message"": ""Not Found""}``
+   "
+   "private","403","You do not have access to the specified subreddit; it is private.","
+   ``{""reason"": ""private"", ""message"": ""Forbidden"", ""error"": 403}``
+   "
+   "banned","404","You do not have access to the specified subreddit; it is banned.","
    ``{""reason"": ""banned"", ""message"": ""Not Found"", ""error"": 404}``
    "
 
@@ -263,10 +288,29 @@ Returns the new settings.
 
 |
 
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
+
+   "WIKI_DISABLED","403","The specified subreddit does not have wikis enabled.","
+   ``{""reason"": ""WIKI_DISABLED"", ""message"": ""Forbidden""}``
+   "
+   "PAGE_NOT_FOUND","404","The wiki page specified in the URL does not exist.","
+   ``{""reason"": ""PAGE_NOT_FOUND"", ""message"": ""Not Found""}``
+   "
+   "private","403","You do not have access to the specified subreddit; it is private.","
+   ``{""reason"": ""private"", ""message"": ""Forbidden"", ""error"": 403}``
+   "
+   "banned","404","You do not have access to the specified subreddit; it is banned.","
+   ``{""reason"": ""banned"", ""message"": ""Not Found"", ""error"": 404}``
+   "
+
+|
+
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
    :escape: \
 
+   "302","You do not have permission."
    "500","The `permlevel` parameter was not specified."
 
 .. seealso:: `<https://www.reddit.com/dev/api/#POST_wiki_settings_{page}>`_
@@ -281,9 +325,11 @@ Add editor
 
 *scope: modwiki*
 
-Add a user as an editor for this wiki page.
+Add a user as an editor for a wiki page.
 
 If the user is already added, it is treated as a success.
+
+If the page doesn't exist, it is treated as a success.
 
 Returns an empty JSON object.
 
@@ -300,10 +346,19 @@ Returns an empty JSON object.
 .. csv-table:: API Errors
    :header: "Error","Status Code","Description","Example"
 
+   "WIKI_DISABLED","403","The specified subreddit does not have wikis enabled.","
+   ``{""reason"": ""WIKI_DISABLED"", ""message"": ""Forbidden""}``
+   "
    "UNKNOWN_USER","404","* The specified user does not exist.
 
    * The `username` parameter was not specified.","
    ``{""reason"": ""UNKNOWN_USER"", ""message"": ""Not Found""}``
+   "
+   "private","403","You do not have access to the specified subreddit; it is private.","
+   ``{""reason"": ""private"", ""message"": ""Forbidden"", ""error"": 403}``
+   "
+   "banned","404","You do not have access to the specified subreddit; it is banned.","
+   ``{""reason"": ""banned"", ""message"": ""Not Found"", ""error"": 404}``
    "
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_wiki_alloweditor_add
@@ -382,11 +437,17 @@ indicating whether the wiki page revision is now hidden.
 .. csv-table:: API Errors
    :header: "Error","Status Code","Description","Example"
 
-   "PAGE_NOT_CREATED","404","The specified wiki page does not exist.","
+   "PAGE_NOT_FOUND","404","The specified wiki page does not exist.","
    ``{""reason"": ""PAGE_NOT_FOUND"", ""message"": ""Not Found""}``
    "
    "INVALID_REVISION","404","The revision UUID specified by `v` does not exist.","
    ``{""reason"": ""PAGE_NOT_CREATED"", ""message"": ""Not Found""}``
+   "
+   "private","403","You do not have access to the specified subreddit: it is private.","
+   ``{""reason"": ""private"", ""message"": ""Forbidden"", ""error"": 403}``
+   "
+   "banned","404","You do not have access to the specified subreddit: it is banned.","
+   ``{""reason"": ""banned"", ""message"": ""Not Found"", ""error"": 404}``
    "
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_wiki_hide

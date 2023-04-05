@@ -25,16 +25,17 @@ Conversation Schema
    * 2: archived
    "
    "numMessages","integer","The number of messages in the conversation."
-   "isAuto","boolean","True if the message was automatcally generated. False if the message
-   was composed by a user."
-   "isInternal","boolean","Whether this conversation is moderator discussion."
+   "isAuto","boolean","True if the conversation was created due to an automated message;
+   false if the message was created by a user."
+   "isInternal","boolean","Whether this conversation is a moderator discussion."
    "isRepliable","boolean","True if the conversation thread accepts replies."
    "isHighlighted","boolean","True if the conversation is highlighted."
    "legacyFirstMessageId","string?","An ID36 that refers to the first message in the legacy modmail
-   for this conversation thread. Prepend like so to get the direct message link:
+   thread for this conversation thread. Prepend like so to get the direct message link:
    `https://www.reddit.com/message/messages/{legacyFirstMessageId}`.
 
-   This field can be null in rare cases, such as in the ""r/YourSubreddit is now enrolled in the New Modmail""
+   This field can be null in rare cases, such as in the
+   ""r/{subreddit} is now enrolled in the New Modmail""
    modmail message from u/reddit."
    "lastUserUpdate","string?","An ISO8601 date string. If `isInternal` is true this should always be `null`."
    "lastModUpdate","string?","An ISO8601 date string."
@@ -65,7 +66,10 @@ Conversation Schema
    latest message in the conversation. Notice the object returned by that endpoint does
    not have a `modActions` key, only `messages`.
    "
-   "participant","object","Some basic information about the target user; the recipient of the initial message.
+   "participant","object","Some basic information about the target user.
+
+   The information in this object is partially redundant because user information is
+   included in the user dossier information on the conversation aggregate root object.
 
    If this conversation is a moderator discussion (i.e., `isInternal: true`) this field will be an
    empty object.
@@ -83,7 +87,7 @@ Conversation Schema
    * `isDeleted` (boolean): .
    "
    "authors","object array","A list of conversation users that have either messaged
-   or perfomed a mod action.
+   or perfomed a mod action in the conversation thread.
 
    There is one entry in the array for every message or mod action taken, hence the array can contain duplicate objects.
 
@@ -102,9 +106,9 @@ Message Schema
 
    "id","string","The message ID36."
    "author","object","Author information. Schema same as the `participant` field on the Conversations schema."
-   "isInternal","boolean","Always true if this message is in a moderator discussion. If not, then true if 
-   this message is a private moderator note."
-   "bodyMarkdown","string","The text content of the message in markdown."
+   "isInternal","boolean","Always true if this message is in a moderator discussion.
+   Otherwise, true if this message is a private moderator note."
+   "bodyMarkdown","string","The text content of the message in markdown format."
    "body","string","The content of the message in HTML."
    "date","string","An ISO8601 date string of when the message was created."
 
@@ -136,8 +140,8 @@ Modmail Mod Action Schema
 
    Object fields:
 
-   * `id` (integer): The integer ID of the mod.
-   * `name` (integer): The name of the mod.
+   * `id` (integer): The user ID of the mod who performed the action.
+   * `name` (integer): The name of the mod who performed the action.
    * `isMod` (boolean): Always true.
    * `isAdmin` (boolean): True if Reddit admin.
    * `isHidden` (boolean): Always false. A mod cannot perform mod actions anonymously.
@@ -154,8 +158,8 @@ User Dossier Schema
    "id","string","The full ID36 (`t2_` prefixed) of a user."
    "name","string","The name of the user."
    "created","string","When the user account was created, as an ISO8601 date string."
-   "isSuspended","boolean",""
-   "isShadowBanned","boolean","True if account is shadow banned on Reddit."
+   "isSuspended","boolean","True if account is suspended."
+   "isShadowBanned","boolean","True if account is shadow banned."
    "approveStatus","object","An object containing one key: `isApproved` which is a boolean
    that is true if the user is an approved contributor on the relevent subreddit."
    "muteStatus","object","An object detailing the mute status of the user in the subreddit.
@@ -165,7 +169,7 @@ User Dossier Schema
    * `isMuted` (boolean): True if the user is currently muted on the subreddit.
    * `reason` (string): The mute reason. Empty string if not currently muted.
    * `muteCount` (integer): The number of times the user has been muted in the subreddit.
-   * `endDate` (string?): An ISO8601 date string of when the mute will end. Value is `null` if
+   * `endDate` (string?): An ISO8601 date string of when the mute ends. Value is `null` if
       the user is not muted.
    "
    "banStatus","object","An object detailing the ban status of the user in the subreddit.
@@ -174,12 +178,12 @@ User Dossier Schema
 
    * `isBanned` (boolean): True if the user is currently banned on the subreddit.
    * `reason` (string): The ban reason. Empty string if not currently banned.
-   * `isPermanent` (boolean): True if the ban is permanent. Value is `false` if user is not banned.
-   * `endDate` (string?): An ISO8601 date string of when the ban will end. Value is `null` if
+   * `isPermanent` (boolean): True if the ban is permanent. Value false if user is not banned.
+   * `endDate` (string?): An ISO8601 date string of when the ban ends. Value is `null` if
       the user is not banned.
    "
    "recentPosts","object","An object mapping submission full ID36s (`t3_` prefixed) to a bit of
-   information about the user's recent submissions to the relevent subreddit.
+   information about the user's recent submissions to the subreddit.
 
    The order of the keys in this mapping is significant.
 
@@ -190,7 +194,7 @@ User Dossier Schema
    * `permalink` (string): A URL to the submission.
    "
    "recentComments","object","An object mapping comment full ID36s (`t1_` prefixed) to a bit
-   information about the user's recent comments in the relevent subreddit.
+   information about the user's recent comments in the subreddit.
 
    The order of the keys in this mapping is significant.
 
@@ -201,7 +205,7 @@ User Dossier Schema
    * `title` (string): The title of the submission in which the comment resides.
    * `permalink` (string): A URL to the comment.
    "
-   "recentConvos","object","Other conversations this user is involved in.
+   "recentConvos","object","Other modmail conversations this user is involved in.
    An object mapping conversation ID36s to a permalink to other conversations.
 
    The order of the keys in this mapping is significant.
@@ -229,7 +233,7 @@ Get unread conversation counts
 
 Get unread conversations counts by mailbox.
 
-Returns an object like the following::
+Returns a dictionary like the following::
 
    {"archived": 0,
     "appeals": 0,
@@ -256,6 +260,8 @@ Get moderating subreddits
 .. http:get:: /api/mod/conversations/subreddits
 
 *scope: modmail*
+
+Return subreddits the current user is moderating that have modmail enabled.
 
 Returns a JSON object with one key: `subreddits`. Its value is an object that maps subreddit full ID36
 strings (with prefix `t5_`) to objects that contain basic subreddit information.
@@ -469,17 +475,17 @@ Returned object fields:
    "USER_REQUIRED","403","There is no user context.","
    ``{""explanation"": ""Please log in to do that."", ""message"": ""Forbidden"", ""reason"": ""USER_REQUIRED""}``
    "
-   "NO_TEXT","400","* The `subject` parameter was empty or not specified.
-
-   * The `body` parameter was empty or not specified.
-   ","
-   ``{""fields"": [""subject""], ""explanation"": ""we need something here"", ""message"": ""Bad Request"", ""reason"": ""NO_TEXT""}``
-   "
    "BAD_SR_NAME","400","The `srName` parameter was not specified or was empty.","
    ``{""fields"": [""srName""], ""explanation"": ""This community name isn't recognizable. Check the spelling and try again."", ""message"": ""Bad Request"", ""reason"": ""BAD_SR_NAME""}``
    "
    "SUBREDDIT_NOEXIST","400","The subreddit specified by the `srName` parameter does not exist.","
    ``{""fields"": [""srName""], ""explanation"": ""Hmm, that community doesn't exist. Try checking the spelling."", ""message"": ""Bad Request"", ""reason"": ""SUBREDDIT_NOEXIST""}``
+   "
+   "NO_TEXT","400","* The `subject` parameter was empty or not specified.
+
+   * The `body` parameter was empty or not specified.
+   ","
+   ``{""fields"": [""subject""], ""explanation"": ""we need something here"", ""message"": ""Bad Request"", ""reason"": ""NO_TEXT""}``
    "
    "TOO_LONG","400","* The value specified for `subject` must be 100 characters or fewer
       (despite error message saying under 100).
@@ -510,7 +516,7 @@ Reply
 
 *scope: modmail*
 
-Create a new message for a conversation.
+Create a new message on an existing conversation.
 
 Returned object fields:
 
@@ -535,14 +541,14 @@ for some odd reason.
    "USER_REQUIRED","403","There is no user context.","
    ``{""explanation"": ""Please log in to do that."", ""message"": ""Forbidden"", ""reason"": ""USER_REQUIRED""}``
    "
-   "NO_TEXT","400","The `body` parameter was empty or not specified.","
-   ``{""fields"": [""body""], ""explanation"": ""we need something here"", ""message"": ""Bad Request"", ""reason"": ""NO_TEXT""}``
-   "
    "CONVERSATION_NOT_FOUND","404","The specified conversation does not exist.","
    ``{""fields"": [""conversation_id""], ""explanation"": ""No conversation found."", ""message"": ""Not Found"", ""reason"": ""CONVERSATION_NOT_FOUND""}``
    "
    "SUBREDDIT_NO_ACCESS","403","You do not have permission to access the specified conversation.","
    ``{""fields"": [null], ""explanation"": null, ""message"": ""Forbidden"", ""reason"": ""SUBREDDIT_NO_ACCESS""}``
+   "
+   "NO_TEXT","400","The `body` parameter was empty or not specified.","
+   ``{""fields"": [""body""], ""explanation"": ""we need something here"", ""message"": ""Bad Request"", ""reason"": ""NO_TEXT""}``
    "
    "TOO_LONG","400","The value specified for `body` must be 10000 characters or fewer
    (despite error message saying under 10000).","
@@ -585,7 +591,7 @@ Returns zero bytes on success.
    "USER_REQUIRED","403","There is no user context.","
    ``{""explanation"": ""Please log in to do that."", ""message"": ""Forbidden"", ""reason"": ""USER_REQUIRED""}``
    "
-   "(n/a)","400","The `conversationIds` parameter was not specified","
+   "Must pass an id or list of ids.","400","The `conversationIds` parameter was not specified","
    ``{""fields"": [null], ""explanation"": null, ""message"": ""Bad Request"", ""reason"": ""Must pass an id or list of ids.""}``
    "
    "INVALID_CONVERSATION_ID","403","You do not have permission to mark as read one of the conversations
@@ -593,7 +599,7 @@ Returns zero bytes on success.
    The operation is aborted and none of the items will be processed.","
    ``{""fields"": [""conversationIds""], ""explanation"": null, ""message"": ""Forbidden"", ""reason"": ""INVALID_CONVERSATION_ID""}``
    "
-   "(n/a)","422","One of the IDs given contained invalid characters.
+   "Must pass base 36 ids.","422","One of the IDs given contained invalid characters.
    The operation is aborted and none of the items will be processed.","
    ``{""fields"": [null], ""explanation"": null, ""message"": ""Unprocessable Entity"", ""reason"": ""Must pass base 36 ids.""}``
    "
@@ -637,6 +643,9 @@ Returns the list of conversation ID36s that were marked as read::
    "USER_REQUIRED","403","There is no user context.","
    ``{""explanation"": ""Please log in to do that."", ""message"": ""Forbidden"", ""reason"": ""USER_REQUIRED""}``
    "
+   "INVALID_OPTION","400","The value specified for `state` was invalid.","
+   ``{""fields"": [""state""], ""explanation"": ""that option is not valid"", ""message"": ""Bad Request"", ""reason"": ""INVALID_OPTION""}``
+   "
    "BAD_SR_NAME","400","* (1) The `entity` parameter was not specified or was empty.
 
    * (2) One of the subreddits specified in the `entity` parameter is not a subreddit you have access to.
@@ -644,9 +653,6 @@ Returns the list of conversation ID36s that were marked as read::
    (1) ``{""fields"": [""entity""], ""explanation"": ""This community name isn't recognizable. Check the spelling and try again."", ""message"": ""Bad Request"", ""reason"": ""BAD_SR_NAME""}``
 
    (2) ``{""fields"": [""entity""], ""explanation"": null, ""message"": ""Bad Request"", ""reason"": ""BAD_SR_NAME""}``
-   "
-   "INVALID_OPTION","400","The value specified for `state` was invalid.","
-   ``{""fields"": [""state""], ""explanation"": ""that option is not valid"", ""message"": ""Bad Request"", ""reason"": ""INVALID_OPTION""}``
    "
 
 |
@@ -686,11 +692,11 @@ Notice the `conversations` key is mistakenly plural.
    "USER_REQUIRED","403","There is no user context.","
    ``{""explanation"": ""Please log in to do that."", ""message"": ""Forbidden"", ""reason"": ""USER_REQUIRED""}``
    "
-   "SUBREDDIT_NO_ACCESS","403","The subreddit associated with the conversation ID36 is not moderated by you.","
-   ``{""fields"": [null], ""explanation"": null, ""message"": ""Forbidden"", ""reason"": ""SUBREDDIT_NO_ACCESS""}``
-   "
    "CONVERSATION_NOT_FOUND","404","The conversation ID36 does not exist.","
    ``{""fields"": [""conversation_id""], ""explanation"": ""No conversation found."", ""message"": ""Not Found"", ""reason"": ""CONVERSATION_NOT_FOUND""}``
+   "
+   "SUBREDDIT_NO_ACCESS","403","The subreddit associated with the conversation ID36 is not moderated by you.","
+   ``{""fields"": [null], ""explanation"": null, ""message"": ""Forbidden"", ""reason"": ""SUBREDDIT_NO_ACCESS""}``
    "
 
 .. seealso:: https://www.reddit.com/dev/api/#DELETE_api_mod_conversations_:conversation_id_highlight
@@ -715,11 +721,11 @@ Returned object is the same as `POST /api/mod/conversations/{convo_id36}/highlig
    "USER_REQUIRED","403","There is no user context.","
    ``{""explanation"": ""Please log in to do that."", ""message"": ""Forbidden"", ""reason"": ""USER_REQUIRED""}``
    "
-   "INVALID_MOD_PERMISSIONS","403","The subreddit associated with the conversation ID36 is not moderated by you.","
-   ``{""fields"": [null], ""explanation"": null, ""message"": ""Forbidden"", ""reason"": ""INVALID_MOD_PERMISSIONS""}``
-   "
    "CONVERSATION_NOT_FOUND","404","The conversation ID36 does not exist.","
    ``{""fields"": [""conversation_id""], ""explanation"": ""No conversation found."", ""message"": ""Not Found"", ""reason"": ""CONVERSATION_NOT_FOUND""}``
+   "
+   "INVALID_MOD_PERMISSIONS","403","The subreddit associated with the conversation ID36 is not moderated by you.","
+   ``{""fields"": [null], ""explanation"": null, ""message"": ""Forbidden"", ""reason"": ""INVALID_MOD_PERMISSIONS""}``
    "
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_mod_conversations_:conversation_id_archive
@@ -750,19 +756,15 @@ Notice the `conversations` key is mistakenly plural.
    "USER_REQUIRED","403","There is no user context.","
    ``{""explanation"": ""Please log in to do that."", ""message"": ""Forbidden"", ""reason"": ""USER_REQUIRED""}``
    "
-   "CANT_RESTRICT_MODERATOR","400","There is not user associated with the conversation.","
-   ``{""fields"": [null], ""explanation"": null, ""message"": ""Bad Request"", ""reason"": ""CANT_RESTRICT_MODERATOR""}``
-   "
    "CONVERSATION_NOT_FOUND","404","The conversation ID36 does not exist.","
    ``{""fields"": [""conversation_id""], ""explanation"": ""No conversation found."", ""message"": ""Not Found"", ""reason"": ""CONVERSATION_NOT_FOUND""}``
    "
-
-|
-
-.. csv-table:: HTTP Errors
-   :header: "Status Code","Description"
-
-   "500","The subreddit associated with the conversation ID36 is not moderated by you."
+   "INVALID_MOD_PERMISSIONS","403","The subreddit associated with the conversation ID36 is not moderated by you.","
+   ``{""fields"": [null], ""explanation"": null, ""message"": ""Forbidden"", ""reason"": ""INVALID_MOD_PERMISSIONS""}``
+   "
+   "CANT_RESTRICT_MODERATOR","400","There is no user associated with the conversation.","
+   ``{""fields"": [null], ""explanation"": null, ""message"": ""Bad Request"", ""reason"": ""CANT_RESTRICT_MODERATOR""}``
+   "
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_mod_conversations_:conversation_id_approve
 
@@ -797,41 +799,7 @@ This parameter table applies only when muting:
    ``{""fields"": [""num_hours""], ""explanation"": ""that option is not valid"", ""message"": ""Bad Request"", ""reason"": ""INVALID_OPTION""}``
    "
 
-|
-
-.. csv-table:: HTTP Errors
-   :header: "Status Code","Description"
-
-   "...","Same as in `POST /api/mod/conversations/{convo_id36}/approve`."
-
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_mod_conversations_:conversation_id_mute
-
-
-Unban user
-~~~~~~~~~~
-
-.. http:post:: /api/mod/conversations/{convo_id36}/unban
-
-*scope: modmail*
-
-Unban the user associated with a conversation from the subreddit.
-
-Returned object is the same as `POST /api/mod/conversations/{convo_id36}/approve`.
-(I.e., `conversations`, `user`, `modActions`, `messages`.)
-
-.. csv-table:: API Errors
-   :header: "Error","Status Code","Description","Example"
-
-   "...","Same as in `POST /api/mod/conversations/{convo_id36}/approve`.","...","..."
-
-|
-
-.. csv-table:: HTTP Errors
-   :header: "Status Code","Description"
-
-   "...","Same as in `POST /api/mod/conversations/{convo_id36}/approve`."
-
-.. seealso:: https://www.reddit.com/dev/api/#POST_api_mod_conversations_:conversation_id_unban
 
 
 Shorten user ban 
@@ -860,8 +828,11 @@ Returned object is the same as `POST /api/mod/conversations/{convo_id36}/approve
    :header: "Error","Status Code","Description","Example"
 
    "...","Same as in `POST /api/mod/conversations/{convo_id36}/approve`.","...","..."
-   "(n/a)","422","The user associated with the conversation is not banned from the subreddit.","
-   ``{""fields"": [null], ""explanation"": null, ""message"": ""Unprocessable Entity"", ""reason"": ""Participant must be banned.""}``
+   "Participant must be banned.","422","The user associated with the conversation is not banned from the subreddit.","
+   ``{""fields"": [null], ""reason"": ""Participant must be banned."", ""message"": ""Unprocessable Entity""}``
+   "
+   "Participant must be banned permanently.","422","The user associated with the conversation is not permanently banned from the subreddit.","
+   ``{""fields"": [null], ""reason"": ""Participant must be banned permanently."", ""message"": ""Unprocessable Entity""}``
    "
    "BAD_NUMBER","400","The number specified by the `duration` parameter was not in range.","
    ``{""fields"": [""duration""], ""explanation"": ""that number isn't in the right range (1 to 999)"", ""message"": ""Bad Request"", ""reason"": ""BAD_NUMBER""}``
@@ -872,7 +843,26 @@ Returned object is the same as `POST /api/mod/conversations/{convo_id36}/approve
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
 
-   "...","Same as in `POST /api/mod/conversations/{convo_id36}/approve`."
    "500","The `duration` parameter was not specified."
+
+.. seealso:: https://www.reddit.com/dev/api/#POST_api_mod_conversations_:conversation_id_unban
+
+
+Unban user
+~~~~~~~~~~
+
+.. http:post:: /api/mod/conversations/{convo_id36}/unban
+
+*scope: modmail*
+
+Unban the user associated with a conversation from the subreddit.
+
+Returned object is the same as `POST /api/mod/conversations/{convo_id36}/approve`.
+(I.e., `conversations`, `user`, `modActions`, `messages`.)
+
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
+
+   "...","Same as in `POST /api/mod/conversations/{convo_id36}/approve`.","...","..."
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_mod_conversations_:conversation_id_unban

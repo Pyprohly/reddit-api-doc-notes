@@ -26,7 +26,7 @@ Schema:
 * `stylesheet` (string): The CSS content.
 * `images` (object array): Information about the stylesheet's images.
 
-  * `name` (string): Name of the image. E.g., `B16F1EE2-D3B8-4D89-A515-78E3A7A90A43`.
+  * `name` (string): Name of the image.
   * `url` (string): The url of the image.
   * `link` (string): Same as `name` but affixed with `url(%%` and `%%)`. E.g., `url(%%cat-image%%)`.
 
@@ -36,6 +36,17 @@ Schema:
    "r","string","The target subreddit. An alternative to specifying the subreddit name in the URL.
    If both are specified, the one in the URL takes preference."
 
+|
+
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
+
+   "private","403","You do not have access to the specified subreddit: it is private.","
+   ``{""reason"": ""private"", ""message"": ""Forbidden"", ""error"": 403}``
+   "
+   "banned","404","You do not have access to the specified subreddit: it is banned.","
+   ``{""reason"": ""banned"", ""message"": ""Not Found"", ""error"": 404}``
+   "
 
 Get stylesheet raw css
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -61,6 +72,7 @@ This endpoint returns a 404 HTTP error if the subreddit's stylesheet page is emp
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
 
+   "302","The subreddit does not exist."
    "404","The subreddit does not have a stylesheet set."
 
 
@@ -105,6 +117,13 @@ will not be changed in any way.
    ``{""json"": {""errors"": [[""BAD_CSS"", ""invalid css"", ""stylesheet_contents""]]}}``
    "
 
+|
+
+.. csv-table:: HTTP Errors
+   :header: "Status Code","Description"
+
+   "404","The subreddit does not exist."
+
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_subreddit_stylesheet
 
 
@@ -137,6 +156,9 @@ The URL of the (non-stylesheet) subreddit images can be retrieved via :ref:`subr
 * Mobile icon: `icon_img`.
 * Mobile banner: `banner_img`.
 
+The multipart `file` field must declare a filename parameter in the `Content-Disposition`
+otherwise a 500 HTTP error will occur.
+
 .. csv-table:: Multipart Form Data
    :header: "Field","Type (hint)","Description"
 
@@ -156,12 +178,11 @@ The URL of the (non-stylesheet) subreddit images can be retrieved via :ref:`subr
 .. csv-table:: API Errors
    :header: "Error","Status Code","Description","Example"
 
-   "BAD_CSS_NAME","200","* The `name` parameter was not specified.
-
-   * The value provided for `name` is invalid.","
+   "BAD_CSS_NAME","200","For `upload_type: img`, the `name` parameter was not specified
+   or was an invalid CSS identifier.","
    ``{""errors"": [""BAD_CSS_NAME""], ""img_src"": """", ""errors_values"": [""bad image name""]}``
    "
-   "IMAGE_ERROR","200","(1): The value provided for `name` is invalid.
+   "IMAGE_ERROR","200","(1): The image file was invalid.
 
    (2): The image must be 256x256 pixels.","
    (1): ``{""errors"": [""IMAGE_ERROR""], ""img_src"": """", ""errors_values"": [""Invalid image or general image error""]}``
@@ -192,7 +213,7 @@ The image will no longer count against the subreddit's image limit, however the 
 for an unspecified amount of time. If the image is currently referenced by the subreddit's stylesheet, that stylesheet
 will no longer validate and won't be submittable until the image reference is removed.
 
-If the specified image does not exist, it is treated as a success.
+If the specified image name does not exist, it is treated as a success.
 
 Returns ``{"json": {"errors": []}}`` on success.
 
@@ -209,7 +230,7 @@ Returns ``{"json": {"errors": []}}`` on success.
    :header: "Status Code","Description"
 
    "403","You do not have permission to delete an image from the specified subreddit."
-   "500","The `img_name` parameter was not specified."
+   "500","The `img_name` parameter was not specified or was empty."
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_delete_sr_img
 

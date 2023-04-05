@@ -44,8 +44,8 @@ The `action` is typically `//reddit-subreddit-uploaded-media.s3-accelerate.amazo
    "
 
 
-Configure banner settings
-~~~~~~~~~~~~~~~~~~~~~~~~~
+Modify banner image settings
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. http:patch:: /api/v1/structured_styles/{subreddit}
 
@@ -58,25 +58,30 @@ If any of the image parameters were used
 then a JSON object with one key `websocketUrl` is returned.
 Otherwise, an empty JSON object is returned on success.
 
-Use an empty string to remove an image.
+Parameters that are not specified are ignored.
+
+Use an empty string to set a setting to its default (e.g., to remove an image).
 
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
 
    "bannerHeight","string","Either `small`, `medium`, `large`. If given value is not valid, `small` is used."
    "bannerBackgroundColor","string","A hex color. If given value is not valid, `#33a8ff` is used."
-   "bannerBackgroundImage","string","The location of the new banner image."
+   "bannerBackgroundImage","string","The location of the a banner image."
    "bannerBackgroundImagePosition","string","Either `cover` or `tiled`. If given value is not valid, `cover` is used."
-   "bannerPositionedImage","string","The location of the new banner overlay image."
+   "bannerPositionedImage","string","The location of the a banner overlay image."
    "bannerPositionedImagePosition","string","Either `left`, `centered`, or `right`."
-   "secondaryBannerPositionedImage","string","The location of the new banner overlay hover image."
-   "mobileBannerImage","string","The location of the new mobile banner image."
+   "secondaryBannerPositionedImage","string","The location of the a banner overlay hover image."
+   "mobileBannerImage","string","The location of the a mobile banner image."
 
 |
 
 .. csv-table:: API Errors
    :header: "Error","Status Code","Description","Example"
 
+   "USER_REQUIRED","403","There is no user context.","
+   ``{""explanation"": ""Please log in to do that."", ""message"": ""Forbidden"", ""reason"": ""USER_REQUIRED""}``
+   "
    "INVALID_ARGUMENT","400","The specified image location was incorrect.","
    ``{""fields"": [""bannerBackgroundImage""], ""explanation"": ""Invalid value for bannerBackgroundImage"", ""message"": ""Bad Request"", ""reason"": ""INVALID_ARGUMENT""}``
    "

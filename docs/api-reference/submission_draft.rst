@@ -12,11 +12,12 @@ Draft Schema
    :header: "Field","Type (hint)","Description"
 
    "id","string","A UUID for this draft. E.g., `5d5e1684-08db-11ec-a00d-ae86119e02bc`."
-   "kind","string","`markdown` or `richtext`."
+   "kind","string","Either: `markdown`, `richtext`, `link`."
    "created","integer","UNIX timestamp in milliseconds of when the draft was created."
    "modified","integer","UNIX timestamp in milliseconds of when the draft was last modified."
    "is_public_link","boolean","Whether the draft is public."
    "subreddit","string?","The full ID36 (`t5_` prefixed) of the target subreddit.
+
    Value is `null` if subreddit not chosen yet."
    "title",".","Same as `title` parameter on `POST /api/submit` endpoint."
    "body","string | object","A string of markdown text if `kind: markdown`.
@@ -27,17 +28,18 @@ Draft Schema
    "original_content",".","Same as `original_content` parameter on `POST /api/submit` endpoint."
    "flair","object?","See 'Draft Flair Info Schema'.
 
-   Value is `null` if no flair information is set."
+   Value is `null` if no flair selected."
    "content_category","unknown?",""
+   "optional_text","string?",""
 
 .. csv-table:: Draft Flair Info Schema
    :header: "Field","Type (hint)","Description"
 
    "templateId","string","Flair template UUID."
-   "type","string","Values: `text`, ...?"
-   "text","string","The flair text. This will override the template's text if different."
+   "type","string","Values: `text`, `richtext`."
+   "text","string","The flair text. This will override the template's text."
    "backgroundColor","string","A hex color, e.g. `#a23114`. May be an empty string."
-   "textColor","string","Either `dark` or `light`."
+   "textColor","string","Color scheme. Either `dark` or `light`."
    "richtext","array",""
 
 
@@ -139,7 +141,7 @@ There is no `https://oauth.reddit.com` API endpoint for reading public drafts bu
 this `https://gateway.reddit.com` call that contains public draft information.
 
 In the returned JSON, the draft can be found under `root['drafts'][draft_id]`.
-The keys in this draft object are different from that described in Draft Schema above,
+The key names in this draft object are different from as described in Draft Schema above,
 but otherwise the data is the same.
 
 .. csv-table:: API Errors
@@ -156,7 +158,7 @@ but otherwise the data is the same.
         ""explanation"": ""Forbidden""
       }
    "
-   "BAD_GATEWAY","502","The specified ID is not a valid UUID.","
+   "BAD_GATEWAY","502","The specified UUID is not valid.","
    ::
 
       {
@@ -165,7 +167,7 @@ but otherwise the data is the same.
         ""explanation"": ""Unprocessable Entity""
       }
    "
-   "NOT_FOUND","404","The draft could not be found.","
+   "NOT_FOUND","404","The specified draft could not be found.","
    ::
 
       {
@@ -184,6 +186,8 @@ Update
 *scope: (unknown)*
 
 Update a draft.
+
+Every parameter should be specified otherwise their effective default will used!
 
 Returns an object like the following::
 
@@ -243,9 +247,10 @@ The ID returned is that of the deleted draft.
    "INVALID_DRAFT_ID","200","The `draft_id` parameter was not specified.","
    ``{""json"": {""errors"": [[""INVALID_DRAFT_ID"", ""Draft id isn't valid"", ""draft_id""]]}}``
    "
-   "UNKNOWN_THRIFT_ERROR","403","The specified draft does not exist.","
-   ``{""explanation"": ""There was a connection error with Thrift: BadRequest(message=u'Draft does not exist.')"", ""message"": ""Forbidden"", ""reason"": ""UNKNOWN_THRIFT_ERROR""}``
-   "
-   "VALIDATION_ERRORS","422","The specified draft ID is not a valid UUID.","
+   "VALIDATION_ERRORS","422","- The specified draft does not exist.
+   - The specified draft UUID is not valid.","
    ``{""explanation"": ""ValidationErrors(errors=[ValidationError(reason=u'Invalid draft_id.', field=u'draft_id', short_name=None)])"", ""message"": ""Unprocessable Entity"", ""reason"": ""VALIDATION_ERRORS""}``
+   "
+   "UNKNOWN_THRIFT_ERROR","403","The specified draft no longer exists.","
+   ``{""explanation"": ""There was a connection error with Thrift: BadRequest(message=u'Draft does not exist.')"", ""message"": ""Forbidden"", ""reason"": ""UNKNOWN_THRIFT_ERROR""}``
    "

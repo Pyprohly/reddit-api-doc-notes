@@ -48,11 +48,10 @@ Requires the `posts` moderator permission (otherwise 403 HTTP error).
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
 
-   "200","The specified subreddit name is too long (over 21 characters) or contains invalid characters.
-   A 'page not found' HTML document is returned. (The behaviour is the same using the URL or the `r` parameter.)"
    "403","* You don't have access to the subreddit.
-
-   * You don't have the 'posts' moderators permission."
+   * You don't have the 'posts' moderator permission."
+   "404","The specified subreddit name is too long (over 21 characters) or contains invalid characters.
+   A 'page not found' HTML document is returned. (The behaviour is the same using the URL or the `r` parameter.)"
 
 .. seealso:: `<https://www.reddit.com/dev/api/#GET_about_{location}>`_
 
@@ -71,7 +70,7 @@ Pull subreddit users
 
 Get redditors that relate to a subreddit.
 
-These endpoints are a paginated but they don't follow the regular listing structure.
+These endpoints are paginated but they don't follow the regular listing structure.
 
 The wikicontributors and wikibanned variants use GraphQL so you'll need to use the legacy endpoints for those.
 
@@ -83,13 +82,13 @@ in the result set.
 .. csv-table:: Moderator User Item Schema
    :header: "Field","Type (hint)","Description"
 
-   "id","string","The full ID36 (`t2_` prefixed) of the subject."
-   "username","string","The subject's name."
-   "accountIcon","string","URL of the subject's account icon."
+   "id","string","The full ID36 (`t2_` prefixed) of the moderator."
+   "username","string","The moderator's name."
+   "accountIcon","string","URL of the moderator's account icon."
    "iconSize","integer array","An array of two intergers. Usually `[256, 256]`."
    "moddedAtUTC","integer","UNIX timestamp of when the user was modded."
-   "authorFlairText","string","The flair text of the subject. Empty string if no flair text."
-   "postKarma","integer","The post karama of the subject."
+   "authorFlairText","string","The flair text of the moderator."
+   "postKarma","integer","The post karama of the moderator."
    "modPermissions","object","A dictionary of strings to booleans.
    E.g.,::
 
@@ -122,10 +121,10 @@ in the result set.
    "iconSize",".","See :ref:`Moderator User Item Schema <moderator-user-item-schema>`."
    "bannedAtUTC","integer","UNIX timestamp of when the user was banned."
    "bannedBy","string","The name of the moderator who banned the user."
-   "reason","string?","The ban reason text. `null` if no reason text available."
+   "reason","string?","The ban reason. `null` if no reason text available."
    "modNote","string?","A moderator note. `null` if no mod note."
-   "banMessage","string","The moderator note that was sent to the user when they were banned. Empty string if no message."
-   "duration","integer?","The number of days until the ban is lifted. Is `null` if it is a permanent ban."
+   "banMessage","string","The message that was sent to the user when they were banned. Empty string if no message."
+   "duration","integer?","The number of days until the ban is lifted. If `null`, the ban is permanent."
    "postId","unknown?",""
    "commentId","unknown?",""
    "subredditId","string","The full ID36 (`t5_` prefixed) of the subreddit. Should be the same for all items."
@@ -157,7 +156,7 @@ Endpoint URL params:
    "SUBREDDIT_NOEXIST","400","The target subreddit does not exist.","
    ``{""fields"": [""subreddit""], ""explanation"": ""Hmm, that community doesn't exist. Try checking the spelling."", ""message"": ""Bad Request"", ""reason"": ""SUBREDDIT_NOEXIST""}``
    "
-   "SUBREDDIT_NO_ACCESS","400","The current user is banned from the target subreddit.","
+   "SUBREDDIT_NO_ACCESS","400","The subreddit cannot be accessed.","
    ``{""explanation"": ""you aren't allowed access to this subreddit"", ""message"": ""Bad Request"", ""reason"": ""SUBREDDIT_NO_ACCESS""}``
    "
 
@@ -197,7 +196,7 @@ If the specified subreddit doesn't exist an empty listing is returned.
    "rel_id","string","Use this for listing pagination."
    "id","string","The full ID36 of the user."
    "name","string","The user's username."
-   "date","float","The UNIX timestamp of when the relationship was created. Always a whole number."
+   "date","float","UNIX timestamp of when the relationship was created. Always a whole number."
    "days_left?","integer?","For the `banned` and `wikibanned` listings only.
 
    The number of days until the ban is lifted. Is `null` if it is a permanent ban."
@@ -265,7 +264,7 @@ or the string `a` to restrict the results to admin actions taken within the subr
    :header: "Field","Type (hint)","Description"
 
    "id","string","Mod action ID. E.g., `ModAction_727b75b0-2214-11ec-99b4-05a9ad5c4e6c`."
-   "created_utc","float","Unix timestamp of when the action was done. Always a whole number."
+   "created_utc","float","Unix timestamp of when the action was performed. Always a whole number."
    "action","string","The mod action name."
    "mod_id36","string","The full ID36 of the moderator who initiated the action."
    "mod","string","The name of the moderator who initiated the action."
@@ -311,7 +310,7 @@ Send moderator invite
 Send a moderator invite.
 
 Returns `{"json": {"errors": []}}` on success.
-If the user is already invited, it is treated as a success.
+If the user is already invited, nothing happens. The permissions won't change.
 
 .. csv-table:: Form data
    :header: "Field","Type (hint)","Description"
@@ -325,7 +324,8 @@ If the user is already invited, it is treated as a success.
    Permissions: `all`, `access`, `chat_config`, `chat_operator`, `config`, `flair`, `mail`, `posts`, `wiki`.
 
    To send an invitation with no permissions, `-all` won't work, it is treated the same as `+all`.
-   Instead use `-access` or any other valid permission name.
+   Instead use `-access` or any other valid permission name. For no permissions, the UI sends
+   `-all,-access,-chat_config,-chat_operator,-config,-flair,-mail,-posts,-wiki`.
 
    Default: `+all`."
 
@@ -337,16 +337,16 @@ If the user is already invited, it is treated as a success.
    "USER_REQUIRED","200","There is no user context.","
    ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
    "
-   "NO_USER","200","The `name` parameter was not specified or was empty.","
+   "NO_USER","200","The `name` parameter was not specified, was empty, or contains invalid characters.","
    ``{""json"": {""errors"": [[""NO_USER"", ""please enter a username"", ""name""]]}}``
    "
    "USER_DOESNT_EXIST","200","The user specified by `name` does not exist.","
    ``{""json"": {""errors"": [[""USER_DOESNT_EXIST"", ""that user doesn't exist"", ""name""]]}}``
    "
-   "INVALID_PERMISSIONS","200","","
+   "INVALID_PERMISSIONS","200","The permission string was invalid.","
    ``{""json"": {""errors"": [[""INVALID_PERMISSIONS"", ""invalid permissions string"", ""permissions""]]}}``
    "
-   "ALREADY_MODERATOR","200","","
+   "ALREADY_MODERATOR","200","The user is already a moderator.","
    ``{""json"": {""errors"": [[""ALREADY_MODERATOR"", ""That user is already a moderator"", ""name""]]}}``
    "
 
@@ -355,7 +355,9 @@ If the user is already invited, it is treated as a success.
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description","Example"
 
-   "403","You don't have access to the subreddit you are sending an invite for.","
+   "403","* You don't have access to the subreddit you are sending an invite for.
+
+   * The target subreddit was not specified or was empty.","
    ``{""message"": ""Forbidden"", ""error"": 403}``
    "
    "500","The `type` parameter was not specified.","
@@ -387,7 +389,7 @@ Returns ``{"json": {"errors": []}}`` on success.
    "USER_REQUIRED","200","There is no user context.","
    ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
    "
-   "NO_INVITE_FOUND","200","You don't have a pendning invitation for the subreddit.","
+   "NO_INVITE_FOUND","200","You don't have a pendning invitation for the specified subreddit.","
    ``{""json"": {""errors"": [[""NO_INVITE_FOUND"", ""there is no pending invite for that subreddit"", null]]}}``
    "
 
@@ -436,7 +438,8 @@ If the user is already invited, it is treated as a success.
 
    "400","The `name` parameter was not specified, was empty, the name contains invalid characters,
    or the user of the name doesn't exist."
-   "403","You don't have access to the subreddit you are revoking an invite for."
+   "403","* You don't have permission.
+   * The target subreddit specified was empty."
 
 
 Leave moderator
@@ -481,7 +484,7 @@ Remove moderator
 Remove a moderator.
 
 Returns empty JSON object on success.
-If the given user is not a moderator of the subreddit, it is treated as a success.
+Nothing happens if the specified user is not a moderator of the subreddit.
 
 .. csv-table:: Form data
    :header: "Field","Type (hint)","Description"
@@ -506,7 +509,8 @@ If the given user is not a moderator of the subreddit, it is treated as a succes
 
    "400","The `name` parameter was not specified, was empty, the name contains invalid characters,
    or the user of the name doesn't exist."
-   "403","You don't have access to the subreddit you are revoking an invite for."
+   "403","* You don't have permission.
+   * The target subreddit specified was empty."
 
 
 Set moderator permissions
@@ -516,10 +520,9 @@ Set moderator permissions
 
 *scope: modothers*
 
-Set the permissions of a moderator or moderator invite.
+Set the permissions of a moderator or a moderator invite.
 
 Returns `{"json": {"errors": []}}` on success.
-If the user is already invited, it is treated as a success.
 
 .. csv-table:: Form data
    :header: "Field","Type (hint)","Description"
@@ -541,7 +544,7 @@ If the user is already invited, it is treated as a success.
    "USER_REQUIRED","200","There is no user context.","
    ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
    "
-   "NO_USER","200","The `name` parameter was not specified or was empty.","
+   "NO_USER","200","The `name` parameter was not specified, was empty, or contains invalid characters.","
    ``{""json"": {""errors"": [[""NO_USER"", ""please enter a username"", ""name""]]}}``
    "
    "USER_DOESNT_EXIST","200","The user specified by `name` does not exist.","
@@ -557,7 +560,7 @@ If the user is already invited, it is treated as a success.
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
 
-   "403","You don't have access to the subreddit you are revoking an invite for."
+   "403","You don't have access to the subreddit."
    "404","The subreddit specified by `r` does not exist. A 'page not found' HTML document is also returned."
 
 
@@ -576,8 +579,10 @@ Create a relationship between a user and subreddit.
 
 Using `type: wikibanned` or `type: modcontributors` additionally requires the `modwiki` scope.
 
-When banning an already banned user (as to change the ban reason or note), if the duration is changed
-then a new PM will be issued to the target user informing them of the duration change.
+Banning an already banned user does nothing. However, when banning an already
+banned user (as to change the ban reason or note), if the duration is changed
+then a new direct message will be issued to the user informing them of the
+duration change.
 
 Returns `{"json": {"errors": []}}` on success.
 If the user is already in the relationship, it is treated as a success.
@@ -590,7 +595,7 @@ If the user is already in the relationship, it is treated as a success.
    "name","string","Name of a target user."
    "ban_reason","string","For when `type`: `banned`, `wikibanned`.
 
-   The bad reason. No longer than 100 characters.
+   Ban reason. No longer than 100 characters.
 
    Default: empty string."
    "note","string","For when `type`: `banned`, `muted`, `wikibanned`.
@@ -604,32 +609,35 @@ If the user is already in the relationship, it is treated as a success.
    To make a ban permanent, specify an empty string, or omit this parameter.
 
    To change the duration of a ban, re-issue a request to this endpoint with a new duration.
-   A PM is sent to the target user informing them of the ban duration change.
+   A direct message is sent to the target user informing them of the ban duration change.
 
    Default: empty string."
    "ban_message","string","For when `type`: `banned`.
 
-   The note to include in the ban PM, as markdown text.
+   The message to include in the DM that is sent to the user.
 
-   Note that a PM is always sent to the banned user when a ban is issued.
-   This ban message shows in the PM under a section called ""Note from the moderators:"".
+   Specify markdown text.
+
+   Note that a direct message is always sent to the banned user when a ban is issued.
+   The ban message shows in the DM under a section called ""Note from the moderators:"".
+
+   If empty string, no message or section ""Note from the moderators:"" is shown.
 
    Default: empty string."
 
 |
 
+.. note::
+   In addition to add-approved-user_...
+
 .. csv-table:: API Errors
    :header: "Error","Status Code","Description","Example"
 
-   "USER_REQUIRED","200","There is no user context.","
-   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
-   "
-   "BAD_NUMBER","200","The number specified for `duration` is not in the range 1 to 999,
-   when `type: banned` or `type`: `wikibanned`.","
+   "BAD_NUMBER","200","When `type: banned` or `type: wikibanned`,
+   the number specified by `duration` is not within the range 1 to 999.","
    ``{""json"": {""errors"": [[""BAD_NUMBER"", ""that number isn't in the right range (1 to 999)"", ""duration""]]}}``
    "
-   "TOO_LONG","200","* (1) The value specified by `ban_reason` is over 100 characters.
-
+   "TOO_LONG","200","* \(1) The value specified by `ban_reason` is over 100 characters.
    * The value specified by `note` is over 300 characters.","
    (1): ``{""json"": {""errors"": [[""TOO_LONG"", ""This field must be under 100 characters"", ""ban_reason""]]}}``
    "
@@ -639,16 +647,9 @@ If the user is already in the relationship, it is treated as a success.
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
 
-   "400","The `id` or `name` parameter was not specified."
-   "403","* The non subreddit form of the URL was used and `r` was not specified or was empty.
-
-   * You don't have access to the subreddit you are operating on."
-   "404","The subreddit specified by `r` does not exist. A 'page not found' HTML document is also returned."
-   "500","* The `type` parameter was not specified.
-
-   * The `name` parameter was not specified, was empty, or the name contains invalid characters.
-
-   * The user specified by `name` does not exist, or was deleted, banned, etc."
+   "403","- You don't have permission.
+   - The target subreddit specified was empty."
+   "404","The specified subreddit does not exist."
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_friend
 
@@ -694,8 +695,8 @@ If the user is not already in the relationship, it is treated as a success.
    * The `id` or `name` parameter was not specified, was empty, the name contains invalid characters,
      or the user of the name doesn't exist."
    "403","* The non subreddit form of the URL was used and `r` was not specified or was empty.
-
-   * You don't have access to the subreddit you are operating on."
+   * You don't have permission.
+   * The target subreddit specified was empty"
    "404","The subreddit specified by `r` does not exist. A 'page not found' HTML document is also returned."
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_unfriend
@@ -719,24 +720,64 @@ Unmute user
 Use `POST [/r/{subreddit}]/api/unfriend` with `type: muted` form data.
 
 
-Add approved contributor
-~~~~~~~~~~~~~~~~~~~~~~~~
+.. _add-approved-user:
 
-Use `POST [/r/{subreddit}]/api/friend` with `type: contributor` form data.
+Add approved user
+~~~~~~~~~~~~~~~~~
+
+.. http:post:: [/r/{subreddit}]/api/friend
+
+*scope: modcontributors*
+
+Add an approved user to a subreddit.
+
+If the user is already an approved user, nothing happens.
+
+.. csv-table:: Form data
+   :header: "Field","Type (hint)","Description"
+
+   "type","string","`contributor`."
+   "r","string","Subreddit name. An alternative to specifying the subreddit name in the URL."
+   "name","string","Name of a user."
+
+|
+
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
+
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
+   "NO_USER","200","The `name` parameter was empty, or contains invalid characters.","
+   ``{""json"": {""errors"": [[""NO_USER"", ""please enter a username"", ""name""]]}}``
+   "
+   "USER_DOESNT_EXIST","200","The user specified by `name` does not exist.","
+   ``{""json"": {""errors"": [[""USER_DOESNT_EXIST"", ""that user doesn't exist"", ""name""]]}}``
+   "
+
+|
+
+.. csv-table:: HTTP Errors
+   :header: "Status Code","Description"
+
+   "403","- You don't have permission.
+   - The target subreddit specified was empty."
+   "404","The specified subreddit does not exist."
 
 
-Leave approved contributor
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+Leave approved user
+~~~~~~~~~~~~~~~~~~~
 
 .. http:post:: /api/leavecontributor
 
 *scope: modself*
 
-Abdicate approved contributor status in a subreddit.
+Abdicate approved user status in a subreddit.
 
 Returns `{}` on success.
-If the specified `id` is not valid or the user is already not an approved contributor
-of the target subreddit, it is treated as a success.
+
+If the specified `id` is not valid or the current user is already not
+an approved user of the target subreddit, it is treated as a success.
 
 .. csv-table:: Form data
    :header: "Field","Type (hint)","Description"
@@ -755,10 +796,41 @@ of the target subreddit, it is treated as a success.
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_leavecontributor
 
 
-Remove approved contributor
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Remove approved user
+~~~~~~~~~~~~~~~~~~~~
 
-Use `POST [/r/{subreddit}]/api/unfriend` with `type: contributor` form data.
+.. http:post:: [/r/{subreddit}]/api/unfriend
+
+*scope: modcontributors*
+
+Remove an approved user of a subreddit.
+
+If the user is already not an approved user, nothing happens.
+
+.. csv-table:: Form data
+   :header: "Field","Type (hint)","Description"
+
+   "type","string","`contributor`."
+   "r","string","Subreddit name. An alternative to specifying the subreddit name in the URL."
+   "name","string","Name of a user."
+
+|
+
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
+
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
+
+|
+
+.. csv-table:: HTTP Errors
+   :header: "Status Code","Description"
+
+   "400","The `name` parameter was empty or the user doesn't exist."
+   "403","- You don't have permission.
+   - The target subreddit specified was empty."
 
 
 Ban wiki contributor
@@ -855,7 +927,7 @@ Returns a JSON object on success, like the following::
 
    "MOD_REQUIRED","400","* There is no user context.
 
-   * The current user is not a moderator of the target subreddit.","
+   * The current user is not a moderator of the subreddit.","
    ``{""explanation"": ""You must be a moderator to do that."", ""message"": ""Bad Request"", ""reason"": ""MOD_REQUIRED""}``
    "
    "NO_TEXT","400","* The `title` parameter was not specified or was empty.
@@ -863,7 +935,7 @@ Returns a JSON object on success, like the following::
    * The `message` parameter was not specified or was empty.","
    ``{""fields"": [""title""], ""explanation"": ""we need something here"", ""message"": ""Bad Request"", ""reason"": ""NO_TEXT""}``
    "
-   "TOO_LONG","400","* (1) The value specified for `title` is over 50 characters.
+   "TOO_LONG","400","* \(1) The value specified for `title` is over 50 characters.
 
    * The value specified for `message` is over 10000 characters.","
    (1): ``{""fields"": [""title""], ""explanation"": ""This field must be under 50 characters"", ""message"": ""Bad Request"", ""reason"": ""TOO_LONG""}``
@@ -907,7 +979,7 @@ Returns a JSON object on success, like the following::
 
    "MOD_REQUIRED","400","* There is no user context.
 
-   * The current user is not a moderator of the target subreddit.","
+   * The current user is not a moderator of the subreddit.","
    ``{""explanation"": ""You must be a moderator to do that."", ""message"": ""Bad Request"", ""reason"": ""MOD_REQUIRED""}``
    "
    "SUBREDDIT_NOEXIST","400","The target subreddit does not exist.","
@@ -941,7 +1013,7 @@ Returns zero bytes on success.
 
    "MOD_REQUIRED","400","* There is no user context.
 
-   * The current user is not a moderator of the target subreddit.","
+   * The current user is not a moderator of the subreddit.","
    ``{""explanation"": ""You must be a moderator to do that."", ""message"": ""Bad Request"", ""reason"": ""MOD_REQUIRED""}``
    "
    "SUBREDDIT_NOEXIST","400","The target subreddit does not exist.","
@@ -952,9 +1024,7 @@ Returns zero bytes on success.
    * The `message` parameter was not specified or was empty.","
    ``{""fields"": [""title""], ""explanation"": ""we need something here"", ""message"": ""Bad Request"", ""reason"": ""NO_TEXT""}``
    "
-   "INVALID_ID","400","* The specified removal reason ID was not found.
-
-   * The specified removal reason ID contained invalid characters (e.g., it contained uppercase letters).","
+   "INVALID_ID","400","The specified removal reason ID was not found.","
    ``{""fields"": [""reason_id""], ""explanation"": ""The specified id is invalid"", ""message"": ""Bad Request"", ""reason"": ""INVALID_ID""}``
    "
    "TOO_LONG","400","* The value specified for `title` is over 50 characters.
@@ -973,21 +1043,22 @@ Delete removal reason
 
 Delete a removal reason.
 
-Returns zero bytes on success. If the specified ID did not exist it is treated as a success.
+Returns zero bytes on success.
+If the specified removal reason ID did not exist, nothing happens.
 
 .. csv-table:: API Errors
    :header: "Error","Status Code","Description","Example"
 
-   "INVALID_ID","400","The specified removal reason ID contained invalid characters (e.g., it contained uppercase letters).","
-   ``{""fields"": [""reason_id""], ""explanation"": ""The specified id is invalid"", ""message"": ""Bad Request"", ""reason"": ""INVALID_ID""}``
-   "
    "MOD_REQUIRED","400","* There is no user context.
 
-   * The current user is not a moderator of the target subreddit.","
+   * The current user is not a moderator of the subreddit.","
    ``{""explanation"": ""You must be a moderator to do that."", ""message"": ""Bad Request"", ""reason"": ""MOD_REQUIRED""}``
    "
    "SUBREDDIT_NOEXIST","400","The target subreddit does not exist.","
    ``{""fields"": [""subreddit""], ""explanation"": ""Hmm, that community doesn't exist. Try checking the spelling."", ""message"": ""Bad Request"", ""reason"": ""SUBREDDIT_NOEXIST""}``
+   "
+   "INVALID_ID","400","The specified removal reason ID was not found.","
+   ``{""fields"": [""reason_id""], ""explanation"": ""The specified id is invalid"", ""message"": ""Bad Request"", ""reason"": ""INVALID_ID""}``
    "
 
 
@@ -1038,7 +1109,7 @@ Returns the created note. Example output::
 .. csv-table:: API Errors
    :header: "Error","Status Code","Description","Example"
 
-   "USER_DOESNT_EXIST","400","The user name specified by `user` does not exist.","
+   "USER_DOESNT_EXIST","400","The user specified by `user` does not exist.","
    ``{""fields"": [""user""], ""explanation"": ""that user doesn't exist"", ""message"": ""Bad Request"", ""reason"": ""USER_DOESNT_EXIST""}``
    "
    "BAD_SR_NAME","400","The subreddit specified by `subreddit` does not exist.","
@@ -1078,10 +1149,11 @@ Delete moderation note
 
 Delete a moderation note.
 
-This endpoint can be used to delete either user or action type notes.
+This endpoint can be used to delete either a user or action type note.
 
-This endpoint must be given three pieces of information: the note ID, the subreddit name and the user name.
-If the `subreddit` or `user` information is incorrect, the endpoint will raise a 500 HTTP error.
+In addition to the note ID, the endpoint must be given the subreddit and
+user name in which the note belongs. If either information is incorrect,
+the endpoint will raise a 500 HTTP error.
 
 Returns the following on success::
 
@@ -1090,26 +1162,33 @@ Returns the following on success::
 .. csv-table:: URL Params
    :header: "Field","Type (hint)","Description"
 
-   "note_id","string","The ID of the note to be deleted. It should be prefixed with `ModNote_`."
    "subreddit","string","The target subreddit name."
    "user","string","The target user name."
+   "note_id","string","The ID of the note to be deleted. It should be prefixed with `ModNote_`."
 
 |
 
 .. csv-table:: API Errors
    :header: "Error","Status Code","Description","Example"
 
-   "PARAMETER_REQUIRED","400","The `note_id` parameter was not specified or was empty.","
-   ``{""fields"": [""note_id""], ""explanation"": ""The parameter \""note_id\"" is required."", ""message"": ""Bad Request"", ""reason"": ""PARAMETER_REQUIRED""}``
-   "
-   "INVALID_ID","400","The value specified by `note_id` was invalid.","
-   ``{""fields"": [""note_id""], ""explanation"": ""The specified id is invalid"", ""message"": ""Bad Request"", ""reason"": ""INVALID_ID""}``
-   "
-   "USER_DOESNT_EXIST","400","The `user` parameter was not specified or was empty.","
-   ``{""fields"": [""user""], ""explanation"": ""that user doesn't exist"", ""message"": ""Bad Request"", ""reason"": ""USER_DOESNT_EXIST""}``
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
    "
    "BAD_SR_NAME","400","The `subreddit` parameter was not specified or was empty.","
    ``{""fields"": [""subreddit""], ""explanation"": ""This community name isn't recognizable. Check the spelling and try again."", ""message"": ""Bad Request"", ""reason"": ""BAD_SR_NAME""}``
+   "
+   "SUBREDDIT_NOEXIST","400","The target subreddit does not exist.","
+   ``{""fields"": [""subreddit""], ""explanation"": ""Hmm, that community doesn't exist. Try checking the spelling."", ""message"": ""Bad Request"", ""reason"": ""SUBREDDIT_NOEXIST""}``
+   "
+   "USER_DOESNT_EXIST","400","- The specified user does not exist.
+   - The `user` parameter was not specified or was empty.","
+   ``{""fields"": [""user""], ""explanation"": ""that user doesn't exist"", ""message"": ""Bad Request"", ""reason"": ""USER_DOESNT_EXIST""}``
+   "
+   "PARAMETER_REQUIRED","400","The `note_id` parameter was not specified or was empty.","
+   ``{""fields"": [""note_id""], ""explanation"": ""The parameter \""note_id\"" is required."", ""message"": ""Bad Request"", ""reason"": ""PARAMETER_REQUIRED""}``
+   "
+   "INVALID_ID","400","The `note_id` is missing the `ModNote_` prefix.","
+   ``{""fields"": [""note_id""], ""explanation"": ""The specified id is invalid"", ""message"": ""Bad Request"", ""reason"": ""INVALID_ID""}``
    "
 
 |
@@ -1117,7 +1196,8 @@ Returns the following on success::
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
 
-   "500","The `subreddit` or `user` specified is incorrect for the given note ID.","
+   "500","- The subreddit or user specified is incorrect for the given note ID.
+   - The given note ID was invalid.","
    ``{""message"": ""Internal Server Error"", ""error"": 500}``
    "
 
@@ -1155,7 +1235,8 @@ Return object schema:
 
    "id","string","Mod note ID. E.g., `ModNote_e610966c-279a-11ec-812d-f1e67fc3cfa1`."
    "created_at","integer","Unix timestamp of when the mod note entry was made. Always a whole number."
-   "type","string","The mod note type. Possible values same as the `filter` parameter of the `GET /api/mod/notes` endpoint."
+   "type","string","The mod note type. Possible values same as the `filter` parameter of the `GET /api/mod/notes` endpoint 
+   (except for `ALL`)."
    "cursor?","string","A pagination cursor to be used as the value of the `before` parameter
    in the `GET /api/mod/notes` endpoint.
 
@@ -1164,8 +1245,8 @@ Return object schema:
    "subreddit","string","The name of the subreddit."
    "operator_id","string","The full ID36 (`t2_` prefixed) of the moderator who actioned the note."
    "operator","string","The name of the moderator who actioned the note."
-   "user_id","string","The full ID36 (`t2_` prefixed) of the user who this note applies."
-   "user","string","The name of the user who this note applies."
+   "user_id","string","The full ID36 (`t2_` prefixed) of the user who this note applies to."
+   "user","string","The name of the user who this note applies to."
    "mod_action_data","object","Moderation action data. The information in this object is only useful
    if the note is an action note, not a user note.
 
@@ -1174,11 +1255,11 @@ Return object schema:
 
    Schema:
 
-      * `action` (string?): The name of the action. In lowercase. Value is `null` if `type: NOTE` on the root.
+      * `action` (string?): The name of the mod log action. In lowercase. Value is `null` if `type: NOTE` on the root.
       * `reddit_id` (string?): The full ID36 of some relevant object, either a comment or submission.
         Value should always match `(root).user_note_data.reddit_id`. Value may be `null`.
-      * `details` (string?): The full ID36 . Value is `null` if `type: NOTE` on the root.
-      * `description` (string?): The full ID36 . Value is `null` if `type: NOTE` on the root.
+      * `details` (string?): Value is `null` if `type: NOTE` on the root.
+      * `description` (string?): Value is `null` if `type: NOTE` on the root.
    "
    "user_note_data","object","User note data. The information in this object is only useful
    if the note is a user note, not an action note.
@@ -1206,20 +1287,31 @@ Return object schema:
    "before","string","A pagination cursor."
    "subreddit","string","The target subreddit name."
    "user","string","The target user name."
-   "filter","string","One of: `NOTE`, `APPROVAL`, `REMOVAL`, `BAN`, `MUTE`, `INVITE`, `SPAM`, `CONTENT_CHANGE`, `MOD_ACTION`, `ALL`. Default: `ALL`."
+   "filter","string","One of: `ALL`, `NOTE`, `APPROVAL`, `REMOVAL`, `BAN`, `MUTE`, `INVITE`,
+   `SPAM`, `CONTENT_CHANGE`.
+
+   Default: `ALL`."
 
 |
 
 .. csv-table:: API Errors
    :header: "Error","Status Code","Description","Example"
 
-   "USER_DOESNT_EXIST","400","The user name specified by `user` does not exist.","
-   ``{""fields"": [""user""], ""explanation"": ""that user doesn't exist"", ""message"": ""Bad Request"", ""reason"": ""USER_DOESNT_EXIST""}``
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
    "
-   "BAD_SR_NAME","400","The subreddit specified by `subreddit` does not exist.","
+   "BAD_SR_NAME","400","The `subreddit` parameter was not specified or was empty.","
    ``{""fields"": [""subreddit""], ""explanation"": ""This community name isn't recognizable. Check the spelling and try again."", ""message"": ""Bad Request"", ""reason"": ""BAD_SR_NAME""}``
    "
-   "INVALID_OPTION","400","An invalid value was specified for the `filter` parameter.","
+   "SUBREDDIT_NOEXIST","400","The target subreddit does not exist.","
+   ``{""fields"": [""subreddit""], ""explanation"": ""Hmm, that community doesn't exist. Try checking the spelling."", ""message"": ""Bad Request"", ""reason"": ""SUBREDDIT_NOEXIST""}``
+   "
+   "USER_DOESNT_EXIST","400","- The specified user does not exist.
+   - The `user` parameter was not specified or was empty.","
+   ``{""fields"": [""user""], ""explanation"": ""that user doesn't exist"", ""message"": ""Bad Request"", ""reason"": ""USER_DOESNT_EXIST""}``
+   "
+   "INVALID_OPTION","400","An invalid value was specified for the `filter` parameter.
+   Values are case-sensitive.","
    ``{""fields"": [""filter""], ""explanation"": ""that option is not valid"", ""message"": ""Bad Request"", ""reason"": ""INVALID_OPTION""}``
    "
 
@@ -1257,6 +1349,9 @@ If no note exists for a given pair, `null` will take its place in the list.
 .. csv-table:: API Errors
    :header: "Error","Status Code","Description","Example"
 
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
    "PARAMETER_REQUIRED","400","(1): The `subreddits` parameter was not specified or was empty.
 
    (2): The `users` parameter was not specified or was empty.","

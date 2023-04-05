@@ -30,7 +30,11 @@ Schema
    "hide_from_robots","boolean",""
    "icon_img","string","Avatar image. E.g., `https://www.redditstatic.com/avatars/avatar_default_01_A5A4A4.png`."
    "is_employee","boolean","Is a Reddit admin."
-   "is_friend","boolean","Whether the user is a friend of the current user. If there is no user context, always false."
+   "is_friend","boolean","Whether the user is a friend of the current user.
+
+   If there is no user context, always false.
+
+   This is an old reddit feature. See `<https://www.reddit.com/prefs/friends/>`_."
    "is_mod","boolean","Is a moderator of any subreddit."
    "is_blocked","boolean","True if the current account has blocked this user. If there is no user context, always false."
    "is_suspended","?boolean","This field only exists if the user is suspended (in which case it will be true),
@@ -60,8 +64,9 @@ Additional fields for when the client has a user context and the user object mat
    "has_external_account","boolean",""
    "has_gold_subscription","boolean",""
    "has_ios_subscription","boolean",""
-   "has_mail","boolean",""
-   "has_mod_mail","boolean",""
+   "has_mail","boolean","True if the current user has a new inbox message."
+   "has_mod_mail","boolean","True if the current user has a new modmail message."
+   "inbox_count","integer","The number of new inbox messages."
    "has_paypal_subscription","boolean",""
    "has_stripe_subscription","boolean",""
    "has_subscribed_to_premium","boolean",""
@@ -69,12 +74,11 @@ Additional fields for when the client has a user context and the user object mat
    "in_beta","boolean",""
    "in_chat","boolean",""
    "in_redesign_beta","boolean",""
-   "inbox_count","integer",""
    "is_sponsor","boolean",""
    "is_suspended","boolean","True if the user is suspended."
    "new_modmail_exists","boolean",""
-   "num_friends","integer","Number of friends in your friends list. See https://www.reddit.com/prefs/friends/."
-   "over_18","boolean","Preference option ""I am over eighteen years old and willing to view adult content"" is checked."
+   "num_friends","integer","Number of friends in the current user's friends list. See https://www.reddit.com/prefs/friends/."
+   "over_18","boolean","Whether the user's user subreddit is NSFW."
    "password_set","boolean",""
    "pref_autoplay","boolean",""
    "pref_clickgadget","integer",""
@@ -124,25 +128,25 @@ Features sub-object
    "mweb_xpromo_modal_listing_click_daily_dismissible_android","boolean",""
    "mweb_xpromo_modal_listing_click_daily_dismissible_ios","boolean",""
    "mweb_xpromo_revamp_v3","object",""
-   "noreferrer_to_noopener","boolean"
-   "premium_subscriptions_table","boolean"
-   "promoted_trend_blanks","boolean"
-   "report_service_handles_report_writes_to_db_for_awards","boolean"
-   "report_service_handles_report_writes_to_db_for_helpdesk_reports","boolean"
-   "report_service_handles_report_writes_to_db_for_som","boolean"
-   "report_service_handles_report_writes_to_db_for_spam","boolean"
-   "report_service_handles_self_harm_reports","boolean"
-   "reports_double_write_to_report_service","boolean"
-   "reports_double_write_to_report_service_for_awards","boolean"
-   "reports_double_write_to_report_service_for_helpdesk_reports","boolean"
-   "reports_double_write_to_report_service_for_modmail_reports","boolean"
-   "reports_double_write_to_report_service_for_sendbird_chats","boolean"
-   "reports_double_write_to_report_service_for_som","boolean"
-   "reports_double_write_to_report_service_for_spam","boolean"
-   "reports_double_write_to_report_service_for_users","boolean"
-   "resized_styles_images","boolean"
-   "show_amp_link","boolean"
-   "spez_modal","boolean"
+   "noreferrer_to_noopener","boolean",""
+   "premium_subscriptions_table","boolean",""
+   "promoted_trend_blanks","boolean",""
+   "report_service_handles_report_writes_to_db_for_awards","boolean",""
+   "report_service_handles_report_writes_to_db_for_helpdesk_reports","boolean",""
+   "report_service_handles_report_writes_to_db_for_som","boolean",""
+   "report_service_handles_report_writes_to_db_for_spam","boolean",""
+   "report_service_handles_self_harm_reports","boolean",""
+   "reports_double_write_to_report_service","boolean",""
+   "reports_double_write_to_report_service_for_awards","boolean",""
+   "reports_double_write_to_report_service_for_helpdesk_reports","boolean",""
+   "reports_double_write_to_report_service_for_modmail_reports","boolean",""
+   "reports_double_write_to_report_service_for_sendbird_chats","boolean",""
+   "reports_double_write_to_report_service_for_som","boolean",""
+   "reports_double_write_to_report_service_for_spam","boolean",""
+   "reports_double_write_to_report_service_for_users","boolean",""
+   "resized_styles_images","boolean",""
+   "show_amp_link","boolean",""
+   "spez_modal","boolean",""
 
 
 .. _user-subreddit:
@@ -497,9 +501,8 @@ Returns `true` or `false`.
 .. csv-table:: API Errors
    :header: "Error","Status Code","Description","Example"
 
-   "BAD_USERNAME","200","* The `user` param was not specified or is empty.
-
-   * The username specified contains illegal characters.","
+   "BAD_USERNAME","200","* The `user` parameter was not specified or was empty.
+   * The specified username contains illegal characters.","
    ``{""json"": {""errors"": [[""BAD_USERNAME"", ""invalid user name"", ""user""]]}}``
    "
 
@@ -513,9 +516,14 @@ List moderated subreddits
 
 *scope: (unknown)*
 
-Get a list of partial subreddit objects that the target user is a moderator of.
+Get a list of partial subreddit objects the target user is a moderator of.
 
-This endpoint isnt very reliable on users with big lists.
+This endpoint isn't very reliable on users with big lists.
+
+The specified user's own user subreddit won't be returned, but any other
+user subreddit they moderate will be.
+
+Returns empty JSON object if the target user isn't a moderator of any subreddit.
 
 Example output::
 

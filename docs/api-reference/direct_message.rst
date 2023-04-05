@@ -43,7 +43,6 @@ Schema
    If a comment message, the name of the user who made the comment."
    "author_fullname","string?","If a user-sent composed message, the full ID36 of the user who sent the message.
 
-
    If the message was sent by `reddit` or `welcomebot` the value might be `null`,
    hence this field is not in complete sync with the `author` field.
 
@@ -56,7 +55,7 @@ Schema
 
    If a comment message, the full ID36 of the author who made the relevant comment."
    "subreddit","string?","If a subreddit-sourced composed message, the name of the subreddit in which
-   the message was from.
+   the message was sent.
 
    If a comment message, the name of the subreddit in which the comment was from.
 
@@ -70,7 +69,7 @@ Schema
    If a comment message then the value will be
    `comment reply` if `type: comment_reply`,
    `post reply` if `type: post_reply`,
-   `username mention` if `type: username_mention`,
+   `username mention` if `type: username_mention`.
    ",
    "body","string","The message content.
 
@@ -274,9 +273,10 @@ Delete
 
 *scope: privatemessages*
 
-Delete messages from the recipient's view of their inbox.
+Delete a message.
 
-If the `id` parameter was not specified, is invalid, or the ID doesn't exist, the action is treated as a success.
+If the `id` parameter was not specified, is invalid, or the ID doesn't exist,
+the action is treated as a success.
 
 Returns an empty JSON object on success.
 
@@ -368,7 +368,8 @@ Collapse
 
 Collapse a message.
 
-If the `id` parameter was not specified, the action is treated as a success.
+If the `id` parameter was not specified, is invalid, or doesn't exist,
+the action is treated as a success.
 
 If any of the specified IDs are invalid or don't exist, the entire operation is cancelled and all IDs are ignored.
 
@@ -407,9 +408,10 @@ This endpoint can also block messages from Subreddits.
 
 To block a user directly by ID or name, see :ref:`here <account-block-user>` instead.
 
-If the ID specified by `id` is invalid, the action is treated as a success.
+If the `id` parameter was not specified, is invalid, or doesn't exist,
+the action is treated as a success.
 
-This endpoint does not process user IDs but if the ID specified by `id` matches that of an
+This endpoint does not process user IDs. If the ID specified by `id` matches that of an
 existing user's full ID36, then a 500 HTTP status error is raised.
 
 Returns an empty JSON object on success.

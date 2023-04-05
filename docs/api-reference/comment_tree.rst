@@ -100,18 +100,23 @@ Example::
 
    If the comment does not exist then a 404 HTTP error is usually returned, but
    care must be taken when using this parameter (either via the query param or URL):
-   if the comment used to exist but no longer exists then the requested comment will
-   not be returned and the comment list will be empty. Clients should check that the
-   comment list is not empty and reject the result if it is.
+   if the comment used to exist but no longer exists such that no trace of the comment
+   exists in the tree whatsoever (i.e., there is no `[deleted]` or `[removed]` node
+   that represents it in the tree) then the requested comment will not be returned and
+   the comment list will be empty. Clients should check that the comment list is not
+   empty and reject the result if it is.
    "
    "context","integer","If `comment` is specified, the number of parent comments to include.
-   An integer from 0 to 8. Any number higher than 8 is treated the same as 8."
+
+   Specify an integer from 0 to 8. Any number higher than 8 is treated the same as 8."
    "depth","integer","The number of levels deep to retrieve comments for.
+
    A value of 0 is ignored.
    A value of 1 means to only retrieve top-level comments.
    A value of 2 means to retrieve comments one level deep.
    And so on.
-   The maximum is 10, which is also the default if the parameter is not specified.
+
+   The maximum is 10, which is also the default.
    Any value higher than 10 is treated the same as 10."
    "limit","integer","Limit the number of comments to retrieve. The default seems to be 200, and the
    max value appears to be 500."
@@ -191,11 +196,12 @@ Elements are ordered in pre-order DFS traversal order, the same as on the site.
    A value of 2 means to retrieve comments one level deep.
    And so on."
    "limit_children","boolean","If truthy (any string matching `/^[0Ff]/` is falsy),
-   only return the children requested, and not sub-comments.
+   only return the children requested, and not their sub-comments.
 
    This is kind of the same as specifying `depth: 1` but more-comment objects won't be present.
 
-   If this is specified with the `depth` parameter this will take precedence."
+   If this is specified with the `depth` parameter, this parameter will take precedence.
+   "
 
 |
 

@@ -19,7 +19,9 @@ but with many of the values being `null`.
    :header: "Field","Type (hint)","Description"
 
    "accounts_active",".","Deprecated. Then number of online users. Same as `active_user_count`."
-   "active_user_count","integer?","The number of online users. Value is `null` if object was retrieved from a search."
+   "active_user_count","integer?","The number of online users who are subscribed to the subreddit.
+
+   Value is `null` if object was retrieved from a search."
    "accounts_active_is_fuzzed","boolean",""
    "advertiser_category","string","E.g., `""Technology""`"
    "all_original_content","boolean",""
@@ -72,7 +74,9 @@ but with many of the values being `null`.
    "emojis_custom_size","unknown?",""
    "emojis_enabled","boolean",""
    "free_form_reports","boolean",""
-   "has_menu_widget","boolean","True if the subreddit has a menu widget active, otherwise false. Value is false if the object was retrieved from a search."
+   "has_menu_widget","boolean","True if the subreddit has a menu widget active, otherwise false.
+
+   Value is false if the object was retrieved from a search."
    "hide_ads","boolean",""
    "id","string","The ID36 of the subreddit (without the `t5_` prefix)."
    "is_crosspostable_subreddit","boolean",""
@@ -94,13 +98,25 @@ but with many of the values being `null`.
    "show_media_preview","boolean",""
    "spoilers_enabled","boolean",""
    "submission_type","string","One of `any`, `link`, `self`."
-   "submit_link_label","string",""
    "submit_text","string","The text shown in the submission form for the subreddit. Endpoint: `/r/{subreddit}/api/submit_text`"
    "submit_text_html","unknown?",""
-   "submit_text_label","string",""
+   "submit_text_label","string?","Custom label text for the ""Submit a new text post"" button.
+
+   This can sometimes be `null`. Not sure why. When you create a new subreddit the value starts as an empty string.
+
+   In old Reddit this is the ""Custom label for submit text post button"" subreddit option.
+   "
+   "submit_link_label","string?","Custom label text for the ""Custom label for submit link button"" button.
+
+   Can possibly be `null`? Not sure, but `submit_text_label` is observed to be `null` sometimes.
+   When you create a new subreddit the value starts as an empty string.
+
+   In old Reddit this is the ""Custom label for submit text post button"" subreddit option."
    "subreddit_type","string","One of `public`, `private`, `restricted`, `archived`, `employees_only`, `gold_only`, `gold_restricted`, or `user`."
    "subscribers","integer","The number of subscribers."
-   "suggested_comment_sort","string?","`null` if no sort, or one of `confidence` (best), `old`, `top`, `qa`, `controversial`, or `new`."
+   "suggested_comment_sort","string?","Either: `confidence` (best), `new`, `old`, `top`, `qa`, `controversial`, or `live`.
+
+   Value `null` if not set."
    "title","string","The title of the subreddit. 'Community name'. 100 characters max."
    "url","string","E.g., `/r/AskReddit/`"
    "user_has_favorited","boolean?","Current user has favourited the subreddit. `null` if no user context."
@@ -109,27 +125,71 @@ but with many of the values being `null`.
    "user_is_moderator","boolean?","Current user is a moderator of the subreddit. `null` if no user context."
    "user_is_muted","boolean?","Current user is muted in the subreddit. `null` if no user context."
    "user_is_subscriber","boolean?","Current user is subscribed to the subreddit. `null` if no user context."
-   "user_sr_theme_enabled","boolean",""
+   "user_sr_theme_enabled","boolean","Whether the current user allows subreddit custom CSS.
+
+   This is the ""allow subreddits to show me custom themes"" preference in old reddit."
    "videostream_links_count","integer",""
    "whitelist_status","string","E.g., `all_ads`"
    "wiki_enabled","boolean",""
    "wls","integer",""
    "user_flair_enabled_in_sr","boolean?","Whether user flairs are enabled in the subreddit.
 
-   In old Reddit this is the flair option that says ""enable user flair in this subreddit""
+   In old Reddit this is the flair option that says ""enable user flair in this subreddit"".
 
-   Value is false if object was retrieved from a search."
-   "can_assign_link_flair","boolean","Whether or not users can assign a flair to their submission in this subreddit. If false, only a moderator can assign flairs to submissions.
+   Value is false if object was retrieved from a search.
 
-   In old Reddit this is the flair option that says ""allow submitters to assign their own link flair""."
-   "can_assign_user_flair","boolean","Whether or not users can assign a flair to themselves in this subreddit. If false, only a moderator can assign flairs to users.
+   Notice that this field name ends with `_in_sr` because `user_flair_enabled` is already being used for something else."
+   "link_flair_enabled","boolean","Whether post flairs are enabled in the subreddit.
+
+   In old Reddit, this field is tied to the 'link flair position' flair setting: the value is false when set to `none`."
+   "can_assign_user_flair","boolean","Whether or not users can assign a flair to themselves in this subreddit.
+
+   If false, only a moderator can assign flairs to users.
 
    In old Reddit this is the flair option that says ""allow users to assign their own flair""."
-   "link_flair_enabled","boolean","True if link flairs are enabled. This field is tied to the 'link flair position' flair setting: this field is false when set to `none`."
+   "can_assign_link_flair","boolean","Whether or not users can assign a flair to their submission in this subreddit.
+
+   If false, only a moderator can assign flairs to submissions.
+
+   In old Reddit this is the flair option that says ""allow submitters to assign their own link flair""."
+   "user_flair_position","string","Either `left`, or `right` or empty string.
+
+   Starts off as `right` in new subreddits.
+
+   Can be set to an empty string via API calls (see `POST /r/{subreddit}/api/flairconfig`) but not through the UI.
+
+   If an empty string then all user flairs are hidden, despite the `user_flair_enabled_in_sr` setting.
+   "
    "link_flair_position","string","Either `left`, or `right`, or empty string if `link_flair_enabled` is false (the 'none' option in the old Reddit UI)."
    "user_can_flair_in_sr","boolean?","Whether or not the current user is allowed to set their user flair in this subreddit. This will be true if the 'allow users to assign their own' user flair option is enabled, or if the current user is a moderator of the subreddit with the 'flair' permission. If neither of these conditions are true, this field value will be `null`.
 
    Value is `null` if there is no user context. Value is `null` if the object was retrieved from a search."
+   "user_flair_richtext","unknown array","Richtext object."
+   "user_flair_template_id","string?","Current user's flair template UUID.
+
+   Value `null` when:
+
+   * The flair isn't using a template.
+   * User flairs are disabled in the subreddit (`user_flair_enabled_in_sr` is false).
+   "
+   "user_flair_type","string","Current user's flair type: either `text` or `richtext`."
+   "user_flair_text","string?","The current user's flair text for the subreddit.
+
+   Value `null` when:
+
+   * There is no user context.
+   * User flairs are disabled in the subreddit (`user_flair_enabled_in_sr` is false).
+   * A flair has never been assigned to the current user before in this subreddit.
+   "
+   "user_flair_css_class","string?","The current user's flair CSS class.
+
+   When a flair template is being used, the value of this field will be that of the CSS class designated by the template. If the flair template does not specify a CSS class then the value will be `null`.
+
+   When no flair template is being used, the value starts as `null`. If a CSS class was ever manually assigned (by a moderator), this field will never be `null` again while a flair template isn't being used, and clearing the CSS class results in this field being an empty string.
+
+   Value is `null` when there is no user context.
+
+   Value `null` when user flairs are disabled in the subreddit (`user_flair_enabled_in_sr` is false)."
    "user_flair_background_color","string?","Current user's flair background color hex string. E.g., `#46d160`.
 
    If a flair template is not being used then the value will be an empty string.
@@ -138,50 +198,27 @@ but with many of the values being `null`.
 
    Value `null` when:
 
+   * There is no user context.
+   * User flairs are disabled in the subreddit (`user_flair_enabled_in_sr` is false).
    * A flair has never been assigned to the current user before in this subreddit.
+   "
+   "user_flair_text_color","string?","Color scheme. Either `dark`, `light`, or empty string.
 
-   * There is no user context."
-   "user_flair_css_class","string?","The current user's flair CSS class.
-
-   When a flair template is being used, the value of this field will be that of the CSS class designated by the template. If the flair template does not specify a CSS class then the value will be `null`.
-
-   When no flair template is being used, the value starts as `null`. If a CSS class was ever manually assigned (by a moderator), this field will never be `null` again while a flair template isn’t being used, and clearing the CSS class results in this field being an empty string.
-
-   Also, value is `null` when there is no user context."
-   "user_flair_position","string","Either `left`, or `right` or empty string. Starts off as `right` in new subreddits.
-
-   Can be set to an empty string via API calls (see `POST /r/{subreddit}/api/flairconfig`) but not through the UI.
-   If an empty string then all user flairs are hidden, despite the `user_flair_enabled_in_sr` setting."
-   "user_flair_richtext","unknown array","Richtext object."
-   "user_flair_template_id","string?","Current user's flair template UUID.
+   Value is empty string if a flair template is not being used (i.e., `user_flair_template_id` is `null`).
 
    Value `null` when:
 
-   * The flair isn't using a template.
-
-   * User flairs are disabled in the subreddit (`user_flair_enabled_in_sr` is false)."
-   "user_flair_text","string?","The current user's flair text for the subreddit.
-
-   Value `null` when:
-
+   * There is no user context.
+   * User flairs are disabled in the subreddit (`user_flair_enabled_in_sr` is false).
    * A flair has never been assigned to the current user before in this subreddit.
-
-   * There is no user context."
-   "user_flair_text_color","string?","Either `dark` or `light`.
-
-   Value `null` when:
-
-   * A flair has never been assigned to the current user before in this subreddit.
-
-   * There is no user context."
-   "user_flair_type","string","Current user's flair type: either `text` or `richtext`. It is `text` by default."
+   "
    "user_sr_flair_enabled","boolean?","Whether or not the current user has opted to display their user flair in this subreddit (the 'Show my flair on this subreddit' option in the legacy UI).
 
    Value `null` when:
 
    * There is no user context.
-
-   * Object was retrieved from a search."
+   * Object was retrieved from a search.
+   "
 
 
 Actions
@@ -200,9 +237,10 @@ Since `2020-10-21`
 (`this post <https://www.reddit.com/r/redditdev/comments/jfltfx/any_way_of_speeding_up_my_api_requests/g9le48w/>`_)
 the `GET /api/info` endpoint can be used to get subreddit objects by name, and also in bulk too.
 
-However, there is a difference between the endpoints. Non-public subreddits can be retrieved with `GET /api/info`
-but not with `GET /r/{subreddit}/about` which returns a 403 error, except many of the fields in the subreddit object
-may be `null` rather than the type reported in the schema table above.
+However, there is a difference between the endpoints: non-public subreddits can be retrieved
+with `GET /api/info` but not with `GET /r/{subreddit}/about`, which returns a 403 error,
+although many of the fields in the subreddit object may be `null` rather than the type
+reported in the schema table above.
 
 -----
 
@@ -219,13 +257,25 @@ If the subreddit is not found then the endpoint returns an empty listing (strang
 
    {"kind": "Listing", "data": {"modhash": null, "dist": 0, "children": [], "after": null, "before": null}}
 
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
+
+   "private","403","The target subreddit is private.","
+   ``{""reason"": ""private"", ""message"": ""Forbidden"", ""error"": 403}``
+   "
+   "banned","404","The target subreddit is banned.","
+   ``{""reason"": ""banned"", ""message"": ""Not Found"", ""error"": 404}``
+   "
+
+|
+
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
 
-   "403","You don't have permission to access this subreddit."
+   "302","The subreddit does not exist."
    "404","* You specified the name of a special subreddit: `all`, `popular`, `friends`, `mod`.
 
-   * The subreddit name specified was too long or contained invalid characters. This will return a 'page not found' HTML document."
+   * The specified subreddit name was too long or contained invalid characters. This will return a 'page not found' HTML document."
 
 .. seealso:: `<https://www.reddit.com/dev/api/#GET_r_{subreddit}_about>`_
 
@@ -241,7 +291,7 @@ Create or configure a subreddit.
 
 .. note::
 
-   To configure an existing subreddit's options it is recommended to use `POST /api/v1/subreddit/update_settings`
+   To configure an existing subreddit's options it is recommended to use `PATCH /api/v1/subreddit/update_settings`
    which allows you to modify a subset of options, without needing to specify all the options.
 
 If `sr` is specified, the request will attempt to modify the specified subreddit.
@@ -304,7 +354,7 @@ Get settings
 
 *scope: modconfig*
 
-Get the current settings of a subreddit.
+Get the settings of a subreddit.
 
 In the API, this returns the current settings of the subreddit. It can be used in `POST /api/site_admin`.
 
@@ -332,9 +382,9 @@ For a subreddit that you do not have permission to view subreddit settings for, 
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
 
-   "404","* You don't have permission to view this subreddit's settings.
-
-   * There is no user context."
+   "302","The specified subreddit does not exist."
+   "404","* There is no user context.
+   * You don't have permission to view this subreddit's settings."
 
 .. seealso:: `<https://www.reddit.com/dev/api/#GET_r_{subreddit}_about_edit>`_
 
@@ -493,10 +543,7 @@ Returns an empty JSON object on success.
    * A subreddit specified in `sr_name` was a special subreddit name such as `popular`, `all`, or `random`."
    "404","* The `sr` or `sr_name` parameter was not specified.
 
-   * All subreddits specified by the `sr` or `sr_name` parameter do not exist.
-
-   * Attempted to unsubscribe to a subreddit you are not subscribed to and only one subreddit was specified
-     (for `sr` or `sr_name`)."
+   * All subreddits specified by the `sr` or `sr_name` parameter do not exist."
    "503","Sends *""Our CDN was unable to reach our servers""* HTML document. When over approximately 250 items are specified at once."
 
 
@@ -534,12 +581,13 @@ Rule objects have the following attributes:
    * `comment`: Comments only."
    "description","string","Rule description text. Up to 500 characters."
    "description_html?","string","Same as `description` but HTML formatted.
+
    This field won't exist if `description` is empty."
    "short_name","string","Short description. Up to 100 characters."
    "violation_reason","string","Violation reason text. Up to 100 characters.
 
-   Matches `short_name` if left empty in the UI. It's unfortunately not possible to tell if this field is
-   empty through the API."
+   Value matches `short_name` if left empty in the UI. It's unfortunately not possible
+   to tell if this field is empty through the API."
    "created_utc","float","Unix timestamp of when the rule was created. Always a whole number."
 
 |

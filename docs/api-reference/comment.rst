@@ -50,7 +50,7 @@ Schema
 
    If user context: `null` if not voted on, `true` if upvoted, `false` if downvoted."
    "link_id","string","The full ID of the submission in which this comment belongs."
-   "locked","boolean","Whether the post has been locked. https://www.reddit.com/r/modnews/comments/3qguqv/moderators_lock_a_post/"
+   "locked","boolean","Whether the comment is locked. https://www.reddit.com/r/modnews/comments/brgr8i/moderators_you_may_now_lock_individual_comments/"
    "removal_reason","unknown?","Appears to be unused; always `null`. Perhaps it would have been used for the removal reason message (but removal messages can be sent multiple times)."
    "mod_reason_by","string?","The name of the moderator who applied the removal reason to this submission.
 
@@ -68,7 +68,7 @@ Schema
    "name","string","The comment's full ID (with prefix `t1_`). Also see `id`."
    "no_follow","boolean",""
    "parent_id","string","The full ID of the comment or submission above this one."
-   "permalink","string","The uri of the comment without the domain.
+   "permalink","string","The URL of the comment without the domain.
    E.g., `/r/ImaginaryLandscapes/comments/iaoshc/floating_eyes_in_the_silent_forest/g1qfxir/`"
    "replies","object | string","A listing object if this object was drawn from a comment tree
    and there are comment replies, otherwise an empty string."
@@ -95,25 +95,14 @@ Schema
 
    This field is not available if the current user is not a moderator of the subreddit
    (or there's no user context)."
-
-   "author_flair_background_color","string?","See `user_flair_background_color` field on the Subreddit schema.
-
-   Additionally: value `null` when user flairs are disabled in the subreddit (`user_flair_enabled_in_sr` is false)."
-   "author_flair_css_class","string?","See `user_flair_css_class` field on the Subreddit schema.
-
-   Additionally: value `null` when user flairs are disabled in the subreddit (`user_flair_enabled_in_sr` is false)."
-   "author_flair_richtext","unknown array","See `user_flair_richtext` field on the Subreddit schema."
+   "author_flair_template_id",".","See same field on the Submission schema."
    "author_flair_type","string","This attribute is not available if the post was removed or deleted."
-   "author_flair_template_id","string?","See `user_flair_template_id` field on the Subreddit schema.
-
-   Additionally: value `null` when user flairs are disabled in the subreddit (`user_flair_enabled_in_sr` is false)."
-   "author_flair_text","string?","See `user_flair_text` field on the Subreddit schema.
-
-   Additionally: value `null` when user flairs are disabled in the subreddit (`user_flair_enabled_in_sr` is false)."
-   "author_flair_text_color","string?","See `user_flair_text_color` field on the Subreddit schema.
-
-   Additionally: value `null` when user flairs are disabled in the subreddit (`user_flair_enabled_in_sr` is false)."
-   "author_patreon_flair?","boolean","This attribute is not available if the post was removed or deleted."
+   "author_flair_text",".","See same field on the Submission schema."
+   "author_flair_richtext",".","See same field on the Submission schema."
+   "author_flair_css_class",".","See same field on the Submission schema."
+   "author_flair_background_color",".","See same field on the Submission schema."
+   "author_flair_text_color",".","See same field on the Submission schema."
+   "author_patreon_flair?","boolean","Unknown. This attribute is not available if the post was removed or deleted."
    "ignore_reports?","boolean","`true` if ignoring reports for this item, else `false`.
 
    This field is not available if the current user is not a moderator of the subreddit
@@ -122,7 +111,7 @@ Schema
 
    This field is `null` if the current user is not a moderator of the subreddit
    or there's no user context."
-   "user_reports","array array","An array of user reports.
+   "user_reports","object array array","An array of user reports.
 
    Each sub-array contains 4 elements.
 
@@ -143,7 +132,7 @@ Schema
 
    The array is empty if the current user is not a moderator of the subreddit
    or there's no user context."
-   "mod_reports","array array","An array of mod reports.
+   "mod_reports","object array array","An array of mod reports.
 
    The sub-arrays contains two elements: the report reason text, and the name of the reporting moderator.
 
@@ -234,7 +223,8 @@ the user's comment history and can be seen by anyone.
    "NO_TEXT","200","Neither `text` nor `richtext_json` was specified, or they were empty.","
    ``{""json"": {""errors"": [[""NO_TEXT"", ""we need something here"", ""text""]]}}``
    "
-   "TOO_OLD","200","The subreddit has archiving enabled and the target is older than 6 months.","
+   "TOO_OLD","200","The subreddit has archiving enabled and the target submission
+   is archived (older than 6 months).","
    ``{""json"": {""errors"": [[""TOO_OLD"", ""that's a piece of history now; it's too late to reply to it"", ""parent""]]}}``
    "
    "THREAD_LOCKED","200","The target comment or submission is locked and you are not a moderator of the subreddit.","
@@ -248,6 +238,9 @@ the user's comment history and can be seen by anyone.
    "SOMETHING_IS_BROKEN","200","The author of the target submission/comment has blocked you.","
    ``{""json"": {""errors"": [[""SOMETHING_IS_BROKEN"", ""Something is broken, please try again later."", ""parent""]]}}``
    "
+   "USER_BLOCKED","200","The author of the target submission/comment is a user you have blocked.","
+   ``{""json"": {""errors"": [[""USER_BLOCKED"", ""you can't send to a user that you have blocked"", ""parent""]]}}``
+   "
    "SUBREDDIT_OUTBOUND_LINKING_DISALLOWED","200","Some subreddits prevent you from linking to other subreddits.
    E.g., writing 'r/funny' in 'r/formuladank'. It is not known what setting controls this.
 
@@ -259,9 +252,6 @@ the user's comment history and can be seen by anyone.
 
    `<https://www.reddit.com/r/redditdev/comments/sdoc9t/two_new_api_exception_error_codes_from_reddit/hujvbm5/>`_","
    ``{""json"": {""errors"": [[""SUBREDDIT_OUTBOUND_LINKING_DISALLOWED"", ""Linking to subreddits is not allowed."", ""text""]]}}``
-   "
-   "USER_BLOCKED","200","The target submission/comment author is a user you have blocked.","
-   ``{""json"": {""errors"": [[""USER_BLOCKED"", ""you can't send to a user that you have blocked"", ""parent""]]}}``
    "
 
 |
@@ -398,7 +388,7 @@ Returns zero bytes on success. If the target is not a removed item, it is treate
 
    * The `mod_note` field was not specified.
 
-   * Empty stings or `null`s were specified for both `reason_id` and `mod_note` at the same time.
+   * Empty strings or `null` values were specified for both `reason_id` and `mod_note` at the same time.
    ","
    ``{""fields"": [""mod_note""], ""explanation"": ""JSON missing key: \""mod_note\"""", ""message"": ""Bad Request"", ""reason"": ""JSON_MISSING_KEY""}``
    "
@@ -451,8 +441,8 @@ Example of a modmail message (`type: private`), for `title: "Self Promotion"`,
    Hi u/Pyprohly, Self promoting posts are prohibited.
    Original post: /r/Pyprohly_test3/comments/oo4sk4/poll2/
 
-Unlike the `POST /api/v1/modactions/removal_reasons` endpoint, the ID you specify must be a
-removed item otherwise an `INVALID_ID` API error is produced.
+Unlike the `POST /api/v1/modactions/removal_reasons` endpoint, the target you
+specify must be a removed item otherwise an `INVALID_ID` API error is produced.
 
 Returns the comment object that was created if `type: public` was specified.
 Returns an empty JSON object for `type: private` and `type: private_exposed`.
@@ -462,22 +452,30 @@ Returns an empty JSON object for `type: private` and `type: private_exposed`.
 
    "type","string","One of the following:
 
-   * `public`: creates a stickied comment on the post.
-   * `private`: sends a modmail message.
-   * `private_exposed`: sends a modmail message. The invoker's username is revealed."
+   * `public`: Creates a stickied comment by the current user.
+   * `public_as_subreddit`: Creates a stickied comment by a user named `u/{subreddit}_ModTeam`.
+   * `private`: Sends a modmail message on behalf of the subreddit.
+   * `private_exposed`: Sends a modmail message by the current user."
    "item_id","string array","An array containing one full ID36 of a submission
    (if using `removal_link_message`) or comment (if using `removal_comment_message`).
 
    If more elements are specified they will be ignored."
    "title","string","A title for the removal reason.
 
-   If `type: public` the title is ultimately unused.
+   Can't be empty. A `NO_TEXT` API error is returned if an empty string is specified.
 
-   Can't be empty. A `NO_TEXT` API error is returned if an empty string is specified."
+   If `type: public` or `public_as_subreddit`, the title is ultimately unused.
+
+   The UI sends the title of the selected removal reason."
    "message","string","A message for the comment body for `type: public` or body of the
    modmail message for `type: private`.
 
-   Can be empty string."
+   Can be an empty string. This is interesting because you can't normally create comments
+   with empty bodies.
+   "
+   "lock_comment","boolean","Lock the comment that will be created. Default: false.
+
+   Ignored if not `type: public` or `type: public_as_subreddit`."
 
 |
 
@@ -506,7 +504,7 @@ Returns an empty JSON object for `type: private` and `type: private_exposed`.
    "INVALID_OPTION","400","The value specified for `type` was invalid.","
    ``{""fields"": [""type""], ""explanation"": ""that option is not valid"", ""message"": ""Bad Request"", ""reason"": ""INVALID_OPTION""}``
    "
-   "INVALID_ID","400","* The ID specified in the `item_id` array is invalid.
+   "INVALID_ID","400","* The ID specified in the `item_id` array doesn't exist or is invalid.
 
    * The ID specified in the `item_id` array is not a removed item.","
    ``{""explanation"": ""The specified id is invalid"", ""message"": ""Bad Request"", ""reason"": ""INVALID_ID""}``

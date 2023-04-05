@@ -21,8 +21,14 @@ Schema
 
    "collection_id","string","The collection's UUID."
    "subreddit_id","string","The full ID36 (prefixed with `t5_`) of the subreddit the collection belongs."
-   "author_id","string","The full ID36 (prefixed with `t2_`) of the author of the collection."
-   "author_name","string","Name of the author of the collection."
+   "author_id","string","The full ID36 (prefixed with `t2_`) of the author of the collection.
+
+   This field is still accurate even if the user account was deleted.
+   "
+   "author_name","string","Name of the author of the collection.
+
+   Value is `[deleted]` if the user account was deleted.
+   "
    "title","string","The title of this collection."
    "description","string","The description of the collection set by the author."
    "created_at_utc","float","The UNIX timestamp of when the collection was created."
@@ -76,11 +82,11 @@ If the given `collection_id` was not found then ``{"json": {"errors": []}}`` is 
    "NO_TEXT","200","The `collection_id` parameter was not specified or was empty.","
    ``{""json"": {""errors"": [[""NO_TEXT"", ""we need something here"", ""collection_id""]]}}``
    "
-   "TOO_LONG","200","The specified `collection_id` was over 36 characters.","
-   ``{""json"": {""errors"": [[""TOO_LONG"", ""This field must be under 36 characters"", ""collection_id""]]}}``
-   "
    "TOO_SHORT","200","The specified `collection_id` was under 36 characters.","
    ``{""json"": {""errors"": [[""TOO_SHORT"", ""this is too short (min: 36)"", ""collection_id""]]}}``
+   "
+   "TOO_LONG","200","The specified `collection_id` was over 36 characters.","
+   ``{""json"": {""errors"": [[""TOO_LONG"", ""This field must be under 36 characters"", ""collection_id""]]}}``
    "
 
 .. seealso:: https://www.reddit.com/dev/api/#GET_api_v1_collections_collection
@@ -132,7 +138,7 @@ The collection object will not have the `primary_link_id` or `sorted_links` fiel
    :header: "Field","Type (hint)","Description"
 
    "sr_fullname","string","A full ID36 (prefixed with `t5_`) of a subreddit."
-   "title","string","Title of the submission up to 300 characters long."
+   "title","string","A string no longer than 300 characters."
    "description","string","A string no longer than 500 characters."
    "display_layout","string","One of `TIMELINE`, `GALLERY`. Default is `TIMELINE`."
 
@@ -152,7 +158,7 @@ The collection object will not have the `primary_link_id` or `sorted_links` fiel
    "NO_TEXT","200","The `title` parameter was not specified or was empty.","
    ``{""json"": {""errors"": [[""NO_TEXT"", ""we need something here"", ""title""]]}}``
    "
-   "TOO_LONG","200","* (1) The specified title was longer than 300 characters.
+   "TOO_LONG","200","* \(1) The specified title was longer than 300 characters.
 
    * The specified description was longer than 500 characters.","
    (1): ``{""json"": {""errors"": [[""TOO_LONG"", ""This field must be under 300 characters"", ""title""]]}}``
@@ -185,23 +191,20 @@ Returns ``{"json": {"errors": []}}`` on success.
 .. csv-table:: API Errors
    :header: "Error","Status Code","Description","Example"
 
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
    "NO_TEXT","200","The `collection_id` parameter was not specified or was empty.","
    ``{""json"": {""errors"": [[""NO_TEXT"", ""we need something here"", ""collection_id""]]}}``
-   "
-   "INVALID_COLLECTION_ID","200","The `collection_id` specified does not exist.","
-   ``{""json"": {""errors"": [[""INVALID_COLLECTION_ID"", ""That collection doesn't exist"", ""collection_id""]]}}``
-   "
-   "TOO_LONG","200","The specified `collection_id` was over 36 characters.","
-   ``{""json"": {""errors"": [[""TOO_LONG"", ""This field must be under 36 characters"", ""collection_id""]]}}``
    "
    "TOO_SHORT","200","The specified `collection_id` was under 36 characters.","
    ``{""json"": {""errors"": [[""TOO_SHORT"", ""this is too short (min: 36)"", ""collection_id""]]}}``
    "
+   "TOO_LONG","200","The specified `collection_id` was over 36 characters.","
+   ``{""json"": {""errors"": [[""TOO_LONG"", ""This field must be under 36 characters"", ""collection_id""]]}}``
+   "
    "INVALID_COLLECTION_ID","200","The `collection_id` specified does not exist.","
    ``{""json"": {""errors"": [[""INVALID_COLLECTION_ID"", ""That collection doesn't exist"", ""collection_id""]]}}``
-   "
-   "USER_REQUIRED","200","There is no user context.","
-   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
    "
 
 
@@ -236,11 +239,11 @@ Returns ``{"json": {"errors": []}}`` on success.
    "NO_TEXT","200","The `collection_id` parameter was not specified or was empty string.","
    ``{""json"": {""errors"": [[""NO_TEXT"", ""we need something here"", ""collection_id""]]}}``
    "
-   "TOO_LONG","200","The specified `collection_id` was over 36 characters.","
-   ``{""json"": {""errors"": [[""TOO_LONG"", ""This field must be under 36 characters"", ""collection_id""]]}}``
-   "
    "TOO_SHORT","200","The specified `collection_id` was under 36 characters.","
    ``{""json"": {""errors"": [[""TOO_SHORT"", ""this is too short (min: 36)"", ""collection_id""]]}}``
+   "
+   "TOO_LONG","200","The specified `collection_id` was over 36 characters.","
+   ``{""json"": {""errors"": [[""TOO_LONG"", ""This field must be under 36 characters"", ""collection_id""]]}}``
    "
    "INVALID_COLLECTION_UPDATE","200","* The `collection_id` specified does not exist.
 
@@ -259,10 +262,10 @@ Returns ``{"json": {"errors": []}}`` on success.
 
    "404","* The `link_fullname` parameter was not specified. 
 
-   * The `link_fullname` submission full ID36 does not exist.","
+   * The submission specified by `link_fullname` does not exist.","
    ``{""message"": ""Not Found"", ""error"": 404}``
    "
-   "500","The `collection_id` specified is not a UUID.","
+   "500","The value specified by `collection_id` is not a valid UUID.","
    ``{""message"": ""Internal Server Error"", ""error"": 500}``
    "
 
@@ -297,11 +300,11 @@ Returns ``{"json": {"errors": []}}`` on success.
    "NO_TEXT","200","The `collection_id` parameter was not specified.","
    ``{""json"": {""errors"": [[""NO_TEXT"", ""we need something here"", ""collection_id""]]}}``
    "
-   "TOO_LONG","200","The specified `collection_id` was over 36 characters.","
-   ``{""json"": {""errors"": [[""TOO_LONG"", ""This field must be under 36 characters"", ""collection_id""]]}}``
-   "
    "TOO_SHORT","200","The specified `collection_id` was under 36 characters.","
    ``{""json"": {""errors"": [[""TOO_SHORT"", ""this is too short (min: 36)"", ""collection_id""]]}}``
+   "
+   "TOO_LONG","200","The specified `collection_id` was over 36 characters.","
+   ``{""json"": {""errors"": [[""TOO_LONG"", ""This field must be under 36 characters"", ""collection_id""]]}}``
    "
    "INVALID_COLLECTION_UPDATE","200","* The `collection_id` specified does not exist.
 
@@ -367,9 +370,9 @@ Returns ``{"json": {"errors": []}}`` on success.
 
    "404","* The `collection_id` parameter was not specified or was empty.
 
-   * The `collection_id` specified does not exist.
+   * The `collection_id` specified is invalid.
 
-   * The `collection_id` specified is invalid.","
+   * The `collection_id` specified does not exist.","
    ``{""message"": ""Not Found"", ""error"": 404}``
    "
 
@@ -401,18 +404,18 @@ Returns ``{"json": {"errors": []}}`` on success.
    "USER_REQUIRED","200","There is no user context.","
    ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
    "
-   "NO_TEXT","200","* (1) The `collection_id` parameter was not specified.
+   "NO_TEXT","200","* \(1\) The `collection_id` parameter was not specified or was empty.
 
    * The `title` parameter was not specified or was empty.","
    (1): ``{""json"": {""errors"": [[""NO_TEXT"", ""we need something here"", ""collection_id""]]}}``
    "
-   "TOO_LONG","200","* (1) The specified `collection_id` was over 36 characters.
+   "TOO_SHORT","200","The specified `collection_id` was under 36 characters.","
+   ``{""json"": {""errors"": [[""TOO_SHORT"", ""this is too short (min: 36)"", ""collection_id""]]}}``
+   "
+   "TOO_LONG","200","* \(1\) The specified `collection_id` was over 36 characters.
 
    * The specified `title` was over 300 characters.","
    (1): ``{""json"": {""errors"": [[""TOO_LONG"", ""This field must be under 36 characters"", ""collection_id""]]}}``
-   "
-   "TOO_SHORT","200","The specified `collection_id` was under 36 characters.","
-   ``{""json"": {""errors"": [[""TOO_SHORT"", ""this is too short (min: 36)"", ""collection_id""]]}}``
    "
    "INVALID_COLLECTION_ID","200","The `collection_id` specified does not exist.","
    ``{""json"": {""errors"": [[""INVALID_COLLECTION_ID"", ""That collection doesn't exist"", ""collection_id""]]}}``
@@ -451,15 +454,15 @@ Returns ``{"json": {"errors": []}}`` on success.
    "NO_TEXT","200","The `collection_id` parameter was not specified.","
    ``{""json"": {""errors"": [[""NO_TEXT"", ""we need something here"", ""collection_id""]]}}``
    "
-   "TOO_LONG","200","* (1) The specified `collection_id` was over 36 characters.
+   "TOO_SHORT","200","The specified `collection_id` was under 36 characters.","
+   ``{""json"": {""errors"": [[""TOO_SHORT"", ""this is too short (min: 36)"", ""collection_id""]]}}``
+   "
+   "TOO_LONG","200","* \(1) The specified `collection_id` was over 36 characters.
 
-   * (2) The specified `description` was over 500 characters.","
+   * \(2) The specified `description` was over 500 characters.","
    (1): ``{""json"": {""errors"": [[""TOO_LONG"", ""This field must be under 36 characters"", ""collection_id""]]}}``
 
    (2): ``{""json"": {""errors"": [[""TOO_LONG"", ""This field must be under 500 characters"", ""description""]]}}``
-   "
-   "TOO_SHORT","200","The specified `collection_id` was under 36 characters.","
-   ``{""json"": {""errors"": [[""TOO_SHORT"", ""this is too short (min: 36)"", ""collection_id""]]}}``
    "
    "INVALID_COLLECTION_ID","200","The `collection_id` specified does not exist.","
    ``{""json"": {""errors"": [[""INVALID_COLLECTION_ID"", ""That collection doesn't exist"", ""collection_id""]]}}``
@@ -499,11 +502,11 @@ Returns ``{"json": {"errors": []}}`` on success.
    "NO_TEXT","200","The `collection_id` parameter was not specified or was empty.","
    ``{""json"": {""errors"": [[""NO_TEXT"", ""we need something here"", ""collection_id""]]}}``
    "
-   "TOO_LONG","200","The specified `collection_id` was over 36 characters.","
-   ``{""json"": {""errors"": [[""TOO_LONG"", ""This field must be under 36 characters"", ""collection_id""]]}}``
-   "
    "TOO_SHORT","200","The specified `collection_id` was under 36 characters.","
    ``{""json"": {""errors"": [[""TOO_SHORT"", ""this is too short (min: 36)"", ""collection_id""]]}}``
+   "
+   "TOO_LONG","200","The specified `collection_id` was over 36 characters.","
+   ``{""json"": {""errors"": [[""TOO_LONG"", ""This field must be under 36 characters"", ""collection_id""]]}}``
    "
    "INVALID_COLLECTION_ID","200","The `collection_id` specified does not exist.","
    ``{""json"": {""errors"": [[""INVALID_COLLECTION_ID"", ""That collection doesn't exist"", ""collection_id""]]}}``
@@ -546,11 +549,11 @@ Returns ``{"json": {"errors": []}}`` on success.
    "NO_TEXT","200","The `collection_id` parameter was not specified or was empty.","
    ``{""json"": {""errors"": [[""NO_TEXT"", ""we need something here"", ""collection_id""]]}}``
    "
-   "TOO_LONG","200","The specified `collection_id` was over 36 characters.","
-   ``{""json"": {""errors"": [[""TOO_LONG"", ""This field must be under 36 characters"", ""collection_id""]]}}``
-   "
    "TOO_SHORT","200","The specified `collection_id` was under 36 characters.","
    ``{""json"": {""errors"": [[""TOO_SHORT"", ""this is too short (min: 36)"", ""collection_id""]]}}``
+   "
+   "TOO_LONG","200","The specified `collection_id` was over 36 characters.","
+   ``{""json"": {""errors"": [[""TOO_LONG"", ""This field must be under 36 characters"", ""collection_id""]]}}``
    "
 
 |

@@ -16,8 +16,12 @@ Schema
    "can_edit","boolean",""
    "description_html","string","HTML of `description_md` field."
    "num_subscribers","integer","The number of redditors following this custom feed."
-   "copied_from","string?","A string if the custom feed has been duplicated, e.g.,
-   `/user/siryonkee/m/cruise_ships`, else `null`."
+   "copied_from","string?","Set to a string that is a URL path of the form `/user/{user}/m/{feed}`
+   if the custom feed is a copied. E.g., `/user/siryonkee/m/cruise_ships`.
+
+   Value is `null` if not a copy.
+
+   The path can sometimes end with a slash (`/`). I'm not sure why or how."
    "icon_url","string","The PNG icon URL."
    "subreddits","object array","An array of objects with one key: `name`.
    E.g., ``[{""name"": ""pics""}, {""name"": ""u_spez""}]``"
@@ -46,7 +50,7 @@ Get
 
 *scope: read*
 
-Fetch a custom feed's information, including subreddit list.
+Fetch a custom feed resource.
 
 An object is returned. The objects contain two fields: `kind` (with value `LabeledMulti`)
 and `data` which contains the properties for the custom feed information.
@@ -73,6 +77,8 @@ Example output::
 
    If false, the `subreddits` key holds an array of objects containing one key: `name`.
    If true, the `subreddits` key holds an array of objects containing keys: `name` and `data`.
+   The `data` field contains an object that has some subreddit data, but fewer attributes than
+   the normal subreddit schema.
 
    Defaults to false if not specified."
 
@@ -168,7 +174,7 @@ A desciption of the valid JSON keys as follows:
    :header: "Field","Type (hint)","Description"
 
    "display_name?","string","No longer than 50 characters. Defaults to feed name."
-   "description_md?","string","Raw markdown description text. Defaults to empty string."
+   "description_md?","string","Markdown description text. Defaults to empty string."
    "icon_img?","string","One of `png`, `jpg`, `jpeg`?"
    "key_color?","string","6-digit rgb hex color with optional leading hash. E.g., `#AABBCC`. Default: `null`."
    "subreddits?","object array","An array of objects containing a `name` key whose value is a subreddit name."
@@ -396,9 +402,9 @@ Tell if a subreddit is in a custom feed.
    "USER_REQUIRED","403","There is no user context.","
    ``{""explanation"": ""Please log in to do that."", ""message"": ""Forbidden"", ""reason"": ""USER_REQUIRED""}``
    "
-   "MULTI_NOT_FOUND","404","* The custom feed name does not exist.
-
-   * The username specified does not exist.","
+   "MULTI_NOT_FOUND","404","- The username specified does not exist.
+   - The custom feed name does not exist.
+   ","
    ``{""fields"": [""multipath""], ""explanation"": ""that multireddit doesn't exist"", ""message"": ""Not Found"", ""reason"": ""MULTI_NOT_FOUND""}``
    "
    "SUBREDDIT_NOEXIST","400","The specified subreddit does not exist at all.","
@@ -426,13 +432,14 @@ Add to custom feed
 
 Add a subreddit to a custom feed.
 
-The `{username}` component of the URL does not have to match the current user's name. If the username refers
-to a user that exists and the feed name you specify exists on that user, you'll get a `MULTI_CANNOT_EDIT`
-API error. If the username or feed name you specify doesn't exist, the custom feed will be created, seemingly
-under that user's name, but the URL for the custom feed will only be visible for you.
+The `{username}` component of the URL does not have to match the current user's name!
+If the username refers to a user that exists and the feed name you specify exists on
+that user, you'll get a `MULTI_CANNOT_EDIT` API error. If the username or feed name you
+specify doesn't exist, the custom feed will be created, seemingly under that user's name,
+but custom feed will only be visible to you.
 
-If the feed name specified by the `{feed_name}` component of the URL doesn't exist, it will be created.
-The new custom feed name will be lower cased and it will contain the subreddit specified.
+If the specified feed name (by the `{feed_name}` component of the URL) doesn't exist,
+it will be created.
 
 The endpoint takes a mandatory `model` parameter that requires a `name` key with a value that is supposedly
 meant to be the target subreddit name, but the subreddit name is already specified in the URL and the `model`
@@ -485,8 +492,8 @@ Bulk add subreddits to a custom feed.
 
 Returns the custom feed object.
 
-If any of the subreddit names in `sr_names` doesn't exist, the request will fail with a 500 HTTP
-(and none of the subreddits will be added).
+If any of the subreddit names in `sr_names` doesn't exist, the request will fail
+with a 500 HTTP error and none of the subreddits will be added.
 
 The `sr_names` limit is unknown. Clients should assume a limit of 100 subreddit names.
 
@@ -511,13 +518,9 @@ The `sr_names` limit is unknown. Clients should assume a limit of 100 subreddit 
    :header: "Status Code","Description","Example"
 
    "500","* The `path` parameter was not specified or was empty.
-
    * The `sr_names` parameter was not specified or was empty.
-
-   * The custom feed doesn't exist.
-
-   * The username specified does not exist.
-
+   * The specified username does not exist.
+   * The specified custom feed name doesn't exist.
    * One of the subreddits specified in the `sr_names` list does not exist.","
    ``{""message"": ""Internal Server Error"", ""error"": 500}``
    "
@@ -544,9 +547,8 @@ Returns zero bytes on success.
    "USER_REQUIRED","403","There is no user context.","
    ``{""explanation"": ""Please log in to do that."", ""message"": ""Forbidden"", ""reason"": ""USER_REQUIRED""}``
    "
-   "MULTI_NOT_FOUND","404","* The custom feed name does not exist.
-
-   * The username specified does not exist.","
+   "MULTI_NOT_FOUND","404","- The specified custom feed name does not exist.
+   - The specified username does not exist.","
    ``{""fields"": [""multipath""], ""explanation"": ""that multireddit doesn't exist"", ""message"": ""Not Found"", ""reason"": ""MULTI_NOT_FOUND""}``
    "
    "MULTI_CANNOT_EDIT","403","You don't have permission to modify the specified custom feed.","
