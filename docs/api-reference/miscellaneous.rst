@@ -49,7 +49,7 @@ The `sr_detail` parameter is not supported (despite the offical docs saying so).
 
 If `q` is empty or not specified, an empty listing structure is returned::
 
-   {"kind": "Listing", "data": {"modhash": null, "dist": 0, "facets": {}, "after": null, "geo_filter": ", "children": [], "before": null}}
+   {"kind": "Listing", "data": {"modhash": null, "dist": 0, "facets": {}, "after": null, "geo_filter": "", "children": [], "before": null}}
 
 The endpoint can sometimes return `"{}"` (string of empty object). For instance if
 ``params={'q': 'a', 'type': 'sr', 'limit': '1'}`` is sent.

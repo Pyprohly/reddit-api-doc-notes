@@ -37,12 +37,13 @@ Conversation Schema
    This field can be null in rare cases, such as in the
    ""r/{subreddit} is now enrolled in the New Modmail""
    modmail message from u/reddit."
-   "lastUserUpdate","string?","An ISO8601 date string. If `isInternal` is true this should always be `null`."
+   "lastUserUpdate","string?","An ISO8601 date string. If `isInternal` is true this should always be `null`.
+   Basically, the time of the last message of the participant."
    "lastModUpdate","string?","An ISO8601 date string."
    "lastUpdated","string","An ISO8601 date string. Same as either `lastUserUpdate` or `lastModUpdate`, whichever is newer."
    "lastUnread","string?","An ISO8601 date string of when the conversation was last marked unread.
    Value is `null` if the message is marked read."
-   "owner","object","The name and ID of the subreddit associated with this conversation.
+   "owner","object","The name and ID of the current subreddit.
 
    Object fields:
 
@@ -66,22 +67,23 @@ Conversation Schema
    latest message in the conversation. Notice the object returned by that endpoint does
    not have a `modActions` key, only `messages`.
    "
-   "participant","object","Some basic information about the target user.
+   "participant","object","Information about the target user.
 
-   The information in this object is partially redundant because user information is
-   included in the user dossier information on the conversation aggregate root object.
+   If available, some of the information in this object overlaps with the information
+   in the user dossier on the conversation aggregate root object.
 
-   If this conversation is a moderator discussion (i.e., `isInternal: true`) this field will be an
-   empty object.
+   Object is empty if this conversation is a moderator discussion (i.e., `isInternal: true`),
+   or if it is a to-subreddit conversation from the perspective of a user.
 
    Object fields:
 
    * `id` (integer): The integer ID of the user.
    * `name` (string): The name of the user.
-   * `isMod` (boolean): If the user is a moderator of the subreddit this conversation is a subject of.
+   * `isMod` (boolean): If the user is a moderator of the subreddit this conversation is a subject of?
+     (Isn't this always false since a message from a moderator will result in an internal modmail conversation?)
    * `isAdmin` (boolean): True if Reddit admin.
-   * `isOp` (boolean): .
-   * `isParticipant` (boolean): Always true?
+   * `isOp` (boolean): Whether this user is the initiator of the conversation.
+   * `isParticipant` (boolean): Always true here.
    * `isApproved` (boolean): Whether the user is an approved contributor user of the subreddit.
    * `isHidden` (boolean): .
    * `isDeleted` (boolean): .
@@ -91,11 +93,27 @@ Conversation Schema
 
    There is one entry in the array for every message or mod action taken, hence the array can contain duplicate objects.
 
-   This field is not useful for anything. Message and mod action objects already have author information
-   on them. Furthermore, it is not known how the order of this array corresponds to that of the order of
-   the `messages` and `modActions` arrays.
+   This field is not very useful for anything since message and mod action objects already include
+   author information on them.
 
-   The objects' fields are the same as that of `participant`."
+   This object has fields similar to that of the `participant` field."
+   "conversationType","string","Interchange type.
+
+   One of: `sr_sr`, `sr_user`, `internal`."
+   "participantSubreddit","object","Information about the relevant subreddit, if applicable.
+
+   Object is empty if this conversation is a moderator discussion (i.e., `isInternal: true`),
+   or if the modmail conversation was initiated directly from a user.
+
+   Object fields:
+
+   * `id` (string): The full ID36 (`t5_` prefixed) of the subreddit.
+   * `name` (string): The name of the subreddit (not prefixed by `r/`).
+   * `keyColor` (string): Can be empty.
+   * `primaryColor` (string): Can be empty.
+   * `communityIcon` (string): Can be empty.
+   * `icon` (string): Can be empty.
+   "
 
 
 Message Schema
@@ -111,6 +129,9 @@ Message Schema
    "bodyMarkdown","string","The text content of the message in markdown format."
    "body","string","The content of the message in HTML."
    "date","string","An ISO8601 date string of when the message was created."
+   "participatingAs","string","The author's relation to the conversation.
+
+   One of: `moderator`, `participant_user`, `participant_subreddit`."
 
 
 Modmail Mod Action Schema
@@ -138,14 +159,18 @@ Modmail Mod Action Schema
    "date","string","An ISO8601 date string of when the action was performed."
    "author","object","Information about the mod who performed the action.
 
-   Object fields:
+   Object fields are as follows. The values are non-stale and should always reflect the most recent information.
 
    * `id` (integer): The user ID of the mod who performed the action.
    * `name` (integer): The name of the mod who performed the action.
-   * `isMod` (boolean): Always true.
+   * `isOp` (boolean): True if the user is the initiator of the conversation.
+   * `isMod` (boolean): Whether the user is a mod of this subreddit. This could be false if
+     action was made and they were removed as mod.
    * `isAdmin` (boolean): True if Reddit admin.
    * `isHidden` (boolean): Always false. A mod cannot perform mod actions anonymously.
    * `isDeleted` (boolean): .
+   * `isApproved` (boolean): Whether the user is an approved user of the subreddit.
+   * `isParticipant` (boolean): .
    "
 
 
@@ -185,7 +210,10 @@ User Dossier Schema
    "recentPosts","object","An object mapping submission full ID36s (`t3_` prefixed) to a bit of
    information about the user's recent submissions to the subreddit.
 
-   The order of the keys in this mapping is significant.
+   The order of the keys in this mapping appears to be insignificant. The UI will sort by
+   the `date` field before display.
+
+   The information in this field is associated with the 'Recent Posts:' section in the UI.
 
    Sub-object fields:
 
@@ -196,7 +224,10 @@ User Dossier Schema
    "recentComments","object","An object mapping comment full ID36s (`t1_` prefixed) to a bit
    information about the user's recent comments in the subreddit.
 
-   The order of the keys in this mapping is significant.
+   The order of the keys in this mapping appears to be insignificant. The UI will sort by
+   the `date` field before display.
+
+   The information in this field is associated with the 'Recent Comments:' section in the UI.
 
    Sub-object fields:
 
@@ -208,9 +239,10 @@ User Dossier Schema
    "recentConvos","object","Other modmail conversations this user is involved in.
    An object mapping conversation ID36s to a permalink to other conversations.
 
-   The order of the keys in this mapping is significant.
+   The order of the keys in this mapping appears to be insignificant. The UI will sort by
+   the `date` field before display.
 
-   This key is associated with the 'Recent Messages:' section in the UI.
+   The information in this field is associated with the 'Recent Messages (with user):' section in the UI.
 
    Sub-object fields:
 
@@ -350,8 +382,8 @@ Returns a JSON object with 4 keys:
    "after","string","A conversation ID36 as a pagination cursor.
    Pass the last ID36 in `conversationIds` to get the next page."
    "limit","integer","The number of results to retrieve."
-   "state","The mailbox in which to retrieve conversations for. If not specified, defaults to `all`.
-   
+   "state","string","The mailbox in which to retrieve conversations for. If not specified, defaults to `all`.
+
    One of: `all`, `inbox`, `new`, `inprogress`, `archived`, `appeals`, `join_requests`, `highlighted`,
    `mod`, `notifications`, `default`, `filtered`.
 
@@ -389,6 +421,8 @@ Returns a JSON object with 4 keys:
 .. seealso:: https://www.reddit.com/dev/api/#GET_api_mod_conversations
 
 
+.. _modmail-conversation-get:
+
 Get
 ~~~
 
@@ -404,7 +438,20 @@ Returns a JSON object with 4 keys:
 * `messages` (object): An object mapping ID36s to message objects.
 * `modActions` (object): An object mapping action ID36s to mod action info objects.
 * `user` (object): A user dossier. Empty object if conversation is an internal moderator discussion and
-   there is no user subject.
+  there is no user subject.
+* `participantSubreddit` (object):
+  Aside from the extra `recentConvos` field, the information in this object is just identical
+  to that of the `participantSubreddit` field on the conversation info object.
+
+  Similarly, this object is empty when the `participantSubreddit` field on the conversation info object is empty.
+
+  In addition to the fields described in the `participantSubreddit` on the conversation schema:
+
+  * `recentConvos` (mapping object): Contains the same fields as those on the `recentConvos` field
+    on the user dossier schema.
+
+    Supposedly the information in this field is meant to be associated with the 'Recent Messages (with subreddit):'
+    section in the UI but at the time of this writing the UI always seems to display "No recent messages".
 
 .. csv-table:: URL Params
    :header: "Field","Type (hint)","Description"
@@ -426,13 +473,11 @@ Returns a JSON object with 4 keys:
    ``{""fields"": [""conversation_id""], ""explanation"": ""No conversation found."", ""message"": ""Not Found"", ""reason"": ""CONVERSATION_NOT_FOUND""}``
    "
 
-.. seealso:: https://www.reddit.com/dev/api/#GET_api_mod_conversations_:conversation_id
+.. seealso:: `<https://www.reddit.com/dev/api/#GET_api_mod_conversations_:conversation_id>`_
 
 
-.. _modmail-create-user-conversation:
-
-Create user conversation
-~~~~~~~~~~~~~~~~~~~~~~~~
+Create
+~~~~~~
 
 .. http:post:: /api/mod/conversations
 
@@ -443,14 +488,16 @@ Create a new conversation.
 Creates a conversation thread and the first message. Use this endpoint to create a conversation with
 a user, or an internal moderator discussion.
 
-If `to` is not specified, is an empty string, or names a user who is a moderator of the subreddit,
-the conversation will be a moderator discussion.
+If `to` is not specified, is an empty string, or names a user who is a moderator of the subreddit
+specified by the `srName` parameter, the conversation will be a moderator discussion.
 
-Returned object fields:
+Returned object is the same as that of :ref:`GET /api/mod/conversations/{convo_id36} <modmail-conversation-get>`. E.g.:
 
-* `conversation` (object): The newly created conversation object.
-* `messages` (object): Mapping of a message ID36 to the newly created message.
-* `modActions` (object): Always empty.
+- `conversation` (object): The newly created conversation object.
+- `messages` (object): Mapping of a message ID36 to the newly created message.
+- `modActions` (object): Always empty.
+- `user` (...): Will be empty if an internal mod conversation.
+- `participantSubreddit` (...): Will be empty if an internal mod conversation.
 
 .. csv-table:: Form Data / URL Params
    :header: "Field","Type (hint)","Description"
@@ -458,14 +505,25 @@ Returned object fields:
    "srName","string","The name of the subreddit in which to create the conversation for."
    "to","string","The modmail recipient name.
 
-   To create a moderator conversation, don't specify this parameter (or set to empty string).
+   Specify a user name, or a subreddit name prefixed with `r/`.
+
+   To create a moderator conversation, don't specify this parameter, or set it to an empty string.
 
    If the specified user is a moderator of the subreddit, this parameter is ignored and an
    internal moderator conversation is created instead."
    "subject","string","A subject line for the conversation."
    "body","string","Markdown text."
    "isAuthorHidden","boolean","Whether to expose your user name to the recipient.
-   By default, your name is exposed. Default: false."
+
+   By default the name is exposed. Default: false.
+
+   The UI only offers the ""Hide my username"" option when sending to a user, but the
+   option has some effect when creating an internal conversation: the user name will
+   be shown but have ""[hidden]"" next to it.
+
+   If this parameter is true when creating a to-subreddit conversation then an API error
+   will occur (`UNKNOWN_ERROR`).
+   "
 
 |
 
@@ -498,15 +556,11 @@ Returned object fields:
    "MUTED_FROM_SUBREDDIT","400","The user specified by `to` is muted from the subreddit.","
    ``{""fields"": [""to""], ""explanation"": null, ""message"": ""Bad Request"", ""reason"": ""MUTED_FROM_SUBREDDIT""}``
    "
+   "UNKNOWN_ERROR","400","Attempted to create a to-subreddit conversation when `isAuthorHidden` was true.","
+   ``{""explanation"": ""Cannot hide author for subreddit-to-subreddit conversations."", ""message"": ""Bad Request"", ""reason"": ""UNKNOWN_ERROR""}``
+   "
 
-.. seealso:: https://www.reddit.com/dev/api/#POST_api_mod_conversations
-
-
-Create moderator conversation
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-See :ref:`Create moderator conversation <modmail-create-user-conversation>`.
-Don't specify the `to` parameter to create a moderator conversation.
+.. seealso:: `<https://www.reddit.com/dev/api/#POST_api_mod_conversations>`_
 
 
 Reply
@@ -518,20 +572,27 @@ Reply
 
 Create a new message on an existing conversation.
 
-Returned object fields:
-
-* `conversation` (object): The conversation object, but with the `modActions` mapping here instead of on the root.
-* `messages` (object): A mapping of message ID36s to messages.
-
-Notice that the `modActions` key is missing on the root. It is instead found on the conversation object
-for some odd reason.
+Returned object is the same as that of :ref:`GET /api/mod/conversations/{convo_id36} <modmail-conversation-get>`.
 
 .. csv-table:: Form Data / URL Params
    :header: "Field","Type (hint)","Description"
 
    "body","string","Markdown text."
-   "isAuthorHidden","boolean","Whether to hide your user name to the recipient. Default: false."
-   "isInternal","boolean","Whether to create a private moderator note. Default: false."
+   "isAuthorHidden","boolean","Whether to hide your user name to the recipient. Default: false.
+
+   In an internal mod conversation, the UI will not offer the ""Hide my username"" option,
+   but the option has some effect in that ""[hidden]"" will be shown next to the name.
+
+   This open cannot be used to reply a to-subreddit conversation. An API error (`UNKNOWN_ERROR`) will occur.
+   The UI does not give an option to hide a reply to a to-subreddit conversation.
+   "
+   "isInternal","boolean","Whether to create a private moderator note. Default: false.
+
+   This option has no effect in an internal moderator conversation.
+
+   It's not possible to create a hidden private mod note. If true when `isAuthorHidden` is also true,
+   an API will occur (`UNKNOWN_ERROR`).
+   "
 
 |
 
@@ -554,8 +615,17 @@ for some odd reason.
    (despite error message saying under 10000).","
    ``{""fields"": [""body""], ""explanation"": ""This field must be under 10000 characters"", ""message"": ""Bad Request"", ""reason"": ""TOO_LONG""}``
    "
+   "UNKNOWN_ERROR","400","
+   1. Both `isAuthorHidden` and `isInternal` were true.
 
-.. seealso:: https://www.reddit.com/dev/api/#POST_api_mod_conversations_:conversation_id
+   2. Attempted to reply a to-subreddit conversation when `isAuthorHidden` was true.
+   ","
+   (1): ``{""explanation"": ""Internal messages cannot have a hidden author"", ""message"": ""Bad Request"", ""reason"": ""UNKNOWN_ERROR""}``
+
+   (2): ``{""explanation"": ""Cannot hide author for subreddit-to-subreddit conversations."", ""message"": ""Bad Request"", ""reason"": ""UNKNOWN_ERROR""}``
+   "
+
+.. seealso:: `<https://www.reddit.com/dev/api/#POST_api_mod_conversations_:conversation_id>`_
 
 
 .. _modmail-mark-as-read:
@@ -599,13 +669,13 @@ Returns zero bytes on success.
    The operation is aborted and none of the items will be processed.","
    ``{""fields"": [""conversationIds""], ""explanation"": null, ""message"": ""Forbidden"", ""reason"": ""INVALID_CONVERSATION_ID""}``
    "
-   "Must pass base 36 ids.","422","One of the IDs given contained invalid characters.
-   The operation is aborted and none of the items will be processed.","
-   ``{""fields"": [null], ""explanation"": null, ""message"": ""Unprocessable Entity"", ""reason"": ""Must pass base 36 ids.""}``
+   "UNKNOWN_ERROR","500","The `POST /api/mod/conversations/unread` endpoint was used and one of the IDs contained
+   invalid characters. None of the items will be processed.","
+   ``{""reason"": ""UNKNOWN_ERROR"", ""message"": ""Internal Server Error""}``
    "
 
-.. seealso:: https://www.reddit.com/dev/api/#POST_api_mod_conversations_read
-.. seealso:: https://www.reddit.com/dev/api/#POST_api_mod_conversations_unread
+.. seealso:: `<https://www.reddit.com/dev/api/#POST_api_mod_conversations_read>`_
+.. seealso:: `<https://www.reddit.com/dev/api/#POST_api_mod_conversations_unread>`_
 
 
 Mark all as read
@@ -624,9 +694,9 @@ conversations will be processed.
 
 The `entity` limit is unknown. Clients should assume a limit of 100 subreddit names.
 
-Returns the list of conversation ID36s that were marked as read::
+Returns the list of conversation ID36s (prefixed with `ModmailConversation_`) that were marked as read::
 
-   {"conversation_ids": ["t5eis", "t8ac1", "t5en5"]}
+   {"conversation_ids": ["ModmailConversation_1nutdn", "ModmailConversation_1nustm", "ModmailConversation_1nusn0", "ModmailConversation_1nusmh", "ModmailConversation_1gfdx0", "ModmailConversation_1gr9d3"]}
 
 .. csv-table:: Form Data / URL Params
    :header: "Field","Type (hint)","Description"
@@ -665,7 +735,7 @@ Returns the list of conversation ID36s that were marked as read::
 .. note::
    The documentation incorrectly lists this endpoint as `POST /api/mod/bulk_read`, which does not exist.
 
-.. seealso:: https://www.reddit.com/dev/api/#POST_api_mod_bulk_read
+.. seealso:: `<https://www.reddit.com/dev/api/#POST_api_mod_bulk_read>`_
 
 
 Highlight/unhighlight
@@ -678,13 +748,11 @@ Highlight/unhighlight
 
 Mark a conversation as highlighted.
 
-Returned object fields:
+The mod actions list in the output will include this action.
 
-* `conversations` (object): Conversation info.
-* `messages` (object): An object mapping ID36s to message objects.
-* `modActions` (object): An object mapping action ID36s to mod action info objects.
+Redundant duplicate actions will register as duplicate entries in the conversation.
 
-Notice the `conversations` key is mistakenly plural.
+Returned object is the same as that of :ref:`GET /api/mod/conversations/{convo_id36} <modmail-conversation-get>`.
 
 .. csv-table:: API Errors
    :header: "Error","Status Code","Description","Example"
@@ -699,7 +767,7 @@ Notice the `conversations` key is mistakenly plural.
    ``{""fields"": [null], ""explanation"": null, ""message"": ""Forbidden"", ""reason"": ""SUBREDDIT_NO_ACCESS""}``
    "
 
-.. seealso:: https://www.reddit.com/dev/api/#DELETE_api_mod_conversations_:conversation_id_highlight
+.. seealso:: `<https://www.reddit.com/dev/api/#DELETE_api_mod_conversations_:conversation_id_highlight>`_
 
 
 Archive/unarchive
@@ -712,8 +780,11 @@ Archive/unarchive
 
 Archive a conversation.
 
-Returned object is the same as `POST /api/mod/conversations/{convo_id36}/highlight`.
-(I.e., `conversations`, `modActions`, `messages`.)
+The mod actions list in the output will include this action.
+
+Redundant duplicate actions will register as duplicate entries in the conversation.
+
+Returned object is the same as that of :ref:`GET /api/mod/conversations/{convo_id36} <modmail-conversation-get>`.
 
 .. csv-table:: API Errors
    :header: "Error","Status Code","Description","Example"
@@ -728,7 +799,7 @@ Returned object is the same as `POST /api/mod/conversations/{convo_id36}/highlig
    ``{""fields"": [null], ""explanation"": null, ""message"": ""Forbidden"", ""reason"": ""INVALID_MOD_PERMISSIONS""}``
    "
 
-.. seealso:: https://www.reddit.com/dev/api/#POST_api_mod_conversations_:conversation_id_archive
+.. seealso:: `<https://www.reddit.com/dev/api/#POST_api_mod_conversations_:conversation_id_archive>`_
 
 
 Approve/disapprove user
@@ -741,14 +812,8 @@ Approve/disapprove user
 
 Approve the user associated with a conversation.
 
-Returned object fields:
-
-* `conversations` (object): Conversation info.
-* `user` (object): A user dossier.
-* `modActions` (object): An object mapping action ID36s to mod action info objects.
-* `messages` (object): An object mapping ID36s to message objects.
-
-Notice the `conversations` key is mistakenly plural.
+Returned object is mostly the same as that of :ref:`GET /api/mod/conversations/{convo_id36} <modmail-conversation-get>`
+except the `participantSubreddit` field on the root and on the `conversation` object is missing.
 
 .. csv-table:: API Errors
    :header: "Error","Status Code","Description","Example"
@@ -765,9 +830,14 @@ Notice the `conversations` key is mistakenly plural.
    "CANT_RESTRICT_MODERATOR","400","There is no user associated with the conversation.","
    ``{""fields"": [null], ""explanation"": null, ""message"": ""Bad Request"", ""reason"": ""CANT_RESTRICT_MODERATOR""}``
    "
+   "USER_DOESNT_EXIST","404","No user is associated with the given conversation.","
+   ``{""fields"": [null], ""reason"": ""USER_DOESNT_EXIST"", ""message"": ""Not Found"", ""explanation"": ""that user doesn't exist""}``
+   "
 
-.. seealso:: https://www.reddit.com/dev/api/#POST_api_mod_conversations_:conversation_id_approve
+.. seealso:: `<https://www.reddit.com/dev/api/#POST_api_mod_conversations_:conversation_id_approve>`_
 
+
+.. _modmail-conversation-mute-user:
 
 Mute/unmute user
 ~~~~~~~~~~~~~~~~
@@ -779,8 +849,18 @@ Mute/unmute user
 
 Mute the user associated with a conversation.
 
-Returned object is the same as `POST /api/mod/conversations/{convo_id36}/approve`.
-(I.e., `conversations`, `user`, `modActions`, `messages`.)
+Returned object has fields similar to that of
+:ref:`GET /api/mod/conversations/{convo_id36} <modmail-conversation-get>`:
+
+- `conversations`:
+  Same as the `conversation` field on :ref:`GET /api/mod/conversations/{convo_id36} <modmail-conversation-get>`.
+
+  Notice the key name is mistakenly plural.
+
+  The `participantSubreddit` field is missing.
+- `messages`: ...
+- `modActions`: ...
+- `user` (?object): Field will not exist if the mute state did not change.
 
 This parameter table applies only when muting:
 
@@ -798,11 +878,16 @@ This parameter table applies only when muting:
    "INVALID_OPTION","400","The value specified by `num_hours` was invalid.","
    ``{""fields"": [""num_hours""], ""explanation"": ""that option is not valid"", ""message"": ""Bad Request"", ""reason"": ""INVALID_OPTION""}``
    "
+   "USER_DOESNT_EXIST","404","No user is associated with the given conversation.","
+   ``{""fields"": [null], ""reason"": ""USER_DOESNT_EXIST"", ""message"": ""Not Found"", ""explanation"": ""that user doesn't exist""}``
+   "
 
-.. seealso:: https://www.reddit.com/dev/api/#POST_api_mod_conversations_:conversation_id_mute
+.. seealso:: `<https://www.reddit.com/dev/api/#POST_api_mod_conversations_:conversation_id_mute>`_
 
 
-Shorten user ban 
+.. _modmail-conversation-shorten-user-ban:
+
+Shorten user ban
 ~~~~~~~~~~~~~~~~
 
 .. http:post:: /api/mod/conversations/{convo_id36}/temp_ban
@@ -813,8 +898,13 @@ Switch a permanent ban to a temporary one of the user associated with a conversa
 
 If the user is not permanently banned, an API error will be raised.
 
-Returned object is the same as `POST /api/mod/conversations/{convo_id36}/approve`.
-(I.e., `conversations`, `user`, `modActions`, `messages`.)
+Returned object has fields similar to that of
+:ref:`POST /api/mod/conversations/{convo_id36}/mute <modmail-conversation-mute-user>`:
+
+- `conversations`
+- `messages`
+- `modActions`
+- `user`: Field should always exist.
 
 .. csv-table:: Form Data / URL Params
    :header: "Field","Type (hint)","Description"
@@ -837,6 +927,9 @@ Returned object is the same as `POST /api/mod/conversations/{convo_id36}/approve
    "BAD_NUMBER","400","The number specified by the `duration` parameter was not in range.","
    ``{""fields"": [""duration""], ""explanation"": ""that number isn't in the right range (1 to 999)"", ""message"": ""Bad Request"", ""reason"": ""BAD_NUMBER""}``
    "
+   "USER_DOESNT_EXIST","404","No user is associated with the given conversation.","
+   ``{""fields"": [null], ""reason"": ""USER_DOESNT_EXIST"", ""message"": ""Not Found"", ""explanation"": ""that user doesn't exist""}``
+   "
 
 |
 
@@ -845,7 +938,7 @@ Returned object is the same as `POST /api/mod/conversations/{convo_id36}/approve
 
    "500","The `duration` parameter was not specified."
 
-.. seealso:: https://www.reddit.com/dev/api/#POST_api_mod_conversations_:conversation_id_unban
+.. seealso:: `<https://www.reddit.com/dev/api/#POST_api_mod_conversations_:conversation_id_unban>`_
 
 
 Unban user
@@ -857,12 +950,12 @@ Unban user
 
 Unban the user associated with a conversation from the subreddit.
 
-Returned object is the same as `POST /api/mod/conversations/{convo_id36}/approve`.
-(I.e., `conversations`, `user`, `modActions`, `messages`.)
+Returned object is the same as
+:ref:`POST /api/mod/conversations/{convo_id36}/temp_ban <modmail-conversation-shorten-user-ban>`.
 
 .. csv-table:: API Errors
    :header: "Error","Status Code","Description","Example"
 
    "...","Same as in `POST /api/mod/conversations/{convo_id36}/approve`.","...","..."
 
-.. seealso:: https://www.reddit.com/dev/api/#POST_api_mod_conversations_:conversation_id_unban
+.. seealso:: `<https://www.reddit.com/dev/api/#POST_api_mod_conversations_:conversation_id_unban>`_

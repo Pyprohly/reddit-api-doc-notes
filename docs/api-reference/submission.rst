@@ -36,8 +36,8 @@ Schema
    "approved_at_utc","integer?","Unix time when the comment was approved. `null` if not approved or the current user is not a moderator of the subreddit."
    "approved_by","string?","The name of the redditor who approved this post. `null` if not approved or the current user is not a moderator of the subreddit."
    "subreddit","string","The subreddit name. E.g., `IAmA`"
-   "selftext","string","The body text of the submission. Empty string if it is not a text or poll post."
-   "selftext_html?","string?","The HTML of the post. This will be null if it is not a text or poll post.
+   "selftext","string","The body text of the submission. Can be empty string if post has no body text."
+   "selftext_html?","string?","The HTML of the post. Can be null if post has no body text.
 
    This key will not exist if the object was returned from `POST /api/editusertext`."
    "author_fullname?","string","The full ID36 of the author.
@@ -401,13 +401,15 @@ Schema
 
    Field not available if the post does not belong to the current user.
    Field not available if no user context is available."
-   "url_overridden_by_dest?","string","The url of the linked item for a link post.
+   "url_overridden_by_dest?","string","The URL of the linked item for a link post.
 
    The URL of the image if an image post.
 
    The URL of the video if a video post.
 
    The URL of the gallery for a gallery post. E.g., `https://www.reddit.com/gallery/oexfaq`.
+   Although in some rare cases this field may not exist, even if the URL would be valid.
+   E.g., see post ID `1cmt1on`. (Thanks @cossack_ua [Discord].)
 
    In rare cases the value may not be a full URL, it can be a path, for example see post ID `j74mzm`.
 
@@ -647,11 +649,11 @@ To create an image post, use `kind: image`. Specify the image URL with `url`.
 To create an video post, use `kind: video`. Specify the video URL with `url`. The video thumbnail image must
 also be specified using `video_poster_url`.
 
-Return object example for text and link posts::
+Return object example for text and link/image posts that link to non-upload-lease resource locations::
 
    {"json": {"errors": [], "data": {"url": "https://www.reddit.com/r/Pyprohly_test3/comments/om0nwf/my_title/", "drafts_count": 0, "id": "nxaraz", "name": "t3_nxaraz"}}}
 
-Return object example for image posts::
+Return object example for link/image posts linking to upload-lease resource locations::
 
    {"json": {"errors": [], "data": {"user_submitted_page": "https://www.reddit.com/user/Pyprohly/submitted/", "websocket_url": "wss://ws-078822fa467f2f8bb.wss.redditmedia.com/rte_images/a0lp5306pmv71?m=AQAA1-Z2Ye5o9vuN_PHYTUdavycbStw62tNSLLjnbqypaYKHuW3G"}}}
 
@@ -666,9 +668,11 @@ Return object example for video posts::
    `crosspost`. Default: `link`."
    "sr","string","The subreddit name in which to submit to. Can be prefixed with `r/` or `/r/`."
    "title","string","Title of the submission. Up to 300 characters long."
-   "text","string","The markdown text for a text post."
+   "text","string","Body text for the post as markdown text."
+   "richtext_json","string","A string of RTJSON. This parameter is only applicable for text posts --
+   only text posts can have rich text bodies."
    "url","string","A valid URL, for a link post."
-   "crosspost_parent","string","For when `type: crosspost`, the full ID36 of a submission."
+   "crosspost_fullname","string","For when `type: crosspost`, the full ID36 of a submission."
    "sendreplies","boolean","Receive inbox notifications for replies. Default: true."
    "spoiler","boolean","Mark as spoiler. Default: false."
    "nsfw","boolean","Mark as NSFW. Default: false."
@@ -688,12 +692,15 @@ Return object example for video posts::
    Parameter ignored if empty string."
    "ad","boolean","Setting to true appears to post the submission unlisted, accessible only by URL."
    "extension","string","Used for determining which view-type (e.g. `json`, `compact` etc.) to use for the redirect that is generated if the resubmit error occurs."
-   "resubmit","boolean","When the ""Restrict how often the same link can be posted"" content control setting
+   "resubmit","boolean","
+   .. note::
+      This option appears to have been broken since July 2023. See `<https://github.com/praw-dev/praw/issues/1964>`_.
+
+   When the ""Restrict how often the same link can be posted"" content control setting
    is enabled, if a link with the same URL has already been submitted then an `ALREADY_SUB` API error would
    be returned unless this field is `true`.
 
    Default: false."
-   "richtext_json","string","A string of RTJSON."
 
 |
 
@@ -874,7 +881,7 @@ Submit a poll post.
 
 This endpoint expects JSON data.
 
-Return object example::
+Return object is similar to that of gallery posts::
 
    {
        "json": {
@@ -944,6 +951,9 @@ Return object example::
    "TOO_FEW_OPTIONS","200","Need at least 2 poll options.","
    ``{""json"": {""errors"": [[""TOO_FEW_OPTIONS"", ""you need at least 2 poll options"", ""options""]]}}``
    "
+   "ARRAY_PARSE_ERROR","200","The `options` field was no an array.","
+   ``{""json"": {""errors"": [[""ARRAY_PARSE_ERROR"", ""unable to parse array data"", ""options""]]}}``
+   "
 
 |
 
@@ -952,13 +962,35 @@ Return object example::
 
    "500","* The `sr` parameter was not specified.
 
-   * The `options` parameter was not specified."
+   * The `options` parameter was not specified or contained invalid values."
 
 
 Crosspost
 ~~~~~~~~~
 
-Use `POST /api/submit` with `type: crosspost` and the `crosspost_parent` parameter.
+Use `POST /api/submit` with `type: crosspost` and the `crosspost_fullname` parameter.
+
+Return object is similar to that of text posts.
+
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
+
+   "USER_REQUIRED","...","Same as in :ref:`POST /api/submit <post-api-submit>`.","..."
+   "BAD_SR_NAME","...","...","..."
+   "SUBREDDIT_NOEXIST","...","...","..."
+   "SUBREDDIT_NOTALLOWED","...","...","
+   ``{""json"": {""errors"": [[""SUBREDDIT_NOTALLOWED"", ""This community only allows trusted members to post here"", ""root_post_id""]]}}``
+   "
+   "INVALID_CROSSPOST_THING","200","The `crosspost_fullname` parameter was not specified or the ID was invalid.","
+   ``{""json"": {""errors"": [[""INVALID_CROSSPOST_THING"", ""Your crosspost includes a link that isn't working. Double-check it and try again."", ""crosspost_thing""]]}}``
+   "
+
+|
+
+.. csv-table:: HTTP Errors
+   :header: "Status Code","Description"
+
+   "404","The subreddit is private/banned."
 
 
 .. _post-api-del:

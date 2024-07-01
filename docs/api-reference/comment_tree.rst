@@ -69,8 +69,9 @@ A 'load more comments' 'more comment' object:
 .. csv-table:: 'load more comments' More Comments Object
    :header: "Field","Type (hint)","Description"
 
-   "count","integer","The number of comments this node is stubbing;
-   the number of comments that are children of `parent_id`."
+   "count","integer","The total number of descendants (that are children of `parent_id`).
+   This is the same number you see in the old.reddit.com UI next to `load more comments` links.
+   "
    "name","string","The full ID36 of the first item in `children`."
    "id","string","The ID of this object. It will match the ID36 of the first item in `children`."
    "parent_id","string","Parent comment full ID36."

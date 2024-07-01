@@ -484,10 +484,6 @@ Retrieve
 
 Retrieve all widgets in a subreddit.
 
-If the target subreddit does not exist, an empty listing structure is returned::
-
-   {"kind": "Listing", "data": {"after": null, "dist": 0, "modhash": null, "geo_filter": ", "children": [], "before": null}}
-
 .. csv-table:: URL Params
    :header: "Field","Type (hint)","Description"
 
@@ -508,6 +504,7 @@ If the target subreddit does not exist, an empty listing structure is returned::
 .. csv-table:: HTTP Errors
    :header: "Status Code","Description"
 
+   "302","The target subreddit does not exist."
    "403","You do not have permission to view the widgets of the target subreddit."
 
 

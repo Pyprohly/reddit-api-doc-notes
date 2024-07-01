@@ -24,12 +24,12 @@ The `action` is typically `//reddit-subreddit-uploaded-media.s3-accelerate.amazo
 .. csv-table:: Form Data
    :header: "Field","Type (hint)","Description"
 
+   "imagetype","string","Either `bannerBackgroundImage`, `bannerPositionedImage`, `secondaryBannerPositionedImage`,
+   or `mobileBannerImage`."
    "filepath","string","The file name (either a base name or a full path) of the image file to upload.
    Example: `image.png`."
    "mimetype","string","The mimetype of the image file to upload. It does not have to match the
    extension of the `filepath`. Example: `image/png`."
-   "imagetype","string","Either `bannerBackgroundImage`, `bannerPositionedImage`, `secondaryBannerPositionedImage`,
-   or `mobileBannerImage`."
 
 |
 
@@ -38,6 +38,12 @@ The `action` is typically `//reddit-subreddit-uploaded-media.s3-accelerate.amazo
 
    "USER_REQUIRED","200","There is no user context.","
    ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
+   "BAD_IMAGE","400","* The file extension of the file name specified by `filepath` is invalid
+     (because doesn't end with `.png` or `.jpg`, etc.).
+
+   * The specified `mimetype` is invalid.","
+   ``{""fields"": [""filepath""], ""explanation"": ""image problem"", ""message"": ""Bad Request"", ""reason"": ""BAD_IMAGE""}``
    "
    "INVALID_OPTION","400","An invalid value was provided for `imagetype`","
    ``{""fields"": [""imagetype""], ""explanation"": ""that option is not valid"", ""message"": ""Bad Request"", ""reason"": ""INVALID_OPTION""}``

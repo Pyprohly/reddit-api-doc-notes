@@ -16,10 +16,6 @@ Get a subreddit's stylesheet information.
 
 This endpoint can be called without being a moderator of the target subreddit. You don't even have to be logged in.
 
-If the target subreddit does not exist, an empty listing object is returned::
-
-   {"kind": "Listing", "data": {"after": None, "dist": 0, "modhash": ", "geo_filter": ", "children": [], "before": None}}
-
 Schema:
 
 * `subreddit_id` (string): The subreddit's full ID36 (`t5_` prefixed).
@@ -47,6 +43,14 @@ Schema:
    "banned","404","You do not have access to the specified subreddit: it is banned.","
    ``{""reason"": ""banned"", ""message"": ""Not Found"", ""error"": 404}``
    "
+
+|
+
+.. csv-table:: HTTP Errors
+   :header: "Status Code","Description"
+
+   "302","The target subreddit does not exist."
+
 
 Get stylesheet raw css
 ~~~~~~~~~~~~~~~~~~~~~~

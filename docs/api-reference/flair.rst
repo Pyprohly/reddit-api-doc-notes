@@ -961,3 +961,86 @@ Returns `{"json": {"errors": []}}` on success.
    "404","The subreddit specified in the URL does not exist.","*(HTML document)*"
 
 .. seealso:: https://www.reddit.com/dev/api/#POST_api_setflairenabled
+
+
+Post appearance
+~~~~~~~~~~~~~~~
+
+Upload image
+^^^^^^^^^^^^
+
+.. http:post:: /api/v1/{subreddit}/flair_style_asset_upload_s3/{post_flair}
+
+*scope: (unknown)*
+
+Upload an image for use in modifying a post flair's post appearance.
+
+This endpoint is used for obtaining an upload lease.
+
+The upload process is similar to Flair Emoji image uploads, but the endpoint wants an extra `imagetype` parameter.
+See :ref:`Emoji upload <emoji-upload>`.
+
+The `action` is typically `//reddit-subreddit-uploaded-media.s3-accelerate.amazonaws.com` for this endpoint.
+
+.. csv-table:: Form Data
+   :header: "Field","Type (hint)","Description"
+
+   "imagetype","string","Either `postPlaceholderImage` or `postBackgroundImage`."
+   "filepath","string","The file name (either a base name or a full path) of the image file to upload.
+   Example: `image.png`."
+   "mimetype","string","The mimetype of the image file to upload. It does not have to match the
+   extension of the `filepath`. Example: `image/png`."
+
+|
+
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
+
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
+   "BAD_IMAGE","400","* The file extension of the file name specified by `filepath` is invalid
+     (because doesn't end with `.png` or `.jpg`, etc.).
+
+   * The specified `mimetype` is invalid.","
+   ``{""fields"": [""filepath""], ""explanation"": ""image problem"", ""message"": ""Bad Request"", ""reason"": ""BAD_IMAGE""}``
+   "
+   "INVALID_OPTION","400","An invalid value was provided for `imagetype`","
+   ``{""fields"": [""imagetype""], ""explanation"": ""that option is not valid"", ""message"": ""Bad Request"", ""reason"": ""INVALID_OPTION""}``
+   "
+
+
+Config
+^^^^^^
+
+.. http:put:: /api/v1/{subreddit}/flair_styles/{post_flair}
+
+*scope: flair*
+
+Set the post appearance options for a post flair template.
+
+All parameters should specified. If a parameter is not specified or is an invalid value,
+its default will be used.
+
+Returns an empty JSON object on success, or a JSON object with a
+`websocketUrl` field on success if either `postPlaceholderImage`
+or `postBackgroundImage` were specified with valid URL locations.
+
+.. csv-table:: Form Data
+   :header: "Field","Type (hint)","Description"
+
+   "postTitleColor","string","A hex color. If the given value is not valid,
+   the default is used. Default: `#222222`."
+   "postBackgroundColor","string","A hex color. If the given value is not valid,
+   the default is used. Default: `#FFFFFF`."
+   "postPlaceholderImage","string","The URL location of an a uploaded post appearance thumbnail image."
+   "postBackgroundImage","string","The URL location of an a uploaded post appearance background image."
+
+|
+
+.. csv-table:: API Errors
+   :header: "Error","Status Code","Description","Example"
+
+   "USER_REQUIRED","200","There is no user context.","
+   ``{""json"": {""errors"": [[""USER_REQUIRED"", ""Please log in to do that."", null]]}}``
+   "
